@@ -1,2 +1,2 @@
 # dftpl
-PyDFT analyzer for plaso CSV file
+dftpl (PyDFT plaso) is a forensic event reconstruction tool. It uses the PyDFT (dft) analyzer for high-level event extraction from log2timeline plaso (pl) CSV files, using them as the source of low-level events.
