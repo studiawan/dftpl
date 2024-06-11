@@ -38,6 +38,7 @@ def FindGoogleSearches(low_timeline, start_id, end_id):
                 if url_components != None:
                     # Create a high level event
                     high_event = HighLevelEvent()
+                    high_event.id = each_low_event.id
                     high_event.add_time(each_low_event.date_time_min)
                     high_event.evidence_source = each_low_event.evidence
                     high_event.type = "Google Search"
