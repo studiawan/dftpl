@@ -32,5 +32,5 @@ class JSONWriter:
         timeline_dict = self.to_dict()
         
         with open(self.json_path, 'w') as file:
-            json.dump(timeline_dict, file)
+            json.dump(timeline_dict, file, indent=4)
         
