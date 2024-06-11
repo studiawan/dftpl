@@ -18,15 +18,19 @@ def main():
     output_path = args.output_path
 
     # Read the CSV file
+    print('Reading CSV file ...')
     reader = CSVReader(input_path)
 
     # Create a list of LowLevelEvent objects
+    print('Creating low-level timeline ...')
     low_timeline = LowLevelTimeline()
     low_timeline.create_timeline(reader)
 
     # Run the Google Search analyzer
+    print('Running Google Search analyzer ...')
     high_timeline = GoogleSearch.Run(low_timeline)
 
     # Write the results to a JSON file
+    print(f'Writing results to JSON file: {output_path} ...')
     json_writer = JSONWriter(high_timeline, output_path)
     json_writer.write()
