@@ -71,7 +71,7 @@ class LowLevelTimeline:
         if event_id == 0:
             num_before = 0
 
-        for event in self.events[event_id-num_before:event_id+1]:
+        for event in self.events[event_id-num_before:event_id]:
             before_events.append(event.to_dict())
 
         for event in self.events[event_id+1:event_id+num_after+1]:
