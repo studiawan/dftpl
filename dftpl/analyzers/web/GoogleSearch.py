@@ -50,7 +50,7 @@ def FindGoogleSearches(low_timeline, start_id, end_id):
                     high_event.set_keys("Browser", GetBrowser(each_low_event.plugin))
                     high_event.set_keys("Path", each_low_event.path)
                     high_event.set_keys("Search_Term", search_term)
-                    high_event.supporting = low_timeline.get_surrounding_events(each_low_event.id, 5, 5)
+                    high_event.supporting = low_timeline.get_supporting_events(each_low_event.id)
 
                     # Create a reasoning artefact
                     reasoning = ReasoningArtefact()

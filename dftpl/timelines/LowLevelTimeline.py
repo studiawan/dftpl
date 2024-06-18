@@ -2,7 +2,7 @@ import re
 from dftpl.events.LowLevelEvent import LowLevelEvent
 
 
-num_surrounding_events = 5
+num_supporting_events = 5
 
 class LowLevelTimeline:
     def __init__(self):
@@ -61,9 +61,9 @@ class LowLevelTimeline:
         else:
             return True
     
-    def get_surrounding_events(self, event_id, num_before=num_surrounding_events, num_after=num_surrounding_events):
+    def get_supporting_events(self, event_id, num_before=num_supporting_events, num_after=num_supporting_events):
         """Returns a list of events before and after the event"""
-        surrounding_events = {}
+        supporting_events = {}
         before_events = []
         after_events = []
 
@@ -78,8 +78,8 @@ class LowLevelTimeline:
             after_events.append(event.to_dict())
         
         # Add the events to the dictionary
-        surrounding_events['before'] = before_events
-        surrounding_events['after'] = after_events
+        supporting_events['before'] = before_events
+        supporting_events['after'] = after_events
         
-        return surrounding_events
+        return supporting_events
 
