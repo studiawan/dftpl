@@ -1,0 +1,21 @@
+title: Google searches based on URL structure
+id: f6935d71-bb4d-4918-8877-0afd9208b5b4
+description: Google Search
+category: Web
+references: https://bitbucket.org/chrishargreaves/pydft-analysers/src/master/Analysers/Web/GoogleSearch.py
+author: Jony Patterson, Hudan Studiawan
+date: 2024/06/29
+modified: 2024/06/29
+test_event:
+  - type: Last Visited Time-WEBHIST
+  - evidence: 'https?://(.+\.)(google)\.(?:com|co\.uk|fr)'
+high_level_event:
+  - pattern: 'q=[^&]+?'
+  - type: Google Search
+  - description: Google Search for
+  - keys:
+    - Browser
+    - Path
+    - Search_Term
+reasoning:
+  - description: Google search URL found in
