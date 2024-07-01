@@ -1,6 +1,7 @@
 __author__ = 'Chris Hargreaves'
 
 import re
+from datetime import datetime, timedelta
 from dftpl.events.LowLevelEvent import LowLevelEvent
 from dftpl.timelines.HighLevelTimeline import HighLevelTimeline
 from dftpl.events.HighLevelEvent import HighLevelEvent, ReasoningArtefact
@@ -21,7 +22,8 @@ def FindWebVisits(low_timeline, start_id, end_id):
 
     # Create test event that matches any URL in any browser
     test_event = LowLevelEvent()
-    test_event.type = "URL Visit"
+    test_event.type = "WEBHIST"
+    test_event.evidence = r"\b(http|https|www)\b"
 
     # Create a new high level timeline
     high_timeline = HighLevelTimeline()
@@ -42,59 +44,44 @@ def FindWebVisits(low_timeline, start_id, end_id):
                 # IGNORE LOCAL EVENT AS WILL BE PICKED UP IN LOCAL FILE ACCESS
                 continue
             else:
-                domain = ExtractDomainFromURL(each_event.path)
+                domain = ExtractDomainFromURL(each_event.evidence)
                 high_event.description = "Web Visit to '%s'" % domain
             
             high_event.category = analyser_category
-            high_event.device = each_event.evidence
+            high_event.device = each_event.plugin
+            high_event.files = each_event.path
             high_event.set_keys("Browser", GetBrowser(each_event.plugin))
-            high_event.set_keys("URL(%s)" % str(high_event.date_time_min), each_event.path)
+            high_event.set_keys("URL(%s)" % str(high_event.date_time_min), ExtractURL(each_event.evidence))
             high_event.set_keys("Domain", domain)
+            high_event.supporting = low_timeline.get_supporting_events(each_event.id)
+            print("URL(%s)" % str(high_event.date_time_min))
 
             # Construct a reasoning artefact and add it to the high level event
             reasoning = ReasoningArtefact()
             reasoning.id = each_event.id
-            reasoning.description = "URL found in " + each_event.event_provenance.source
+            reasoning.description = "URL found in " + each_event.evidence
             reasoning.test_event = test_event
             high_event.trigger = reasoning
 
-            # check if there is any cached content with that domain at a similar time
-            cache_test_event = LowLevelEvent()
-            cache_test_event.plugin = "Firefox Cache"
-            cache_test_event.type = "Cached"
-            cache_test_event.keys["url"] = "HTTP:" + "http://" +  high_event.keys["Domain"] # should update cache parser so this HTTP: is not necessary
-
-            results = low_timeline.get_events_between_datetimes(each_event.date_time_min-60, each_event.date_time_min+60)
-            for each_sub_event in results:
-                if each_sub_event.match(cache_test_event):
-                    cache_reasoning = ReasoningArtefact()
-                    cache_reasoning.id = each_sub_event.id
-                    cache_reasoning.description = "Cache entry found in " + each_sub_event.event_provenance.source
-                    cache_reasoning.test_event = cache_test_event
-                    high_event.AddSupportingEvidenceArtefact(cache_reasoning)
-                    high_event.AddFile(each_sub_event.path)
-
-            if len(results) == 0:
-                cache_reasoning = ReasoningArtefact()
-                cache_reasoning.id = -1
-                cache_reasoning.description = "No cache entries found for " + cache_test_event.keys["url"]
-                cache_reasoning.test_event = cache_test_event
-                high_event.AddContradictoryEvidenceArtefact(cache_reasoning)
-
             # Rather than adding the event, check if it is the same as another event within a certain period
             # If so, merge them rather than adding a new separate event
-            fuzzy_period = 600 # 10 minutes
-            indexes = high_timeline.get_indexes_of_events_between_datetimes(high_event.date_time_min-fuzzy_period, high_event.date_time_max+fuzzy_period)
+            fuzzy_period = timedelta(seconds=600) # 10 minutes
+            min_time = datetime.fromisoformat(high_event.date_time_min)
+            max_time = datetime.fromisoformat(high_event.date_time_max)
+            indexes = high_timeline.get_indexes_of_events_between_datetimes(min_time-fuzzy_period, max_time+fuzzy_period)
             merged = False
+            
             for each_index in indexes:
-                if high_timeline.timeline[each_index].IntersectsWith(high_event, min_increment=fuzzy_period, max_increment=fuzzy_period):
-                    # don't add it, merge it with existing
-                    high_timeline.timeline[each_index].merge(high_event)
+                # If the event is the same as another event, merge them
+                result = high_timeline.intersect_with(each_index, indexes)
+                if result:
                     merged = True
 
             # if the event didn't get merged with anything existing, add it as normal
             if merged == False:
                 high_timeline.add_event(high_event)
+            
+    return high_timeline
 
 
 def GetBrowser(browser_string):
@@ -104,20 +91,29 @@ def GetBrowser(browser_string):
 
 def ExtractDomainFromURL(url):
 
-    short_url = re.sub("https?://", "", url)
-    short_url = re.sub(":Host: ", "", short_url) # present in some Internet Explorer records
-    pos = short_url.find("/")
+    # Regular expression to match the desired part of the URL
+    pattern = r"https?://(www\.[a-zA-Z0-9.-]+)"
 
-    if pos == -1:
-        return short_url
+    # Using re.search to find the match
+    match = re.search(pattern, url)
+
+    # Extracting and printing the matched string
+    if match:
+        return match.group(1)
     else:
-        return short_url[0:pos]
+        return None
+
 
 def ExtractPathFromLocalURL(url):
     short_url = re.sub("file://", "", url)
-    return short_url
-    
-#print(ExtractDomainFromURL("http://www.google.co.uk"))
+    return short_url    
 
+def ExtractURL(text):
+    pattern = r"https?://[^\s,]+"
+    match = re.search(pattern, text)
 
-
+    if match:
+        url = match.group(0)
+        return url
+    else:
+        return None
