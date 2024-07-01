@@ -12,6 +12,7 @@ class HighLevelEvent:
         self.keys = {}              # Additional key-value pairs with extra information
         self.trigger = None         # Reasoning artefact that triggered the event
         self.supporting = {}        # List of reasoning artefacts supporting the event, five low level events before and after the event
+        self.merged_id = []         # List of IDs of events that have been merged into this event
 
     def add_time(self, date_time):
         # Sets the time for the event, adjusting min and max if necessary
@@ -21,6 +22,10 @@ class HighLevelEvent:
     def set_keys(self, key, value):
         # Adds additional information to the event
         self.keys[key] = value
+    
+    def merge(self, event_id):
+        # Adds an event ID to the list of merged events
+        self.merged_id.append(event_id)
 
 
 class ReasoningArtefact:
@@ -30,6 +35,7 @@ class ReasoningArtefact:
         self.test_event = None      # The event that triggered the reasoning artefact
         self.provenance = None      # Provenance details for traceability
         self.keys = {}              # Additional key-value pairs with extra information
+        self.references = None      # Reference to external sources
 
     def set_keys(self, key, value):
         # Adds additional information to the reasoning artefact
