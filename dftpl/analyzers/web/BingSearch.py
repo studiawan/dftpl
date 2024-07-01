@@ -1,4 +1,4 @@
-__author__ = 'Jony Patterson'
+__author__ = ['Jony Patterson', 'Hudan Studiawan']
 
 from dftpl.events.LowLevelEvent import LowLevelEvent
 from dftpl.timelines.HighLevelTimeline import HighLevelTimeline
@@ -9,6 +9,7 @@ description = "Bing Search"
 analyser_category = "Web"
 
 def Run(timeline, start_id=0, end_id=None):
+    """Main function for Bing Search analyser"""
     if end_id == None:
         end_id = len(timeline)
 
@@ -17,37 +18,48 @@ def Run(timeline, start_id=0, end_id=None):
 def FindBingSearches(low_timeline, start_id, end_id):
     """Finds Bing searches based on URL structure"""
 
+    # Create a test event to match against
     test_event = LowLevelEvent()
-    test_event.type = "URL Visit"
-    test_event.path = "bing\.com/search"
+    test_event.type = "WEBHIST"
+    test_event.evidence = r'bing\.com/search'
 
+    # Create a high level timeline to store the results
     high_timeline = HighLevelTimeline()
 
-    trigger_matches = low_timeline.find_matching_events_in_id_range(start_id,end_id, test_event)
+    # Find all events that match the test event
+    trigger_matches = low_timeline.find_matching_events_in_id_range(start_id, end_id, test_event)
 
+    # For each event that matches the test event, create a high level event
     for each_event in trigger_matches:
         if each_event.match(test_event):
+            # Create a high level event
             high_event = HighLevelEvent()
             high_event.add_time(each_event.date_time_min)
             high_event.evidence_source = each_event.evidence
             high_event.type = "Bing Search"
-            url_components = ExtractDetailsFromBingSearchURL(each_event.path)
+            url_components = ExtractDetailsFromBingSearchURL(each_event.evidence)
             search_term = CorrectlyFormattedSearchTerm(url_components)
             high_event.description = "Bing Search for '%s'" % search_term
             high_event.category = analyser_category
-            high_event.device = each_event.evidence
+            high_event.device = each_event.plugin
             high_event.set_keys("Browser", GetBrowser(each_event.plugin))
-            high_event.set_keys("URL", each_event.path)
+            high_event.set_keys("Path", each_event.path)
             high_event.set_keys("Search_Term", search_term)
+            high_event.supporting = low_timeline.get_supporting_events(each_event.id)
 
+            # Create a reasoning artefact
             reasoning = ReasoningArtefact()
             reasoning.id = each_event.id
-            reasoning.description = "Bing search URL found in " + each_event.event_provenance.source
+            reasoning.description = f"Bing search URL found in {','.join(each_event.provenance['raw_entry'])}"
             reasoning.test_event = test_event
 
+            # Add the reasoning artefact to the high level event
             high_event.trigger = reasoning
 
+            # Add the high level event to the high level timeline
             high_timeline.add_event(high_event)
+    
+    return high_timeline
 
 
 def ExtractDetailsFromBingSearchURL(url_string):
