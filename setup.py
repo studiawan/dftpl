@@ -13,7 +13,7 @@ setup(
             'dftpl = dftpl.dftpl:main',
         ]  
     },
-    install_requires=['pytest'],
+    install_requires=['pytest', 'PyYAML'],
     classifiers=[
         'Development Status :: 4 - Beta',
         'License :: OSI Approved :: MIT License',
