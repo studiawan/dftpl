@@ -89,7 +89,7 @@ def test_FindUserCreationAndUserFolderCreation(low_timeline):
     # Assert for user creation with folder creation
     assert high_timeline.events[0].type == "User created"
     assert high_timeline.events[0].description == "User 'root' created"
-    assert high_timeline.events[0].category == "System"
+    assert high_timeline.events[0].category == "Windows"
     assert high_timeline.events[0].device == "REG-Registry Key-winreg/winreg_default"
     assert high_timeline.events[0].files == "NTFS:\Windows\System32\config\SAM"
     assert high_timeline.events[0].keys["Username"] == "root"
@@ -97,7 +97,7 @@ def test_FindUserCreationAndUserFolderCreation(low_timeline):
     # Assert for user creation without folder creation
     assert high_timeline.events[1].type == "User created"
     assert high_timeline.events[1].description == "User 'nofolderuser' created"
-    assert high_timeline.events[1].category == "System"
+    assert high_timeline.events[1].category == "Windows"
     assert high_timeline.events[1].device == "REG-Registry Key-winreg/winreg_default"
     assert high_timeline.events[1].files == "NTFS:\Windows\System32\config\SAM"
     assert high_timeline.events[1].keys["Username"] == "nofolderuser"

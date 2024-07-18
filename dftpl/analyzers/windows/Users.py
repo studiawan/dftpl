@@ -17,7 +17,7 @@ from dftpl.timelines.HighLevelTimeline import HighLevelTimeline
 
 
 description = "Creation of User"
-analyser_category = "System"
+analyser_category = "Windows"
 
 
 def Run(low_timeline, start_id=0, end_id=None):
