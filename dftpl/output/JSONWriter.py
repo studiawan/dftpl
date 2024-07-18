@@ -22,6 +22,11 @@ class JSONWriter:
                 'device': event.device,
                 'files': event.files,
                 'keys': event.keys,
+                'trigger': {
+                    'id': event.trigger.id,
+                    'description' : event.trigger.description,
+                    'test event' : event.trigger.test_event.to_dict()
+                },
                 'supporting': event.supporting
             }
         

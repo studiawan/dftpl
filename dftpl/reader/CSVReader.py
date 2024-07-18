@@ -6,7 +6,8 @@ class CSVReader:
         csv.field_size_limit(1000000)
 
     def read_csv(self):
-        with open(self.file_path, 'r') as file:
+        # encoding utf-8 to avoid UnicodeDecodeError: 'charmap' codec can't decode byte xxxx in position xxxx
+        with open(self.file_path, 'r', encoding="utf-8") as file:
             csv_reader = csv.reader(file)
             for index, row in enumerate(csv_reader):
                 yield index, row
