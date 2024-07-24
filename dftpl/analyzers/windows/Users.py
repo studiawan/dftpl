@@ -61,40 +61,42 @@ def CreatedUser(low_timeline, start_id, end_id):
     for each_low_event in trigger_matches_sam:
         # TODO : No need to match again? Matching already done in LowLevelTimeline.find_matching_events_in_id_range.
         if each_low_event.match(test_event):
-            high_event = HighLevelEvent()
-            high_event.id = each_low_event.id
-            high_event.add_time(each_low_event.date_time_min)
-            high_event.evidence_source = each_low_event.evidence
-            high_event.type = "User created"
-            # Assume evidence/message from plaso for the matched event always starts with this format :
-            # [HKEY_LOCAL_MACHINE\SAM\SAM\Domains\Account\Users\Names\{Username here}]
-            # Regex below with match from "\SAM" until "{username}]", removed the trailing '\', then extracts the username.
-            high_event.set_keys("Username", re.search(r'\\SAM\\Domains\\Account\\Users\\Names\\.+?]', each_low_event.evidence).group().rstrip(']').split('\\')[-1])
-            high_event.description = "User '%s' created" % high_event.keys["Username"]
-            high_event.category = analyser_category
-            high_event.device = each_low_event.plugin
-            high_event.files = each_low_event.path
-            high_event.supporting = low_timeline.get_supporting_events(each_low_event.id)
-            reasoning = ReasoningArtefact()
-            reasoning.id = each_low_event.id
-            #reasoning.description = "Last Write for SAM Registry entry " + each_low_event.path + " in " + each_low_event.provenance['raw_entry']
-            reasoning.description = f"Last Write for SAM Registry entry {each_low_event.path} in {','.join(each_low_event.provenance['raw_entry'])}"
-            reasoning.test_event = test_event
-            high_event.trigger = reasoning
+            # Since LowLevelTimeline.match doesn't try to match for plugin, run comparison for plugin.
+            if re.search(test_event.plugin, each_low_event.plugin):
+                high_event = HighLevelEvent()
+                high_event.id = each_low_event.id
+                high_event.add_time(each_low_event.date_time_min)
+                high_event.evidence_source = each_low_event.evidence
+                high_event.type = "User created"
+                # Assume evidence/message from plaso for the matched event always starts with this format :
+                # [HKEY_LOCAL_MACHINE\SAM\SAM\Domains\Account\Users\Names\{Username here}]
+                # Regex below with match from "\SAM" until "{username}]", removed the trailing '\', then extracts the username.
+                high_event.set_keys("Username", re.search(r'\\SAM\\Domains\\Account\\Users\\Names\\.+?]', each_low_event.evidence).group().rstrip(']').split('\\')[-1])
+                high_event.description = "User '%s' created" % high_event.keys["Username"]
+                high_event.category = analyser_category
+                high_event.device = each_low_event.plugin
+                high_event.files = each_low_event.path
+                high_event.supporting = low_timeline.get_supporting_events(each_low_event.id)
+                reasoning = ReasoningArtefact()
+                reasoning.id = each_low_event.id
+                #reasoning.description = "Last Write for SAM Registry entry " + each_low_event.path + " in " + each_low_event.provenance['raw_entry']
+                reasoning.description = f"Last Write for SAM Registry entry {each_low_event.path} in {','.join(each_low_event.provenance['raw_entry'])}"
+                reasoning.test_event = test_event
+                high_event.trigger = reasoning
 
-            # TODO : If stored in "supporting" library, add function in HighLevelEvent.py to abstract away the addition process.
-            # TODO : Otherwise, modify time for getting supporting event to also capture folder creation/create separate analyzer for folder creation.
-            # NOTE : Currently (15-07-2024) Folder creation event is stored as a LowLevelEvent class, not a ReasoningArtefact class like the original code.
-            # Search for user folder creation event with the same username as current SAM event.
-            folder_creation_results = SearchForFolderCreation(trigger_matches_folder, high_event.keys["Username"])
-            if folder_creation_results:
-                # evidence = ReasoningArtefact()
-                # evidence.id = folder_creation_results.id
-                # evidence.description = "Folder %s Created" % folder_creation_results.path
-                # evidence.test_event = test_event2
-                high_event.supporting['after'].append(folder_creation_results.to_dict())
-            # Note : Contradictory artifacts is not used.
-            high_timeline.add_event(high_event)
+                # TODO : If stored in "supporting" library, add function in HighLevelEvent.py to abstract away the addition process.
+                # TODO : Otherwise, modify time for getting supporting event to also capture folder creation/create separate analyzer for folder creation.
+                # NOTE : Currently (15-07-2024) Folder creation event is stored as a LowLevelEvent class, not a ReasoningArtefact class like the original code.
+                # Search for user folder creation event with the same username as current SAM event.
+                folder_creation_results = SearchForFolderCreation(trigger_matches_folder, high_event.keys["Username"])
+                if folder_creation_results:
+                    # evidence = ReasoningArtefact()
+                    # evidence.id = folder_creation_results.id
+                    # evidence.description = "Folder %s Created" % folder_creation_results.path
+                    # evidence.test_event = test_event2
+                    high_event.supporting['after'].append(folder_creation_results.to_dict())
+                # Note : Contradictory artifacts is not used.
+                high_timeline.add_event(high_event)
 
     return high_timeline
 
