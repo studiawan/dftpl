@@ -1,5 +1,6 @@
 import re
 from dftpl.events.LowLevelEvent import LowLevelEvent
+from datetime import datetime
 
 
 num_supporting_events = 5
@@ -82,4 +83,27 @@ class LowLevelTimeline:
         supporting_events['after'] = after_events
         
         return supporting_events
+    
+    def get_list_of_matches_in_sub_timeline(self, test_event, start, end):
+        """Returns a list of events that match the test events in a given time frame"""
+        results = []
+        for event in self.events:
+            if datetime.fromisoformat(event.date_time_min) >= start and datetime.fromisoformat(event.date_time_min) <= end:
+                if self.match(event, test_event):
+                    results.append(event)
+        
+        return results
+
+    def find_matching_events_with_test_event_dict(self, test_event_dict, start_id, end_id):
+        """Finds matching events with a test event dictionary"""
+        matching_events = []
+        for test_event in test_event_dict.values():
+            matching_event = self.find_matching_events_in_id_range(start_id, end_id, test_event)
+
+            if matching_event:
+                matching_events.extend(matching_event)
+            else:
+                return None
+        
+        return matching_events
 
