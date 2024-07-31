@@ -40,3 +40,8 @@ class ReasoningArtefact:
     def set_keys(self, key, value):
         # Adds additional information to the reasoning artefact
         self.keys[key] = value
+    
+    def add_time(self, date_time):
+        # Sets the time for the event, adjusting min and max if necessary
+        self.date_time_min = date_time
+        self.date_time_max = date_time
