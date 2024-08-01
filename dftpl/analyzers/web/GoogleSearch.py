@@ -16,7 +16,7 @@ def Run(low_timeline, start_id=0, end_id=None):
     
     return FindGoogleSearches(low_timeline, start_id, end_id)
 
-def FindGoogleSearches(low_timeline, start_id, end_id):
+def FindGoogleSearches(low_timeline, start_id=0, end_id=None):
     """Finds Google searches based on URL structure"""
 
     # Create a test event to match against
