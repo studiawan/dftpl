@@ -24,7 +24,7 @@ def Run(low_timeline, start_id=0, end_id=None):
         end_id = len(low_timeline.events)
     return TimezoneSettings(low_timeline, start_id, end_id)
 
-def TimezoneSettings(low_timeline, start_id, end_id):
+def FindTimezoneSettings(low_timeline, start_id, end_id):
     test_event = LowLevelEvent()
     test_event.evidence = r"\\Control\\TimeZoneInformation]"
     test_event.path = r"Windows\\System32\\config\\SYSTEM"
@@ -59,7 +59,15 @@ def TimezoneSettings(low_timeline, start_id, end_id):
                     high_event.set_keys(key_name, key_value.rstrip())
 
                 # NEW : Use default key names from log instead of "Timezone"
-                    high_event.description = f"Timezone set to {high_event.keys["TimeZoneKeyName"]} (UTC {-1 * (high_event.keys["ActiveTimeBias"] / 60)})"
+                # NEW : Generates UTC difference string for event description
+                TimeBiasHour = -1 * (int(high_event.keys["ActiveTimeBias"]) // 60)
+                TimeBiasHourString = ""
+                if TimeBiasHour > -1:
+                    TimeBiasHourString = f"+{TimeBiasHour}"
+                else:
+                    TimeBiasHourString = f"-{TimeBiasHour}"
+
+                high_event.description = f"Timezone set to {high_event.keys["TimeZoneKeyName"]} (UTC {TimeBiasHourString})"
                 high_event.category = analyser_category
                 high_event.device = each_low_event.plugin
                 # NEW : File value

@@ -1,7 +1,7 @@
 import pytest
 from dftpl.timelines.LowLevelTimeline import LowLevelTimeline
 from dftpl.events.LowLevelEvent import LowLevelEvent
-from dftpl.analyzers.windows.ProcessCreation import FindProcessCreation
+from dftpl.analyzers.windows.TimezoneSettings import FindTimezoneSettings
 
 
 @pytest.fixture
@@ -21,7 +21,7 @@ def low_timeline():
                       "Content Modification Time",
                       "REG",
                       "Registry Key",
-                      r"[HKEY_LOCAL_MACHINE\System\ControlSet001\Control\TimeZoneInformation] ActiveTimeBias: -420 Bias: -420 DaylightBias: 0 DaylightName: @tzres.dll -561 DynamicDaylightTimeDisabled: 0 StandardBias: 0 StandardName: @tzres.dll -562 TimeZoneKeyName: SE Asia Standard Time"
+                      r"[HKEY_LOCAL_MACHINE\System\ControlSet001\Control\TimeZoneInformation] ActiveTimeBias: -420 Bias: -420 DaylightBias: 0 DaylightName: @tzres.dll -561 DynamicDaylightTimeDisabled: 0 StandardBias: 0 StandardName: @tzres.dll -562 TimeZoneKeyName: SE Asia Standard Time",
                       "winreg/windows_timezone",
                       r"NTFS:\Windows\System32\config\SYSTEM",
                       "-"]
@@ -36,7 +36,7 @@ def low_timeline():
 def test_FindTimezoneSettings(low_timeline):
     start_id = 0
     end_id = 1
-    high_timeline = FindProcessCreation(low_timeline, start_id, end_id)
+    high_timeline = FindTimezoneSettings(low_timeline, start_id, end_id)
 
     assert len(high_timeline.events) == 1
     assert high_timeline.events[0].type == "Timezone Settings Changed"
@@ -67,5 +67,5 @@ def test_FindTimezoneSettings(low_timeline):
         'after': [],
     }
 
-    assert high_timeline.events[0].reasoning.id == 1
-    assert high_timeline.events[0].reasoning.description == r"Timezone information found in 2024-07-12T05:52:00.813418+00:00,Content Modification Time,REG,Registry Key,[HKEY_LOCAL_MACHINE\System\ControlSet001\Control\TimeZoneInformation] ActiveTimeBias: -420 Bias: -420 DaylightBias: 0 DaylightName: @tzres.dll -561 DynamicDaylightTimeDisabled: 0 StandardBias: 0 StandardName: @tzres.dll -562 TimeZoneKeyName: SE Asia Standard Time,winreg/windows_timezone,NTFS:\Windows\System32\config\SYSTEM,-"
+    assert high_timeline.events[0].trigger.id == 1
+    assert high_timeline.events[0].trigger.description == r"Timezone information found in 2024-07-12T05:52:00.813418+00:00,Content Modification Time,REG,Registry Key,[HKEY_LOCAL_MACHINE\System\ControlSet001\Control\TimeZoneInformation] ActiveTimeBias: -420 Bias: -420 DaylightBias: 0 DaylightName: @tzres.dll -561 DynamicDaylightTimeDisabled: 0 StandardBias: 0 StandardName: @tzres.dll -562 TimeZoneKeyName: SE Asia Standard Time,winreg/windows_timezone,NTFS:\Windows\System32\config\SYSTEM,-"
