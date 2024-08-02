@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name='dftpl',
@@ -7,7 +7,7 @@ setup(
     author='Hudan Studiawan',
     author_email='studiawan@gmail.com',
     url='https://github.com/studiawan/dftpl',
-    packages=['dftpl'],
+    packages=find_packages(include=['dftpl', 'dftpl.*']),
     entry_points={
         'console_scripts': [
             'dftpl = dftpl.dftpl:main',
