@@ -1,53 +1,96 @@
-__author__ = 'Jony Patterson'
+# Clement : Authorship is copied from other files.
+__author__ = ['Jony Patterson', 'Hudan Studiawan']
 
-import PyDFT.Timelines.HighLevelTimeline
-import PyDFT.Events.LowLevelEvent
-import PyDFT.Events.HighLevelEvent
-import PyDFT.Events.HighLevelReasoningArtefact
-import PyDFT.Events.Event
-import PyDFT.Utilities.TimeCore
-import logging
+# For sys.exit()
+import re
+from dftpl.events.LowLevelEvent import LowLevelEvent
+from dftpl.events.HighLevelEvent import HighLevelEvent, ReasoningArtefact
+from dftpl.timelines.HighLevelTimeline import HighLevelTimeline
 
-description = "Timezone Settings"
-analyser_category = "System"
+description = "Timezone Settings Changed"
+analyser_category = "Windows"
 
+# TODO : Ask why 4 analyzers have the function below with the name "DontRun" (others use the name "Run").
+"""
 def DontRun(timeline, casepath, queue, start_id=0, end_id=None):
     if end_id == None:
         end_id = len(timeline)
     TimezoneSettings(timeline, queue, start_id, end_id)
+"""
 
-def TimezoneSettings(low_timeline, queue, start_id, end_id):
-    high_level_timeline = PyDFT.Timelines.HighLevelTimeline.high_level_timeline()
+# 2024-07-12T05:52:00.813418+00:00,Content Modification Time,REG,Registry Key,[HKEY_LOCAL_MACHINE\System\ControlSet001\Control\TimeZoneInformation] ActiveTimeBias: -420 Bias: -420 DaylightBias: 0 DaylightName: @tzres.dll -561 DynamicDaylightTimeDisabled: 0 StandardBias: 0 StandardName: @tzres.dll -562 TimeZoneKeyName: SE Asia Standard Time,winreg/windows_timezone,NTFS:\Windows\System32\config\SYSTEM,-
+def Run(low_timeline, start_id=0, end_id=None):
+    if end_id == None:
+        end_id = len(low_timeline.events)
+    return TimezoneSettings(low_timeline, start_id, end_id)
 
-    test_event = PyDFT.Events.LowLevelEvent.low_level_event()
-    test_event.path = "/Control/TimeZoneInformation$"
-    test_event.dataprov_source = "Windows/System32/config/SYSTEM"
+def TimezoneSettings(low_timeline, start_id, end_id):
+    test_event = LowLevelEvent()
+    test_event.evidence = r"\\Control\\TimeZoneInformation]"
+    test_event.path = r"Windows\\System32\\config\\SYSTEM"
+    # NEW : Add type checking so LowLevelTimeline.match won't fail
+    test_event.type = "Content Modification Time-REG"
+
+    # Create a high level timeline to store the results
+    high_timeline = HighLevelTimeline()
 
     trigger_matches = low_timeline.find_matching_events_in_id_range(start_id,end_id, test_event)
+    for each_low_event in trigger_matches:
+        if each_low_event.match(test_event):
+            if re.search(test_event.path, each_low_event.path):
+                high_event = HighLevelEvent()
+                # NEW : Add id
+                high_event.id = each_low_event.id
+                high_event.add_time(each_low_event.date_time_min)
+                high_event.evidence_source = each_low_event.evidence
+                high_event.type = "Timezone Settings Changed"
 
-    for each_event in trigger_matches:
-        if each_event.match(test_event):
-            high_event = PyDFT.Events.HighLevelEvent.high_level_event()
-            high_event.add_time(each_event.date_time_min)
-            high_event.evidence_source = each_event.evidence
-            high_event.type = "Timezone Settings Changed"
-            high_event.description = "Timezone set to %s" % each_event.keys["TimeZoneKeyName"]
-            high_event.set_keys("Timezone", each_event.keys["TimeZoneKeyName"])
-            high_event.category = analyser_category
-            high_event.device = each_event.evidence
-            if "ActiveTimeBias" in each_event.keys:
-                high_event.set_keys("ActiveTimeBias", GetActiveTimeBias(each_event.keys["ActiveTimeBias"]))
-            reasoning = PyDFT.Events.HighLevelReasoningArtefact.ReasoningArtefact()
-            reasoning.id = each_event.id
-            reasoning.description = "Timezone information found in %s" % each_event.path
-            reasoning.test_event = test_event
+                # NEW : Since low level events doesn't have keys, manually parse low level evidence for the keys.
+                # Regex used to capture each keys : (\w+)(?:: )(.+?)(?=(?:(?:\w+)(?:: ))|$)
+                # (\w+) = 1st capturing group. Captures key name
+                # (?:: ) = Skip over ": "
+                # (.+?) = 2nd capturing group. Captures key value. With positive lookahead, will capture until character before the next key name, usually a single space " ".
+                # (?=(?:(?:\w+)(?:: ))|$) = Positive lookahead to check if there's another keyname after 2nd capturing group or end of string.
 
-            high_event.trigger = reasoning
+                # Trying out annotation for loop variables.
+                key_name: str
+                key_value: str
+                for key_name, key_value in re.findall(r'(\w+)(?:: )(.+?)(?=(?:(?:\w+)(?:: ))|$)', each_low_event.evidence):
+                    high_event.set_keys(key_name, key_value.rstrip())
 
-            high_level_timeline.add_event(high_event)
+                # NEW : Use default key names from log instead of "Timezone"
+                    high_event.description = f"Timezone set to {high_event.keys["TimeZoneKeyName"]} (UTC {-1 * (high_event.keys["ActiveTimeBias"] / 60)})"
+                high_event.category = analyser_category
+                high_event.device = each_low_event.plugin
+                # NEW : File value
+                high_event.files = each_low_event.path
+                # NEW : ActiveTimeBias value shouldn't need to be processed again, see below.
+                # NEW : Get surrounding events
+                high_event.supporting = low_timeline.get_supporting_events(each_low_event.id)
 
-    queue.put(high_level_timeline)
+                # Create a reasoning artefact
+                reasoning = ReasoningArtefact()
+                reasoning.id = each_low_event.id
+                # NEW : Regex to extract registry path information
+                # Extracts path between first set of angle brackets.
+                reasoning.description = f"Timezone information found in {','.join(each_low_event.provenance['raw_entry'])}"
+                reasoning.test_event = test_event
+                # Add the reasoning artefact to the high level event
+                high_event.trigger = reasoning
+                # Add the high level event to the high level timeline
+                high_timeline.add_event(high_event)
 
+    return high_timeline
+
+
+# NOTE : ActiveTimeBias is the timezone offset from utc in minutes. UTC can be calculated following this formula :
+#           UTC = Local Time + ActiveTimeBias
+#           Ex : If local time is UTC+7, then ActiveTimeBias should be -420 (-7 * 60).
+# Therefore, these functions should be redudant now since in plaso's output, it's an integer, not raw hex.
+
+# Currently, these functions are unused.
+# TODO : Ask what the functions below are used for + output format for ActiveTimeZone when original research was done.
+# Source : https://www.digital-detective.net/time-zone-identification/ (Accessed : 21:02, 24th of July 2024)
 def GetActiveTimeBias(bias_data):
     """Converts data into ActiveTimeBias"""
     max_number = int.from_bytes(b'\xff\xff\xff\xff',byteorder='little') + 1
@@ -63,7 +106,8 @@ def GetActiveTimeBias(bias_data):
 
 def GetBiasInteger(bias_data):
     """returns bias that has been reversed and converted to an integer"""
-    bias_reversed = bias_data[6:8] + bias_data[4:6] + bias_data[2:4] + bias_data[0:2]
+    # NEW : Shift index 2 to the right. New code retrieves hex value with "0x" prefix.
+    bias_reversed = bias_data[8:10] + bias_data[6:8] + bias_data[4:6] + bias_data[2:4]
     bias_int = int(bias_reversed, 16)
     return bias_int
 
