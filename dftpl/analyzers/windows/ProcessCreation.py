@@ -62,7 +62,7 @@ def FindProcessCreation(low_timeline, start_id, end_id):
                 reasoning.test_event = test_event
 
                 # Add the reasoning artefact to the high level event
-                high_event.reasoning = reasoning
+                high_event.trigger = reasoning
                 high_timeline.add_event(high_event)
 
     return high_timeline
