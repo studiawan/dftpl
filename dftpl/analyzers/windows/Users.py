@@ -19,6 +19,8 @@ from dftpl.timelines.HighLevelTimeline import HighLevelTimeline
 description = "Creation of User"
 analyser_category = "Windows"
 
+# 2023-12-26T23:30:24.568036+00:00,Content Modification Time,REG,Registry Key,[HKEY_LOCAL_MACHINE\SAM\SAM\Domains\Account\Users\Names\root] (default): [UNKNOWN] (empty),winreg/winreg_default,NTFS:\Windows\System32\config\SAM,-
+# 2023-12-26T23:33:59.195066+00:00,Creation Time,FILE,File stat,NTFS:\Users\root Type: directory,filestat,NTFS:\Users\root,-
 
 def Run(low_timeline, start_id=0, end_id=None):
     if end_id == None:
