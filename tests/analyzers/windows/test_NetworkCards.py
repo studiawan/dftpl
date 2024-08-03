@@ -33,7 +33,7 @@ def low_timeline():
 
     return timeline
 
-def test_FindProcessCreation(low_timeline):
+def test_FindNetworkCards(low_timeline):
     start_id = 0
     end_id = 1
     high_timeline = FindNetworkCards(low_timeline, start_id, end_id)
