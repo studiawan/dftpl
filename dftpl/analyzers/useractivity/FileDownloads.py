@@ -55,11 +55,9 @@ def FileDownloaded(low_timeline: LowLevelTimeline, start_id: int, end_id: int) -
         # Create a reasoning artefact
         reasoning = ReasoningArtefact()
         reasoning.id = each_event.id
-        reasoning.description = f"Created time for file in downloads folder {','.join(each_event.provenance['raw_entry'])}"
-        reasoning.test_event = {
-            'type': test_event.type,
-            'evidence': test_event.evidence
-        }
+        reasoning.description = f"Created file in downloads folder: {file_name}"
+        reasoning.test_event = test_event
+        reasoning.provenance = each_event.provenance
 
         # Add the reasoning artefact to the high level event
         high_event.trigger = reasoning.to_dict()
@@ -97,7 +95,8 @@ def FileDownloaded(low_timeline: LowLevelTimeline, start_id: int, end_id: int) -
                     'test_event_source': {
                         'type': source_url_test_event.type,
                         'evidence': source_url_test_event.evidence
-                    }
+                    },
+                    'provenance_source': result.provenance
                 }
 
             # Add the supporting events to the high level event
