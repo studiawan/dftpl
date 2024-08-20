@@ -68,4 +68,4 @@ def test_FindWebVisits(low_timeline):
     assert high_timeline.events[0].category == "Web Overview"
     assert high_timeline.events[0].device == "WEBHIST-Chrome Cache-chrome_cache"
     assert high_timeline.events[0].keys["Browser"] == "WEBHIST-Chrome"
-    assert high_timeline.events[0].keys["URL(2023-12-26 00:34:33.459996+00:00)"] == "https://www.bing.com/bloomfilterfiles/ExpandedDomainsFilterGlobal.json"
+    assert high_timeline.events[0].keys["URL"] == "https://www.bing.com/bloomfilterfiles/ExpandedDomainsFilterGlobal.json"

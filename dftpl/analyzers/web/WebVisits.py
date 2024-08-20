@@ -4,20 +4,22 @@ import re
 from datetime import datetime, timedelta
 from dftpl.events.LowLevelEvent import LowLevelEvent
 from dftpl.timelines.HighLevelTimeline import HighLevelTimeline
+from dftpl.timelines.LowLevelTimeline import LowLevelTimeline
 from dftpl.events.HighLevelEvent import HighLevelEvent, ReasoningArtefact
 
 
 description = "Web Visit"
 analyser_category = "Web Overview"
 
-def Run(timeline, start_id=0, end_id=None):
+def Run(timeline: LowLevelTimeline, start_id: int=0, end_id=None) -> HighLevelTimeline:
+    """Finds Web Visits"""
     if end_id == None:
-        end_id = len(timeline)
+        end_id = len(timeline.events)
 
     return FindWebVisits(timeline, start_id, end_id)
 
 
-def FindWebVisits(low_timeline, start_id, end_id):
+def FindWebVisits(low_timeline: LowLevelTimeline, start_id: int, end_id: int) -> HighLevelTimeline:
     """Finds Web Visits"""
 
     # Create test event that matches any URL in any browser
@@ -28,58 +30,41 @@ def FindWebVisits(low_timeline, start_id, end_id):
     # Create a new high level timeline
     high_timeline = HighLevelTimeline()
 
-    trigger_matches = low_timeline.find_matching_events_in_id_range(start_id,end_id, test_event)
+    # Find all events that match the test event
+    trigger_matches = low_timeline.find_matching_events_in_id_range(start_id, end_id, test_event)
 
     for each_event in trigger_matches:
         if each_event.match(test_event):
             # Create a new high level event with some data
             high_event = HighLevelEvent()
+            high_event.id = each_event.id
             high_event.add_time(each_event.date_time_min)
             high_event.evidence_source = each_event.evidence
             high_event.type = "Web Visit"
             
-            if each_event.path[0:4] == "file":
-                #domain = ExtractPathFromLocalURL(each_event.path)
-                #high_event.description = "Local Visit to '%s'" % domain
-                # IGNORE LOCAL EVENT AS WILL BE PICKED UP IN LOCAL FILE ACCESS
-                continue
-            else:
-                domain = ExtractDomainFromURL(each_event.evidence)
-                high_event.description = "Web Visit to '%s'" % domain
-            
+            # Extract the domain from the URL
+            domain = ExtractDomainFromURL(each_event.evidence)
+            high_event.description = "Web Visit to '%s'" % domain
             high_event.category = analyser_category
             high_event.device = each_event.plugin
             high_event.files = each_event.path
             high_event.set_keys("Browser", GetBrowser(each_event.plugin))
-            high_event.set_keys("URL(%s)" % str(high_event.date_time_min), ExtractURL(each_event.evidence))
+            high_event.set_keys("URL", ExtractURL(each_event.evidence))
             high_event.set_keys("Domain", domain)
             high_event.supporting = low_timeline.get_supporting_events(each_event.id)
-            print("URL(%s)" % str(high_event.date_time_min))
 
             # Construct a reasoning artefact and add it to the high level event
             reasoning = ReasoningArtefact()
             reasoning.id = each_event.id
             reasoning.description = "URL found in " + each_event.evidence
             reasoning.test_event = test_event
-            high_event.trigger = reasoning
+            reasoning.provenance = each_event.provenance
 
-            # Rather than adding the event, check if it is the same as another event within a certain period
-            # If so, merge them rather than adding a new separate event
-            fuzzy_period = timedelta(seconds=600) # 10 minutes
-            min_time = datetime.fromisoformat(high_event.date_time_min)
-            max_time = datetime.fromisoformat(high_event.date_time_max)
-            indexes = high_timeline.get_indexes_of_events_between_datetimes(min_time-fuzzy_period, max_time+fuzzy_period)
-            merged = False
-            
-            for each_index in indexes:
-                # If the event is the same as another event, merge them
-                result = high_timeline.intersect_with(each_index, indexes)
-                if result:
-                    merged = True
+            # Add the reasoning artefact to the high level event
+            high_event.trigger = reasoning.to_dict()
 
-            # if the event didn't get merged with anything existing, add it as normal
-            if merged == False:
-                high_timeline.add_event(high_event)
+            # Add the high level event to the high level timeline
+            high_timeline.add_event(high_event)
             
     return high_timeline
 
@@ -92,7 +77,7 @@ def GetBrowser(browser_string):
 def ExtractDomainFromURL(url):
 
     # Regular expression to match the desired part of the URL
-    pattern = r"https?://(www\.[a-zA-Z0-9.-]+)"
+    pattern = r"https?://([a-zA-Z0-9.-]+)"
 
     # Using re.search to find the match
     match = re.search(pattern, url)
