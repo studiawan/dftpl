@@ -4,19 +4,20 @@ import re
 from dftpl.events.LowLevelEvent import LowLevelEvent
 from dftpl.events.HighLevelEvent import HighLevelEvent, ReasoningArtefact
 from dftpl.timelines.HighLevelTimeline import HighLevelTimeline
+from dftpl.timelines.LowLevelTimeline import LowLevelTimeline
 
 
 description = "Google Search"
 analyser_category = "Web"
 
-def Run(low_timeline, start_id=0, end_id=None):
+def Run(low_timeline: LowLevelTimeline, start_id: int=0, end_id=None) -> HighLevelTimeline:
     """Runs the Google Search analyser"""
     if end_id == None:
         end_id = len(low_timeline.events)
     
     return FindGoogleSearches(low_timeline, start_id, end_id)
 
-def FindGoogleSearches(low_timeline, start_id=0, end_id=None):
+def FindGoogleSearches(low_timeline: LowLevelTimeline, start_id: int=0, end_id: int=None) -> HighLevelTimeline:
     """Finds Google searches based on URL structure"""
 
     # Create a test event to match against
@@ -32,42 +33,42 @@ def FindGoogleSearches(low_timeline, start_id=0, end_id=None):
 
     # Extract details from matching events
     for each_low_event in trigger_matches:
-        if each_low_event.match(test_event):
-            if re.search("q=[^&]+?", each_low_event.evidence):
-                url_components = ExtractDetailsFromGoogleSearchURL(each_low_event.evidence)
-                if url_components != None:
-                    # Create a high level event
-                    high_event = HighLevelEvent()
-                    high_event.id = each_low_event.id
-                    high_event.add_time(each_low_event.date_time_min)
-                    high_event.evidence_source = each_low_event.evidence
-                    high_event.type = "Google Search"
-                    search_term = CorrectlyFormatedSearchTerm(url_components)
-                    high_event.description = "Google Search for '%s'" % search_term
-                    high_event.category = analyser_category
-                    high_event.device = each_low_event.plugin
-                    high_event.files = each_low_event.path
-                    high_event.set_keys("Browser", GetBrowser(each_low_event.plugin))
-                    high_event.set_keys("Path", each_low_event.path)
-                    high_event.set_keys("Search_Term", search_term)
-                    high_event.supporting = low_timeline.get_supporting_events(each_low_event.id)
+        if re.search("q=[^&]+?", each_low_event.evidence):
+            url_components = ExtractDetailsFromGoogleSearchURL(each_low_event.evidence)
+            if url_components != None:
+                # Create a high level event
+                high_event = HighLevelEvent()
+                high_event.id = each_low_event.id
+                high_event.add_time(each_low_event.date_time_min)
+                high_event.evidence_source = each_low_event.evidence
+                high_event.type = "Google Search"
+                search_term = CorrectlyFormatedSearchTerm(url_components)
+                high_event.description = "Google Search for '%s'" % search_term
+                high_event.category = analyser_category
+                high_event.device = each_low_event.plugin
+                high_event.files = each_low_event.path
+                high_event.set_keys("Browser", GetBrowser(each_low_event.plugin))
+                high_event.set_keys("Path", each_low_event.path)
+                high_event.set_keys("Search_Term", search_term)
+                high_event.supporting = low_timeline.get_supporting_events(each_low_event.id)
 
-                    # Create a reasoning artefact
-                    reasoning = ReasoningArtefact()
-                    reasoning.id = each_low_event.id
-                    reasoning.description = f"Google search URL found in {','.join(each_low_event.provenance['raw_entry'])}"
-                    reasoning.test_event = test_event
+                # Create a reasoning artefact
+                reasoning = ReasoningArtefact()
+                reasoning.id = each_low_event.id
+                reasoning.description = f"Google search URL found in {each_low_event.evidence}"
+                reasoning.test_event = test_event
+                reasoning.provenance = each_low_event.provenance
 
-                    # Add the reasoning artefact to the high level event
-                    high_event.trigger = reasoning
+                # Add the reasoning artefact to the high level event
+                high_event.trigger = reasoning.to_dict()
 
-                    # Add the high level event to the high level timeline
-                    high_timeline.add_event(high_event)
+                # Add the high level event to the high level timeline
+                high_timeline.add_event(high_event)
     
     return high_timeline
 
 
-def ExtractDetailsFromGoogleSearchURL(url_string):
+def ExtractDetailsFromGoogleSearchURL(url_string: str) -> list:
     """Splits up the URL first on '?' (if it is present) and then on '&' """
     result = re.search("q=", url_string)
     if result:
@@ -86,7 +87,7 @@ def ExtractDetailsFromGoogleSearchURL(url_string):
     else:
         return None
 
-def CorrectlyFormatedSearchTerm(url_list):
+def CorrectlyFormatedSearchTerm(url_list: list) -> str:
     """Finds search query and returns it as a string"""
     for each_entry in url_list:
         if each_entry.startswith('q='):
@@ -95,7 +96,7 @@ def CorrectlyFormatedSearchTerm(url_list):
             return search_string
 
 
-def GetURLStringFromSearchText(search_text):
+def GetURLStringFromSearchText(search_text: str) -> str:
     """Splits search query into a search string"""
     if '%20' in search_text:
         search_string = search_text.replace('%20', " ")
@@ -106,7 +107,7 @@ def GetURLStringFromSearchText(search_text):
     else:
         return search_text
 
-def GetBrowser(browser_string):
+def GetBrowser(browser_string: str) -> str:
     """Extracts Browser from Plugin Name"""
     browser_data = browser_string.split(" ")[0]
     return browser_data
