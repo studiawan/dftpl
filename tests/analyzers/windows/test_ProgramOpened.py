@@ -71,31 +71,33 @@ def test_ProgramOpened(low_timeline):
     assert high_timeline.events[0].date_time_max == "2023-12-26 00:37:46.738362+00:00"
     assert high_timeline.events[0].evidence_source == r"NTFS:\Windows\explorer.exe Type: file"
     assert high_timeline.events[0].type == "Program opened"
-    assert high_timeline.events[0].description == "A Windows program was opened"
+    assert high_timeline.events[0].description == "A Windows program explorer.exe was opened"
     assert high_timeline.events[0].category == "System"
     assert high_timeline.events[0].device == "FILE-File stat-filestat"
     assert high_timeline.events[0].files == r"NTFS:\Windows\explorer.exe"
     assert high_timeline.events[0].supporting == {
-        'before': [{
-            'id': 1,
-            'date_time_min': "2023-12-26 00:37:46.738362+00:00",
-            'date_time_max': None,
-            'type': "Last Access Time-FILE",
-            'path': r"NTFS:\Windows\explorer.exe",
-            'evidence': r"NTFS:\Windows\explorer.exe Type: file",
-            'provenance': {
-                'line_number': 1,
-                'raw_entry': ["2023-12-26 00:37:46.738362+00:00",
-                              "Last Access Time",
-                              "FILE",
-                              "File stat",
-                              r"NTFS:\Windows\explorer.exe Type: file",
-                              "filestat",
-                              r"NTFS:\Windows\explorer.exe",
-                              "-"]
-            },
-            'plugin': 'FILE-File stat-filestat',
-            'keys': None
-        }],
-        'after': [],
+        'before': [],
+        'after': [
+            {
+                'id': 2,
+                'date_time_min': "2023-12-26 00:36:59.234628+00:00",
+                'date_time_max': None,
+                'type': "Last Access Time-FILE",
+                'path': r"NTFS:\Windows\System32\cmd.exe",
+                'evidence': r"NTFS:\Windows\System32\cmd.exe Type: file",
+                'plugin': "FILE-File stat-filestat",
+                'provenance': {
+                    'line_number': 2,
+                    'raw_entry': ["2023-12-26 00:36:59.234628+00:00",
+                                  "Last Access Time",
+                                  "FILE",
+                                  "File stat",
+                                  r"NTFS:\Windows\System32\cmd.exe Type: file",
+                                  "filestat",
+                                  r"NTFS:\Windows\System32\cmd.exe",
+                                  "-"]
+                },
+                'keys': None
+            }
+        ],
     }
