@@ -58,11 +58,15 @@ def FindProcessCreation(low_timeline, start_id, end_id):
                 # Create a reasoning artefact
                 reasoning = ReasoningArtefact()
                 reasoning.id = each_low_event.id
-                reasoning.description = f"Process creation event found in {','.join(each_low_event.provenance['raw_entry'])}"
+                reasoning.description = f"Process creation event of '{executable_name}' found with Windows event ID {windows_event_id}"
                 reasoning.test_event = test_event
+                reasoning.provenance = each_low_event.provenance
+                reasoning.references = 'https://github.com/Psmths/windows-forensic-artifacts/blob/main/execution/evtx-9707-shell-core.md'
 
                 # Add the reasoning artefact to the high level event
-                high_event.trigger = reasoning
+                high_event.trigger = reasoning.to_dict()
+
+                # Add the high level event to the high level timeline
                 high_timeline.add_event(high_event)
 
     return high_timeline

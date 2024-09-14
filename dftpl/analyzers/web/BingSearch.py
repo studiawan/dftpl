@@ -11,7 +11,7 @@ analyser_category = "Web"
 def Run(timeline, start_id=0, end_id=None):
     """Main function for Bing Search analyser"""
     if end_id == None:
-        end_id = len(timeline)
+        end_id = len(timeline.events)
 
     return FindBingSearches(timeline, start_id, end_id)
 
@@ -34,6 +34,7 @@ def FindBingSearches(low_timeline, start_id, end_id):
         if each_event.match(test_event):
             # Create a high level event
             high_event = HighLevelEvent()
+            high_event.id = each_event.id
             high_event.add_time(each_event.date_time_min)
             high_event.evidence_source = each_event.evidence
             high_event.type = "Bing Search"
@@ -42,6 +43,7 @@ def FindBingSearches(low_timeline, start_id, end_id):
             high_event.description = "Bing Search for '%s'" % search_term
             high_event.category = analyser_category
             high_event.device = each_event.plugin
+            high_event.files = each_event.path
             high_event.set_keys("Browser", GetBrowser(each_event.plugin))
             high_event.set_keys("Path", each_event.path)
             high_event.set_keys("Search_Term", search_term)
@@ -50,11 +52,12 @@ def FindBingSearches(low_timeline, start_id, end_id):
             # Create a reasoning artefact
             reasoning = ReasoningArtefact()
             reasoning.id = each_event.id
-            reasoning.description = f"Bing search URL found in {','.join(each_event.provenance['raw_entry'])}"
+            reasoning.description = f"Bing search URL found in {each_event.evidence}"
             reasoning.test_event = test_event
+            reasoning.provenance = each_event.provenance
 
             # Add the reasoning artefact to the high level event
-            high_event.trigger = reasoning
+            high_event.trigger = reasoning.to_dict()
 
             # Add the high level event to the high level timeline
             high_timeline.add_event(high_event)
