@@ -1,5 +1,5 @@
 # TODO : Missing Authorship
-
+# TODO : Argument type hints
 import re
 from dftpl.events.LowLevelEvent import LowLevelEvent
 from dftpl.events.HighLevelEvent import HighLevelEvent, ReasoningArtefact
@@ -74,7 +74,10 @@ def FindNetworkCards(low_timeline, start_id, end_id):
             # NEW : Regex to extract registry path information
             # Extracts path between first set of angle brackets.
             reasoning.description = f"Registry entry modification event found in {','.join(each_low_event.provenance['raw_entry'])}"
-            high_event.trigger = reasoning
+            reasoning.provenance = each_low_event.provenance
+            # Add the reasoning artefact to the high level event
+
+            high_event.trigger = reasoning.to_dict()
 
             high_timeline.add_event(high_event)
 

@@ -82,7 +82,10 @@ def FindNetworkProfiles(low_timeline, start_id, end_id):
             reasoning.id = each_low_event.id
             reasoning.test_event = test_event
             reasoning.description = f"Registry entry for network profile found in {','.join(each_low_event.provenance['raw_entry'])}"
-            high_event1.trigger = reasoning
+            reasoning.provenance = each_low_event.provenance
+
+            # Add the reasoning artefact to the high level event
+            high_event1.trigger = reasoning.to_dict()
 
             high_event1.set_keys("ProfileGUID", re.search(r"\\Microsoft\\Windows NT\\CurrentVersion\\NetworkList\\Profiles\\{(.*?)}", each_low_event.evidence).group(1))
 

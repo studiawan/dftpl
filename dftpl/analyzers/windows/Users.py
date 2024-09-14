@@ -84,7 +84,10 @@ def CreatedUser(low_timeline, start_id, end_id):
                 #reasoning.description = "Last Write for SAM Registry entry " + each_low_event.path + " in " + each_low_event.provenance['raw_entry']
                 reasoning.description = f"Last Write for SAM Registry entry {each_low_event.path} in {','.join(each_low_event.provenance['raw_entry'])}"
                 reasoning.test_event = test_event
-                high_event.trigger = reasoning
+                reasoning.provenance = each_low_event.provenance
+
+                # Add the reasoning artefact to the high level event
+                high_event.trigger = reasoning.to_dict()
 
                 # TODO : If stored in "supporting" library, add function in HighLevelEvent.py to abstract away the addition process.
                 # TODO : Otherwise, modify time for getting supporting event to also capture folder creation/create separate analyzer for folder creation.

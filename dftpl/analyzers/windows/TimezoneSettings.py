@@ -83,8 +83,10 @@ def FindTimezoneSettings(low_timeline, start_id, end_id):
                 # Extracts path between first set of angle brackets.
                 reasoning.description = f"Timezone information found in {','.join(each_low_event.provenance['raw_entry'])}"
                 reasoning.test_event = test_event
+                reasoning.provenance = each_low_event.provenance
+
                 # Add the reasoning artefact to the high level event
-                high_event.trigger = reasoning
+                high_event.trigger = reasoning.to_dict()
                 # Add the high level event to the high level timeline
                 high_timeline.add_event(high_event)
 
