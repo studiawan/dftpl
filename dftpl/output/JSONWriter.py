@@ -4,6 +4,7 @@ from dftpl.timelines.HighLevelTimeline import HighLevelTimeline
 
 class JSONWriter:
     def __init__(self, timeline: HighLevelTimeline, json_path: str):
+        """Initializes the JSONWriter class"""
         self.timeline = timeline.events
         self.json_path = json_path
 
@@ -22,7 +23,8 @@ class JSONWriter:
                 'device': event.device,
                 'files': event.files,
                 'keys': event.keys,
-                'supporting': event.supporting
+                'supporting': event.supporting,
+                'trigger': event.trigger
             }
         
         return timeline_dict

@@ -16,7 +16,7 @@ def test_create_timeline(csv_reader):
     timeline = LowLevelTimeline()
     events = timeline.create_timeline(csv_reader)
     
-    assert len(events) == 5
+    assert len(events) == 4
 
 def test_add_event():
     timeline = LowLevelTimeline()

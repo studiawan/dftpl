@@ -1,7 +1,10 @@
-__author__ = 'Chris Hargreaves'
+__author__ = 'Chris Hargreaves, Hudan Studiawan'
 
 import re
+import urllib.parse
+from datetime import datetime, timedelta
 from dftpl.timelines.HighLevelTimeline import HighLevelTimeline
+from dftpl.timelines.LowLevelTimeline import LowLevelTimeline
 from dftpl.events.LowLevelEvent import LowLevelEvent
 from dftpl.events.HighLevelEvent import HighLevelEvent, ReasoningArtefact
 
@@ -9,86 +12,106 @@ from dftpl.events.HighLevelEvent import HighLevelEvent, ReasoningArtefact
 description = "File Downloaded"
 analyser_category = "User Activity"
 
-def Run(timeline, start_id=0, end_id=None):
+def Run(timeline: LowLevelTimeline, start_id: int=0, end_id=None) -> HighLevelTimeline:
     """Runs the File Downloaded analyser"""
     if end_id == None:
-        end_id = len(timeline)
+        end_id = len(timeline.events)
 
     return FileDownloaded(timeline, start_id, end_id)
 
-def FileDownloaded(low_timeline, start_id, end_id):
+def FileDownloaded(low_timeline: LowLevelTimeline, start_id: int, end_id: int) -> HighLevelTimeline:
     """Finds file downloads based on file path"""
 
     # Create a test event to match against
     test_event = LowLevelEvent()
-    test_event.type = "Created|c_time"
-    test_event.path = ".*/Users/(.*)/Downloads/(.*)"
+    test_event.type = "Creation Time-FILE"
+    test_event.evidence = r'\\Users\\[^\\]+\\Downloads'
 
     # Create a high level timeline to store the results
     high_level_timeline = HighLevelTimeline()
 
     # Find matching events
-    trigger_matches = low_timeline.find_matching_events_in_id_range(start_id,end_id, test_event)
+    trigger_matches = low_timeline.find_matching_events_in_id_range(start_id, end_id, test_event)
 
     # Extract details from matching events
     for each_event in trigger_matches:
-        if each_event.match(test_event):
-            # Create a high level event
-            high_event = HighLevelEvent()
-            high_event.add_time(each_event.date_time_min)
-            high_event.evidence_source = each_event.evidence
-            high_event.type = "File Downloaded"
-            file_name = re.search(".*/Users/(.*)/Downloads/(.*)", each_event.path).group(2)
-            user = re.search(".*/Users/(.*)/Downloads/(.*)", each_event.path).group(1)
-            high_event.AddFile(each_event.path)
-            high_event.set_keys("File Name", file_name )
-            high_event.set_keys("User", user)
-            high_event.description = "File Downloaded (%s)" % file_name
-            high_event.category = analyser_category
-            high_event.device = each_event.evidence
+        # Create a high level event
+        high_event = HighLevelEvent()
+        high_event.id = each_event.id
+        high_event.add_time(each_event.date_time_min)
+        high_event.evidence_source = each_event.evidence
+        high_event.type = "File Downloaded"
+        file_name = re.search(r'\\Downloads\\([^\\]+\.[^\\\s]+)', each_event.evidence).group(1)
+        user = re.search(r'\\Users\\([^\\]+)\\Downloads', each_event.evidence).group(1)
+        
+        high_event.description = "File Downloaded (%s)" % file_name
+        high_event.category = analyser_category
+        high_event.device = each_event.plugin
+        high_event.files = each_event.path
+        high_event.set_keys("File Name", file_name )
+        high_event.set_keys("User", user)
+        high_event.supporting = low_timeline.get_supporting_events(each_event.id)
 
-            # Create a reasoning artefact
-            reasoning = ReasoningArtefact()
-            reasoning.id = each_event.id
-            reasoning.description = "Created time for file in downloads folder "
-            reasoning.test_event = test_event
+        # Create a reasoning artefact
+        reasoning = ReasoningArtefact()
+        reasoning.id = each_event.id
+        reasoning.description = f"Created file in downloads folder: {file_name}"
+        reasoning.test_event = test_event
+        reasoning.provenance = each_event.provenance
 
-            # Add the reasoning artefact to the high level event
-            high_event.trigger = reasoning
+        # Add the reasoning artefact to the high level event
+        high_event.trigger = reasoning.to_dict()
+        
+        # pattern for test event
+        url_pattern = r"https?:\/\/[^\s]+\/"
 
-            # Test event for source URL
-            source_url_test_event = LowLevelEvent()
-            source_url_test_event.type = "URL Visit"
-            source_url_test_event.path = "{}$".format(file_name)
+        # Define the second regex pattern (could be user input or another variable)
+        encoded_string = urllib.parse.quote(file_name)
+        file_pattern = re.escape(encoded_string)
 
-            # Find matching events
-            results = low_timeline.get_list_of_matches_in_sub_timeline({'source_url':source_url_test_event},start=each_event.date_time_min-15, end=each_event.date_time_min+15)
+        # Combine the two patterns to ensure the match includes the file name
+        combined_pattern = fr"{url_pattern}{file_pattern}"
 
-            if results:
-                for each_match in results:
-                    each_match_event = each_match[0] # the event
-                    each_match_type = each_match[1] # source_url in this case
+        # Test event for source URL
+        source_url_test_event = LowLevelEvent()
+        source_url_test_event.type = "Start Time-WEBHIST"
+        source_url_test_event.evidence = combined_pattern
 
-                    #update times for additional matched event
-                    high_event.add_time(each_match_event.date_time_min)
-                    high_event.add_time(each_match_event.date_time_max)
+        # Find matching events to find source URL
+        fuzzy_period = timedelta(seconds=180)
+        start_time = datetime.fromisoformat(each_event.date_time_min) - fuzzy_period
+        end_time = datetime.fromisoformat(each_event.date_time_min) + fuzzy_period
 
-                    # update description
-                    high_event.description = "File Downloaded ({}) from ({})".format(file_name, each_match_event.path)
+        # Find source URL
+        results = low_timeline.get_list_of_matches_in_sub_timeline(source_url_test_event, start_time=start_time, end_time=end_time)
 
-                    #add as supporting artefacts
-                    supporting = ReasoningArtefact()
-                    supporting.description = "Found URL containing downloaded filename (%s)" % (each_match_event.path)
-                    supporting.id = each_match_event.id
-                    supporting.test_event = source_url_test_event
-                    high_event.AddSupportingEvidenceArtefact(supporting)
-            else:
-                    #add as contradictory artefacts
-                    contradictory = ReasoningArtefact()
-                    contradictory.description = "Did not find URL containing downloaded filename"
-                    contradictory.id = -1
-                    contradictory.test_event = source_url_test_event
-                    high_event.AddContradictoryEvidenceArtefact(contradictory)
+        if results:
+            supporting = {}
+            for index, result in enumerate(results):
+                # Create a reasoning artefact for source URL
+                supporting[f"source-{index}"] = {
+                    'id_source': result.id,
+                    'description_source': "File Downloaded ({}) from {}".format(file_name, GetURIStringFromMessage(result.evidence)),
+                    'test_event_source': {
+                        'type': source_url_test_event.type,
+                        'evidence': source_url_test_event.evidence
+                    },
+                    'provenance_source': result.provenance
+                }
+
+            # Add the supporting events to the high level event
+            high_event.trigger.update(supporting) 
+
+        # Add the high level event to the high level timeline
+        high_level_timeline.add_event(high_event)
+    
+    return high_level_timeline
 
 
-            high_level_timeline.add_event(high_event)
+def GetURIStringFromMessage(message: str) -> str:
+    """Extracts the URI from a message"""
+    uri = re.search(r"https?:\/\/[^\s]+\/", message)
+    if uri:
+        return uri.group(0)
+    else:
+        return None

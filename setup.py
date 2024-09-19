@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name='dftpl',
@@ -7,13 +7,13 @@ setup(
     author='Hudan Studiawan',
     author_email='studiawan@gmail.com',
     url='https://github.com/studiawan/dftpl',
-    packages=['dftpl'],
+    packages=find_packages(include=['dftpl', 'dftpl.*']),
     entry_points={
         'console_scripts': [
             'dftpl = dftpl.dftpl:main',
         ]  
     },
-    install_requires=['pytest'],
+    install_requires=['pytest', 'PyYAML'],
     classifiers=[
         'Development Status :: 4 - Beta',
         'License :: OSI Approved :: MIT License',
