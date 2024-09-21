@@ -1,14 +1,9 @@
 import argparse
-import dftpl.analyzers.web.GoogleSearch as GoogleSearch
-import dftpl.analyzers.web.BingSearch as BingSearch
-import dftpl.analyzers.web.WebVisits as WebVisits
-import dftpl.analyzers.web.AllImagesFromCache as AllImagesFromCache
-import dftpl.analyzers.windows.LastShutdown as LastShutdown
-import dftpl.analyzers.windows.ProcessCreation as ProcessCreation
-import dftpl.analyzers.windows.ProgramOpened as ProgramOpened
-import dftpl.analyzers.useractivity.FileDownloads as FileDownloads
-import dftpl.analyzers.useractivity.RecentFileAccess as RecentFileAccess
+import os
+import dftpl.analyzers.yaml.ReadFromYamlAnalyzer as ReadFromYamlAnalyzer
+import  dftpl.analyzers.web.GoogleSearch as GoogleSearch
 from dftpl.reader.CSVReader import CSVReader
+from dftpl.reader.YAMLReader import YAMLReader
 from dftpl.timelines.LowLevelTimeline import LowLevelTimeline
 from dftpl.timelines.HighLevelTimeline import MergeHighLevelTimeline
 from dftpl.output.JSONWriter import JSONWriter
@@ -40,34 +35,35 @@ def main():
     # Create a list of high-level timeline
     high_timelines = []
 
-    # List of search analyzers
-    # Dictionary mapping event types to analyzers
+    # List of search rules
+    # Dictionary mapping event types to rules
     event_analyzers = {
-        'google-search': [GoogleSearch],
-        'bing-search': [BingSearch],
-        'web-visits': [WebVisits],
-        'images-from-cache': [AllImagesFromCache],
-        'last-shutdown': [LastShutdown],
-        'process-creation': [ProcessCreation],
-        'program-opened': [ProgramOpened],
-        'file-downloads': [FileDownloads],
-        'recent-file-access': [RecentFileAccess]
+        'google-search': ["/web/GoogleSearch.yaml"],
+        'bing-search': ["/web/BingSearch.yaml"],
     }
 
-    # Default analyzers
-    default_analyzers = [
-        GoogleSearch, BingSearch, WebVisits, AllImagesFromCache,
-        LastShutdown, ProcessCreation, ProgramOpened,
-        FileDownloads, RecentFileAccess
+    # Default rules
+    default_rules = [
+        "/web/GoogleSearch.yaml"
     ]
 
-    # Get analyzers based on event_type, or use default analyzers
-    analyzers = event_analyzers.get(event_type, default_analyzers)
+    # Get rules based on event_type, or use default rules
+    rules = event_analyzers.get(event_type, default_rules)
 
-    # Run each search analyzer
-    for analyzer in analyzers:
-        print(f'Running {analyzer.description} analyzer ...')
-        high_timeline = analyzer.Run(low_timeline)
+    # Read the YAML rules
+    yaml_contents = []
+    for rule in rules:
+        yaml_file_path = os.path.join(os.path.dirname(__file__), 'rules' + rule) 
+        reader = YAMLReader(yaml_file_path)
+        yaml_content = reader.read()
+        yaml_contents.append(yaml_content)
+
+
+    
+    # Run each rules with the analyzer
+    for yaml_content in yaml_contents:
+        print(f'Running analyzer with the rule of: {yaml_content['title']} ...')
+        high_timeline = ReadFromYamlAnalyzer.Run(low_timeline, yaml_content)
         if high_timeline:
             high_timelines.append(high_timeline)
 

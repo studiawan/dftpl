@@ -1,21 +1,50 @@
 title: Google searches based on URL structure
 id: f6935d71-bb4d-4918-8877-0afd9208b5b4
+status: experimental
 description: Google Search
-category: Web
-references: https://bitbucket.org/chrishargreaves/pydft-analysers/src/master/Analysers/Web/GoogleSearch.py
-author: Jony Patterson, Hudan Studiawan
+references: 
+  - https://bitbucket.org/chrishargreaves/pydft-analysers/src/master/Analysers/Web/GoogleSearch.py
+  - https://serpapi.com/blog/google-search-parameters/
+tags:
+  - 
+author: Jony Patterson, Hudan Studiawan, Java Kanaya Prada
 date: 2024/06/29
-modified: 2024/06/29
+modified: 2024/09/21
+logsource:
+  parser: sqlite/firefox_history
+detection:
+  selection:
+  condition: 
+fields:
+falsepositives:
+level: informational
+category: Web
 test_event:
   - type: Last Visited Time-WEBHIST
   - evidence: 'https?://(.+\.)(google)\.(?:com|co\.uk|fr)'
 high_level_event:
   - pattern: 'q=[^&]+?'
+    match_with: each_low_event.evidence
   - type: Google Search
-  - description: Google Search for
+  - description: Google Search for (Search_Term)
   - keys:
-    - Browser
-    - Path
-    - Search_Term
+      - name: Browser 
+        source_type: utils
+        source_name: GetBrowser
+        source_args:
+          - each_low_event.plugin 
+      - name: Path
+        source_type: attribute
+        source_name: each_low_event.path
+      - name: Search_Term
+        source_type: utils
+        source_name: GetQueryParamsWhereKeyIs
+        source_args:
+          - each_low_event.evidence 
+          - '"q"'
 reasoning:
   - description: Google search URL found in
+    found_in: each_low_event.evidence
+
+
+
