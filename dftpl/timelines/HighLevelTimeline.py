@@ -57,7 +57,7 @@ class HighLevelTimeline:
             return None
         if event.category != another_event.category:
             return None
-        if event.device != another_event.device:
+        if event.plugin != another_event.plugin:
             return None
         if event.files != another_event.files:
             return None
