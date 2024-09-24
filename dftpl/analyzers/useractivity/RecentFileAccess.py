@@ -37,7 +37,7 @@ def RecentFileAccess(low_timeline: LowLevelTimeline, start_id: int, end_id: int)
             high_event.type = "Recent File Access"
             high_event.description = description
             high_event.category = analyser_category
-            high_event.device = each_event.plugin
+            high_event.plugin = each_event.plugin
             high_event.files = each_event.path
             high_event.supporting = low_timeline.get_supporting_events(each_event.id)
 
