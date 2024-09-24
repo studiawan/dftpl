@@ -48,7 +48,7 @@ def FindProcessCreation(low_timeline, start_id, end_id):
                 high_event.type = "Process Creation"
                 high_event.description = f"Process creation of '{executable_name}'"
                 high_event.category = analyser_category
-                high_event.device = each_low_event.plugin
+                high_event.plugin = each_low_event.plugin
                 high_event.files = each_low_event.path
                 high_event.set_keys("Windows Event ID", windows_event_id)
                 high_event.set_keys("Windows Event ID (hex)", windows_event_id_hex)
