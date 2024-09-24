@@ -49,7 +49,7 @@ def LastShutdown(low_timeline: LowLevelTimeline, start_id: int, end_id: int) -> 
             high_event.type = "Shutdown time"
             high_event.description = "Windows shut down"
             high_event.category = analyser_category
-            high_event.device = each_event.plugin
+            high_event.plugin = each_event.plugin
             high_event.files = each_event.path
             high_event.set_keys("Windows Event ID", windows_event_id)
             high_event.set_keys("Windows Event ID (hex)", windows_event_id_hex)
