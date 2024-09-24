@@ -45,7 +45,7 @@ def FindGoogleSearches(low_timeline: LowLevelTimeline, start_id: int=0, end_id: 
                 search_term = CorrectlyFormatedSearchTerm(url_components)
                 high_event.description = "Google Search for '%s'" % search_term
                 high_event.category = analyser_category
-                high_event.device = each_low_event.plugin
+                high_event.plugin = each_low_event.plugin
                 high_event.files = each_low_event.path
                 high_event.set_keys("Browser", GetBrowser(each_low_event.plugin))
                 high_event.set_keys("Path", each_low_event.path)
