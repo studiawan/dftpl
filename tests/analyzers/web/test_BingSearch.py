@@ -45,7 +45,7 @@ def test_BingSearch(low_timeline):
     assert high_timeline.events[0].type == "Bing Search"
     assert high_timeline.events[0].description == "Bing Search for 'mozilla firefox download'"
     assert high_timeline.events[0].category == "Web"
-    assert high_timeline.events[0].device == "WEBHIST-Chrome Cache-chrome_cache"
+    assert high_timeline.events[0].plugin == "WEBHIST-Chrome Cache-chrome_cache"
     assert high_timeline.events[0].keys["Browser"] == "WEBHIST-Chrome"
     assert high_timeline.events[0].keys["Path"] == r"NTFS:\Users\User\AppData\Local\Microsoft\Edge\User Data\Default\Cache\Cache_Data\index"
     assert high_timeline.events[0].keys["Search_Term"] == "mozilla firefox download"
