@@ -73,7 +73,7 @@ def test_ProgramOpened(low_timeline):
     assert high_timeline.events[0].type == "Program opened"
     assert high_timeline.events[0].description == "A Windows program explorer.exe was opened"
     assert high_timeline.events[0].category == "System"
-    assert high_timeline.events[0].device == "FILE-File stat-filestat"
+    assert high_timeline.events[0].plugin == "FILE-File stat-filestat"
     assert high_timeline.events[0].files == r"NTFS:\Windows\explorer.exe"
     assert high_timeline.events[0].supporting == {
         'before': [],
