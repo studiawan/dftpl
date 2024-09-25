@@ -11,7 +11,7 @@ def high_level_event():
     high_event.type = "Process Creation"
     high_event.description = "Process creation of 'msedge.exe'"
     high_event.category = "Windows"
-    high_event.device = "EVT-WinEVTX-winevtx"
+    high_event.plugin = "EVT-WinEVTX-winevtx"
     high_event.keys = {
         "Windows Event ID": "9707",
         "Windows Event ID (hex)": "0x25eb",
@@ -38,7 +38,7 @@ def test_HighLevelTimeline(high_level_event):
     assert high_timeline.events[0].type == "Process Creation"
     assert high_timeline.events[0].description == "Process creation of 'msedge.exe'"
     assert high_timeline.events[0].category == "Windows"
-    assert high_timeline.events[0].device == "EVT-WinEVTX-winevtx"
+    assert high_timeline.events[0].plugin == "EVT-WinEVTX-winevtx"
     assert high_timeline.events[0].keys == {
         "Windows Event ID": "9707",
         "Windows Event ID (hex)": "0x25eb",
