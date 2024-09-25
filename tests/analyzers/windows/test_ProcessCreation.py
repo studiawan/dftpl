@@ -42,7 +42,7 @@ def test_FindProcessCreation(low_timeline):
     assert high_timeline.events[0].type == "Process Creation"
     assert high_timeline.events[0].description == "Process creation of 'msedge.exe'"
     assert high_timeline.events[0].category == "Windows"
-    assert high_timeline.events[0].device == "EVT-WinEVTX-winevtx"
+    assert high_timeline.events[0].plugin == "EVT-WinEVTX-winevtx"
     assert high_timeline.events[0].keys["Windows Event ID"] == "9707"
     assert high_timeline.events[0].keys["Windows Event ID (hex)"] == "0x25eb"
     assert high_timeline.events[0].keys["Executable name"] == "msedge.exe"
