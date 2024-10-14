@@ -1,0 +1,46 @@
+title: Bing searches based on URL structure
+id: 8e947e1a-313f-4c8f-bf3a-b0fd181ce879
+status: experimental
+description: Bing Search
+references: 
+tags:
+  - 
+author: Jony Patterson, Hudan Studiawan, Java Kanaya Prada
+date: 2024/10/14
+modified: 2024/10/14
+logsource:
+  parser: sqlite/firefox_history
+detection:
+  selection:
+  condition: 
+fields:
+falsepositives:
+level: informational
+category: Web
+test_event:
+  type: WEBHIST
+  evidence: 'https?:\/\/(www\.)?bing\.com\/search\?q=[^&]+'
+high_level_event:
+  type: Bing Search
+  description: Bing Search for (Search_Term)
+  keys:
+    - name: Browser 
+      source_type: utils
+      source_name: GetBrowser
+      source_args:
+        - each_low_event.plugin 
+    - name: Path
+      source_type: attribute
+      source_name: each_low_event.path
+    - name: Search_Term
+      source_type: utils
+      source_name: GetQueryParamsWhereKeyIs
+      source_args:
+        - each_low_event.evidence 
+        - '"q"'
+reasoning:
+  description: Bing search URL found in
+  found_in: each_low_event.evidence
+
+
+
