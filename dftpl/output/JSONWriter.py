@@ -20,7 +20,7 @@ class JSONWriter:
                 'type': event.type,
                 'description': event.description,
                 'category': event.category,
-                'device': event.device,
+                'plugin': event.plugin,
                 'files': event.files,
                 'keys': event.keys,
                 'supporting': event.supporting,

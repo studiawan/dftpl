@@ -20,31 +20,29 @@ falsepositives:
 level: informational
 category: Web
 test_event:
-  - type: Last Visited Time-WEBHIST
-  - evidence: 'https?://(.+\.)(google)\.(?:com|co\.uk|fr)'
+  type: Last Visited Time-WEBHIST
+  evidence: 'https?:\/\/(www\.)?google\.(com|co\.[a-z]{2})\/search\?.*?q=[^&]+'
 high_level_event:
-  - pattern: 'q=[^&]+?'
-    match_with: each_low_event.evidence
-  - type: Google Search
-  - description: Google Search for (Search_Term)
-  - keys:
-      - name: Browser 
-        source_type: utils
-        source_name: GetBrowser
-        source_args:
-          - each_low_event.plugin 
-      - name: Path
-        source_type: attribute
-        source_name: each_low_event.path
-      - name: Search_Term
-        source_type: utils
-        source_name: GetQueryParamsWhereKeyIs
-        source_args:
-          - each_low_event.evidence 
-          - '"q"'
+  type: Google Search
+  description: Google Search for (Search_Term)
+  keys:
+    - name: Browser 
+      source_type: utils
+      source_name: GetBrowser
+      source_args:
+        - each_low_event.plugin 
+    - name: Path
+      source_type: attribute
+      source_name: each_low_event.path
+    - name: Search_Term
+      source_type: utils
+      source_name: GetQueryParamsWhereKeyIs
+      source_args:
+        - each_low_event.evidence 
+        - '"q"'
 reasoning:
-  - description: Google search URL found in
-    found_in: each_low_event.evidence
+  description: Google search URL found in
+  found_in: each_low_event.evidence
 
 
 

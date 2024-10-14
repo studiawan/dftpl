@@ -58,11 +58,9 @@ def main():
         yaml_content = reader.read()
         yaml_contents.append(yaml_content)
 
-
     
     # Run each rules with the analyzer
     for yaml_content in yaml_contents:
-        print(f'Running analyzer with the rule of: {yaml_content['title']} ...')
         high_timeline = ReadFromYamlAnalyzer.Run(low_timeline, yaml_content)
         if high_timeline:
             high_timelines.append(high_timeline)
