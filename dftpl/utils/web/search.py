@@ -71,3 +71,27 @@ def GetBrowser(browser_string: str) -> str:
     """Extracts Browser from Plugin Name"""
     browser_data = browser_string.split(" ")[0]
     return browser_data
+
+def ExtractURL(text):
+    pattern = r"https?://[^\s,]+"
+    match = re.search(pattern, text)
+
+    if match:
+        url = match.group(0)
+        return url
+    else:
+        return None
+
+
+def ExtractDomainFromURL(url_string):
+    # Regular expression to match the desired part of the URL
+    pattern = r"https?://([a-zA-Z0-9.-]+)"
+
+    # Using re.search to find the match
+    match = re.search(pattern, url_string)
+
+    # Extracting and printing the matched string
+    if match:
+        return match.group(1)
+    else:
+        return None

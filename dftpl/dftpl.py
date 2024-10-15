@@ -40,6 +40,7 @@ def main():
     event_analyzers = {
         'google-search': ["/web/GoogleSearch.yaml"],
         'bing-search': ["/web/BingSearch.yaml"],
+        'web-visits': ["/web/WebVisit.yaml"],
     }
 
     # Default rules

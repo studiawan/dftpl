@@ -1,0 +1,47 @@
+title: Bing searches based on URL structure
+id: 8e947e1a-313f-4c8f-bf3a-b0fd181ce879
+status: experimental
+description: Web Visit
+references: 
+tags:
+  - 
+author: Java Kanaya Prada
+date: 2024/10/14
+modified: 2024/10/14
+logsource:
+  parser: sqlite/firefox_history
+detection:
+  selection:
+  condition: 
+fields:
+falsepositives:
+level: informational
+category: Web Overview
+test_event:
+  type: WEBHIST
+  evidence: '\b(http|https|www)\b'
+high_level_event:
+  type: Web Visit
+  description: Web Visit to (Domain)
+  keys:
+    - name: Browser 
+      source_type: utils
+      source_name: GetBrowser
+      source_args:
+        - each_low_event.plugin 
+    - name: URL
+      source_type: utils
+      source_name: ExtractURL
+      source_args:
+        - each_low_event.evidence 
+    - name: Domain
+      source_type: utils
+      source_name: ExtractDomainFromURL
+      source_args:
+        - each_low_event.evidence 
+reasoning:
+  description: URL found in
+  found_in: each_low_event.evidence
+
+
+

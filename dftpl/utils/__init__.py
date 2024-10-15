@@ -1,1 +1,1 @@
-from .web.search import GetBrowser, GetQueryParamsWhereKeyIs, GetQueryParamsWithKey
+from .web.search import GetBrowser, GetQueryParamsWhereKeyIs, GetQueryParamsWithKey, ExtractURL, ExtractDomainFromURL
