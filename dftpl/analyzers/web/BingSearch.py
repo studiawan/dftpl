@@ -42,7 +42,7 @@ def FindBingSearches(low_timeline, start_id, end_id):
             search_term = CorrectlyFormattedSearchTerm(url_components)
             high_event.description = "Bing Search for '%s'" % search_term
             high_event.category = analyser_category
-            high_event.device = each_event.plugin
+            high_event.plugin = each_event.plugin
             high_event.files = each_event.path
             high_event.set_keys("Browser", GetBrowser(each_event.plugin))
             high_event.set_keys("Path", each_event.path)

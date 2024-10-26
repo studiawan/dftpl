@@ -46,7 +46,7 @@ def FindWebVisits(low_timeline: LowLevelTimeline, start_id: int, end_id: int) ->
             domain = ExtractDomainFromURL(each_event.evidence)
             high_event.description = "Web Visit to '%s'" % domain
             high_event.category = analyser_category
-            high_event.device = each_event.plugin
+            high_event.plugin = each_event.plugin
             high_event.files = each_event.path
             high_event.set_keys("Browser", GetBrowser(each_event.plugin))
             high_event.set_keys("URL", ExtractURL(each_event.evidence))

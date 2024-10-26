@@ -44,7 +44,7 @@ def test_LastShutdown(low_timeline):
     assert high_timeline.events[0].type == "Shutdown time"
     assert high_timeline.events[0].description == "Windows shut down"
     assert high_timeline.events[0].category == "System"
-    assert high_timeline.events[0].device == "EVT-WinEVTX-winevtx"
+    assert high_timeline.events[0].plugin == "EVT-WinEVTX-winevtx"
     assert high_timeline.events[0].keys["Windows Event ID"] == "1074"
     assert high_timeline.events[0].keys["Windows Event ID (hex)"] == "0x0432"
     assert high_timeline.events[0].files == r"NTFS:\Windows\System32\winevt\Logs\System.evtx"

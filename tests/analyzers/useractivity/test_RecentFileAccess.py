@@ -79,7 +79,7 @@ def test_RecentFileAccess(low_timeline):
     assert high_timeline.events[0].type == "Recent File Access"
     assert high_timeline.events[0].description == "Recent File Access"
     assert high_timeline.events[0].category == "User Activity"
-    assert high_timeline.events[0].device == "LNK-Windows Shortcut-custom_destinations/lnk"
+    assert high_timeline.events[0].plugin == "LNK-Windows Shortcut-custom_destinations/lnk"
     assert high_timeline.events[0].files == r"NTFS:\Users\User\AppData\Roaming\Microsoft\Windows\Recent\CustomDestinations\40371339ad31a7e6.customDestinations-ms"
     assert high_timeline.events[0].keys['file_details_from_lnk'] == {
         'File size': '674720',
@@ -106,7 +106,7 @@ def test_RecentFileAccess2(low_timeline):
     assert high_timeline.events[1].type == "Recent File Access"
     assert high_timeline.events[1].description == "Recent File Access"
     assert high_timeline.events[1].category == "User Activity"
-    assert high_timeline.events[1].device == "FILE-File entry shell item-custom_destinations/lnk/shell_items"
+    assert high_timeline.events[1].plugin == "FILE-File entry shell item-custom_destinations/lnk/shell_items"
     assert high_timeline.events[1].files == r"NTFS:\Users\User\AppData\Roaming\Microsoft\Windows\Recent\CustomDestinations\6824f4a902c78fbd.customDestinations-ms"
     assert high_timeline.events[1].keys['file_details_from_entry_shell'] == {
         'Name': 'firefox.exe',

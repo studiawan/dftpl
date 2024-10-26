@@ -46,7 +46,7 @@ def ProgramOpened(low_timeline: LowLevelTimeline, start_id: int, end_id: int) ->
         high_event.type = "Program opened"
         high_event.description = f"A Windows program {program_name} was opened"
         high_event.category = analyser_category
-        high_event.device = each_event.plugin
+        high_event.plugin = each_event.plugin
         high_event.files = each_event.path
         high_event.supporting = low_timeline.get_supporting_events(each_event.id)
         high_event.set_keys("Program name", program_name)

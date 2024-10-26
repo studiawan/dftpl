@@ -11,7 +11,7 @@ class HighLevelEvent:
         self.type = None            # Type of the event, e.g., 'Google Search'
         self.description = None     # Human-readable description of the event
         self.category = None        # Category of the event for filtering
-        self.device = None          # Device related to the event
+        self.plugin = None          # Plaso plugin that generates the event
         self.files = None           # File related to the event
         self.keys = {}              # Additional key-value pairs with extra information
         self.trigger = None         # Reasoning artefact that triggered the event

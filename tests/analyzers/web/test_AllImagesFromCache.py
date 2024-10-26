@@ -43,7 +43,7 @@ def test_FindAllImagesFromCache(low_timeline):
     assert high_timeline.events[0].type == "Image Cached"
     assert high_timeline.events[0].description == "Image cached: AAehYNC.png"
     assert high_timeline.events[0].category == "Web"
-    assert high_timeline.events[0].device == "WEBHIST-MSIE WebCache container record-esedb/msie_webcache"
+    assert high_timeline.events[0].plugin == "WEBHIST-MSIE WebCache container record-esedb/msie_webcache"
     assert high_timeline.events[0].keys["File Path"] == r"NTFS:\Users\User\AppData\Local\Microsoft\Windows\WebCache\WebCacheV01.dat"
     assert high_timeline.events[0].keys["Content-Type"] == "image/png"
     assert high_timeline.events[0].keys["URL"] == "https://assets.msn.com/weathermapdata/1/static/weather/Icons/KRYFGAA=/Condition/AAehYNC.png"

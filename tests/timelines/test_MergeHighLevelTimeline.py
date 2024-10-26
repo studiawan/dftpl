@@ -12,7 +12,7 @@ def high_level_timelines():
     high_event1.type = "Process Creation"
     high_event1.description = "Process creation of 'msedge.exe'"
     high_event1.category = "Windows"
-    high_event1.device = "EVT-WinEVTX-winevtx"
+    high_event1.plugin = "EVT-WinEVTX-winevtx"
     high_event1.keys = {
         "Windows Event ID": "9707",
         "Windows Event ID (hex)": "0x25eb",
@@ -35,7 +35,7 @@ def high_level_timelines():
     high_event2.type = "Program opened"
     high_event2.description = "A Windows program was opened"
     high_event2.category = "System"
-    high_event2.device = "FILE-File stat-filestat"
+    high_event2.plugin = "FILE-File stat-filestat"
     high_event2.files = r"NTFS:\Windows\explorer.exe"
     high_event2.keys = None
 
@@ -48,7 +48,7 @@ def high_level_timelines():
     high_event3.type = "Last Access Time-FILE"
     high_event3.description = "A Windows program was opened"
     high_event3.category = "System"
-    high_event3.device = "FILE-File stat-filestat"
+    high_event3.plugin = "FILE-File stat-filestat"
     high_event3.files = r"NTFS:\Windows\System32\cmd.exe"
     high_event3.keys = None
 
@@ -76,7 +76,7 @@ def test_MergeHighLevelTimeline(high_level_timelines):
     assert merged_high_level_timeline.events[0].type == "Process Creation"
     assert merged_high_level_timeline.events[0].description == "Process creation of 'msedge.exe'"
     assert merged_high_level_timeline.events[0].category == "Windows"
-    assert merged_high_level_timeline.events[0].device == "EVT-WinEVTX-winevtx"
+    assert merged_high_level_timeline.events[0].plugin == "EVT-WinEVTX-winevtx"
     assert merged_high_level_timeline.events[0].keys == {
         "Windows Event ID": "9707",
         "Windows Event ID (hex)": "0x25eb",
@@ -93,6 +93,6 @@ def test_MergeHighLevelTimeline(high_level_timelines):
     assert merged_high_level_timeline.events[1].type == "Last Access Time-FILE"
     assert merged_high_level_timeline.events[1].description == "A Windows program was opened"
     assert merged_high_level_timeline.events[1].category == "System"
-    assert merged_high_level_timeline.events[1].device == "FILE-File stat-filestat"
+    assert merged_high_level_timeline.events[1].plugin == "FILE-File stat-filestat"
     assert merged_high_level_timeline.events[1].files == r"NTFS:\Windows\System32\cmd.exe"
     assert merged_high_level_timeline.events[1].keys == None

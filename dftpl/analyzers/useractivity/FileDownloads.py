@@ -46,7 +46,7 @@ def FileDownloaded(low_timeline: LowLevelTimeline, start_id: int, end_id: int) -
         
         high_event.description = "File Downloaded (%s)" % file_name
         high_event.category = analyser_category
-        high_event.device = each_event.plugin
+        high_event.plugin = each_event.plugin
         high_event.files = each_event.path
         high_event.set_keys("File Name", file_name )
         high_event.set_keys("User", user)

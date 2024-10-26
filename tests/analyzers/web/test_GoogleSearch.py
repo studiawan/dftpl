@@ -43,7 +43,7 @@ def test_FindGoogleSearches(low_timeline):
     assert high_timeline.events[0].type == "Google Search"
     assert high_timeline.events[0].description == "Google Search for 'how to perform sql injection attack'"
     assert high_timeline.events[0].category == "Web"
-    assert high_timeline.events[0].device == "WEBHIST-Firefox History-sqlite/firefox_history"
+    assert high_timeline.events[0].plugin == "WEBHIST-Firefox History-sqlite/firefox_history"
     assert high_timeline.events[0].keys["Browser"] == "WEBHIST-Firefox"
     assert high_timeline.events[0].keys["Path"] == r"NTFS:\Users\User\AppData\Roaming\Mozilla\Firefox\Profiles\my7atezl.default-release\places.sqlite"
     assert high_timeline.events[0].keys["Search_Term"] == "how to perform sql injection attack"

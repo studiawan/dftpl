@@ -77,7 +77,7 @@ def test_FileDownloads(low_timeline):
     assert high_timeline.events[0].type == "File Downloaded"
     assert high_timeline.events[0].description == "File Downloaded (Firefox Installer.exe)"
     assert high_timeline.events[0].category == "User Activity"
-    assert high_timeline.events[0].device == "FILE-File stat-filestat"
+    assert high_timeline.events[0].plugin == "FILE-File stat-filestat"
     assert high_timeline.events[0].files == r"NTFS:\Users\User\Downloads\Firefox Installer.exe"
     assert high_timeline.events[0].keys['File Name'] == "Firefox Installer.exe"
     assert high_timeline.events[0].keys['User'] == "User"

@@ -12,7 +12,7 @@ analyzer_category = "Web"
 def Run(timeline, start_id=0, end_id=None):
     """Run the analyzer"""
     if end_id == None:
-        end_id = len(timeline)
+        end_id = len(timeline.events)
     
     CachedImages(timeline, start_id, end_id)
 
@@ -47,7 +47,7 @@ def CachedImages(low_timeline, start_id, end_id):
         high_event.keys["Content-Type"] = content_type
         high_event.keys["URL"] = url
         high_event.keys["Filename"] = filename
-        high_event.device = each_event.plugin
+        high_event.plugin = each_event.plugin
         high_event.supporting = low_timeline.get_supporting_events(each_event.id)
 
         # Create a reasoning artefact
