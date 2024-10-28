@@ -75,6 +75,7 @@ def FindNetworkCards(low_timeline, start_id, end_id):
             # Extracts path between first set of angle brackets.
             reasoning.description = f"Registry entry modification event found in {','.join(each_low_event.provenance['raw_entry'])}"
             reasoning.provenance = each_low_event.provenance
+            reasoning.references = "https://www.giac.org/paper/gawn/1623/wireless-networks-windows-registry-computer-been/121403"
             # Add the reasoning artefact to the high level event
 
             high_event.trigger = reasoning.to_dict()

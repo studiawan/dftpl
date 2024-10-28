@@ -52,19 +52,17 @@ def test_FindNetworkProfiles(low_timeline):
     assert high_timeline.events[0].keys["ProfileName"] == "[REG_SZ] Network"
     assert high_timeline.events[0].files == r"NTFS:\Windows\System32\config\SOFTWARE"
     assert high_timeline.events[0].supporting == {
-        'before': [{
-            'id': low_timeline.events[0].id,
-            'date_time_min': low_timeline.events[0].date_time_min,
-            'date_time_max': low_timeline.events[0].date_time_max,
-            'type': low_timeline.events[0].type,
-            'path': low_timeline.events[0].path,
-            'evidence': low_timeline.events[0].evidence,
-            'provenance': low_timeline.events[0].provenance,
-            'plugin': low_timeline.events[0].plugin,
-            'keys': low_timeline.events[0].keys
-        }],
+        'before': [],
         'after': [],
     }
-
-    assert high_timeline.events[0].trigger.id == 1
-    assert high_timeline.events[0].trigger.description == r"Registry entry for network profile found in 2024-07-12T05:50:14.347797+00:00,Content Modification Time,REG,Registry Key,[HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion\NetworkList\Profiles\{400F2E8B-9AB8-4DA6-8705-455176209E17}] Category: [REG_DWORD_LE] 0 DateCreated: [REG_BINARY] (16 bytes) DateLastConnected: [REG_BINARY] (16 bytes) Description: [REG_SZ] Network Managed: [REG_DWORD_LE] 0 NameType: [REG_DWORD_LE] 6 ProfileName: [REG_SZ] Network,winreg/winreg_default,NTFS:\Windows\System32\config\SOFTWARE,-"
+    assert high_timeline.events[0].trigger == {
+        'id': low_timeline.events[0].id,
+        'description': r"Registry entry for network profile found in 2024-07-12T05:50:14.347797+00:00,Content Modification Time,REG,Registry Key,[HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion\NetworkList\Profiles\{400F2E8B-9AB8-4DA6-8705-455176209E17}] Category: [REG_DWORD_LE] 0 DateCreated: [REG_BINARY] (16 bytes) DateLastConnected: [REG_BINARY] (16 bytes) Description: [REG_SZ] Network Managed: [REG_DWORD_LE] 0 NameType: [REG_DWORD_LE] 6 ProfileName: [REG_SZ] Network,winreg/winreg_default,NTFS:\Windows\System32\config\SOFTWARE,-",
+        'test_event': {
+            'type': low_timeline.events[0].type,
+            'evidence': r"\\Microsoft\\Windows NT\\CurrentVersion\\NetworkList\\Profiles\\{.*?}"
+        },
+        'provenance': low_timeline.events[0].provenance,
+        'references': "https://www.giac.org/paper/gawn/1623/wireless-networks-windows-registry-computer-been/121403",
+        'keys': {},
+    }

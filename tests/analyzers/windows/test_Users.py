@@ -8,7 +8,7 @@ from dftpl.analyzers.windows.Users import CreatedUser
 def low_timeline():
     # Create a test event for user account creation with folder creation
     event1 = LowLevelEvent()
-    event1.id = 0
+    event1.id = 1
     event1.date_time_min = "2023-12-26 23:30:24.568036+00:00"
     event1.date_time_max = None
     event1.type = "Content Modification Time-REG"
@@ -30,7 +30,7 @@ def low_timeline():
 
     # Folder creation event for above's user
     event2 = LowLevelEvent()
-    event2.id = 1
+    event2.id = 2
     event2.date_time_min = "2023-12-26 23:33:59.195066+00:00"
     event2.date_time_max = None
     event2.type = "Creation Time-FILE"
@@ -52,7 +52,7 @@ def low_timeline():
 
     # Create a test event for user account creation without folder creation
     event3 = LowLevelEvent()
-    event3.id = 2
+    event3.id = 3
     event3.date_time_min = "2023-12-26 23:40:47.392280+00:00"
     event3.date_time_max = None
     event3.type = "Content Modification Time-REG"
@@ -93,7 +93,19 @@ def test_FindUserCreationAndUserFolderCreation(low_timeline):
     assert high_timeline.events[0].device == "REG-Registry Key-winreg/winreg_default"
     assert high_timeline.events[0].files == "NTFS:\Windows\System32\config\SAM"
     assert high_timeline.events[0].keys["Username"] == "root"
-    assert high_timeline.events[0].supporting['after'][0] == high_timeline.events[0].supporting['after'][2]
+    assert high_timeline.events[0].keys['Folder Creation Event'] == high_timeline.events[0].supporting['after'][0]
+    assert high_timeline.events[0].trigger == {
+        'id': low_timeline.events[0].id,
+        'description': r"Last Write for SAM Registry entry NTFS:\Windows\System32\config\SAM in 2023-12-26 23:30:24.568036+00:00,Content Modification Time,REG,Registry Key,[HKEY_LOCAL_MACHINE\SAM\SAM\Domains\Account\Users\Names\root] (default): [UNKNOWN] (empty),winreg/winreg_default,NTFS:\Windows\System32\config\SAM,-",
+        'test_event': {
+            'type' : "Content Modification Time-REG",
+            'evidence' : r"\\SAM\\Domains\\Account\\Users\\Names\\.+$"
+        },
+        'provenance': low_timeline.events[0].provenance,
+        'references': 'https://rwmj.wordpress.com/2010/06/09/windows-sam-and-hivex/',
+        'keys': {},
+    }
+
     # Assert for user creation without folder creation
     assert high_timeline.events[1].type == "User created"
     assert high_timeline.events[1].description == "User 'nofolderuser' created"
@@ -101,4 +113,4 @@ def test_FindUserCreationAndUserFolderCreation(low_timeline):
     assert high_timeline.events[1].device == "REG-Registry Key-winreg/winreg_default"
     assert high_timeline.events[1].files == "NTFS:\Windows\System32\config\SAM"
     assert high_timeline.events[1].keys["Username"] == "nofolderuser"
-    assert len(high_timeline.events[1].supporting['after']) <= 0
+    assert len(high_timeline.events[1].supporting['after']) == 0

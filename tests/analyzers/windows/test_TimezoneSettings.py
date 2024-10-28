@@ -53,19 +53,17 @@ def test_FindTimezoneSettings(low_timeline):
     assert high_timeline.events[0].keys["TimeZoneKeyName"] ==  "SE Asia Standard Time"
     assert high_timeline.events[0].files == r"NTFS:\Windows\System32\config\SYSTEM"
     assert high_timeline.events[0].supporting == {
-        'before': [{
-            'id': low_timeline.events[0].id,
-            'date_time_min': low_timeline.events[0].date_time_min,
-            'date_time_max': low_timeline.events[0].date_time_max,
-            'type': low_timeline.events[0].type,
-            'path': low_timeline.events[0].path,
-            'evidence': low_timeline.events[0].evidence,
-            'provenance': low_timeline.events[0].provenance,
-            'plugin': low_timeline.events[0].plugin,
-            'keys': low_timeline.events[0].keys
-        }],
+        'before': [],
         'after': [],
     }
-
-    assert high_timeline.events[0].trigger.id == 1
-    assert high_timeline.events[0].trigger.description == r"Timezone information found in 2024-07-12T05:52:00.813418+00:00,Content Modification Time,REG,Registry Key,[HKEY_LOCAL_MACHINE\System\ControlSet001\Control\TimeZoneInformation] ActiveTimeBias: -420 Bias: -420 DaylightBias: 0 DaylightName: @tzres.dll -561 DynamicDaylightTimeDisabled: 0 StandardBias: 0 StandardName: @tzres.dll -562 TimeZoneKeyName: SE Asia Standard Time,winreg/windows_timezone,NTFS:\Windows\System32\config\SYSTEM,-"
+    assert high_timeline.events[0].trigger == {
+        'id': low_timeline.events[0].id,
+        'description': r"Timezone information found in 2024-07-12T05:52:00.813418+00:00,Content Modification Time,REG,Registry Key,[HKEY_LOCAL_MACHINE\System\ControlSet001\Control\TimeZoneInformation] ActiveTimeBias: -420 Bias: -420 DaylightBias: 0 DaylightName: @tzres.dll -561 DynamicDaylightTimeDisabled: 0 StandardBias: 0 StandardName: @tzres.dll -562 TimeZoneKeyName: SE Asia Standard Time,winreg/windows_timezone,NTFS:\Windows\System32\config\SYSTEM,-",
+        'test_event': {
+            'type': low_timeline.events[0].type,
+            'evidence': r"\\Control\\TimeZoneInformation]"
+        },
+        'provenance': low_timeline.events[0].provenance,
+        'references': "https://www.digital-detective.net/time-zone-identification/ (Accessed : 14:00, 26th of October 2024)",
+        'keys': {},
+    }

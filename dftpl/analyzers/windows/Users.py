@@ -85,21 +85,21 @@ def CreatedUser(low_timeline, start_id, end_id):
                 reasoning.description = f"Last Write for SAM Registry entry {each_low_event.path} in {','.join(each_low_event.provenance['raw_entry'])}"
                 reasoning.test_event = test_event
                 reasoning.provenance = each_low_event.provenance
-
+                reasoning.references = "https://rwmj.wordpress.com/2010/06/09/windows-sam-and-hivex/"
                 # Add the reasoning artefact to the high level event
                 high_event.trigger = reasoning.to_dict()
-
                 # TODO : If stored in "supporting" library, add function in HighLevelEvent.py to abstract away the addition process.
                 # TODO : Otherwise, modify time for getting supporting event to also capture folder creation/create separate analyzer for folder creation.
                 # NOTE : Currently (15-07-2024) Folder creation event is stored as a LowLevelEvent class, not a ReasoningArtefact class like the original code.
                 # Search for user folder creation event with the same username as current SAM event.
+
                 folder_creation_results = SearchForFolderCreation(trigger_matches_folder, high_event.keys["Username"])
                 if folder_creation_results:
                     # evidence = ReasoningArtefact()
                     # evidence.id = folder_creation_results.id
                     # evidence.description = "Folder %s Created" % folder_creation_results.path
                     # evidence.test_event = test_event2
-                    high_event.supporting['after'].append(folder_creation_results.to_dict())
+                    high_event.set_keys("Folder Creation Event", folder_creation_results.to_dict())
                 # Note : Contradictory artifacts is not used.
                 high_timeline.add_event(high_event)
 

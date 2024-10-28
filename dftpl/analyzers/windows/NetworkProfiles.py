@@ -83,7 +83,7 @@ def FindNetworkProfiles(low_timeline, start_id, end_id):
             reasoning.test_event = test_event
             reasoning.description = f"Registry entry for network profile found in {','.join(each_low_event.provenance['raw_entry'])}"
             reasoning.provenance = each_low_event.provenance
-
+            reasoning.references = "https://www.giac.org/paper/gawn/1623/wireless-networks-windows-registry-computer-been/121403"
             # Add the reasoning artefact to the high level event
             high_event1.trigger = reasoning.to_dict()
 

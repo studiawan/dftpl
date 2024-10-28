@@ -84,7 +84,7 @@ def FindTimezoneSettings(low_timeline, start_id, end_id):
                 reasoning.description = f"Timezone information found in {','.join(each_low_event.provenance['raw_entry'])}"
                 reasoning.test_event = test_event
                 reasoning.provenance = each_low_event.provenance
-
+                reasoning.references = "https://www.digital-detective.net/time-zone-identification/ (Accessed : 14:00, 26th of October 2024)"
                 # Add the reasoning artefact to the high level event
                 high_event.trigger = reasoning.to_dict()
                 # Add the high level event to the high level timeline
