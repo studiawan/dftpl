@@ -10,14 +10,14 @@ description = "Device Installation"
 analyser_category = "Windows"
 
 def Run(low_timeline, start_id=0, end_id=None):
-    """Runs the Process Creation analyser"""
+    """Runs the windows device installation analyser"""
     if end_id == None:
         end_id = len(low_timeline.events)
     
     return FindDeviceInstallation(low_timeline, start_id, end_id)
 
 def FindDeviceInstallation(low_timeline, start_id, end_id):
-    """Finds process creation events based on event structure"""
+    """Finds windows device installation events based on event structure"""
 
     # Create a test event to match against
     test_event1 = LowLevelEvent()
