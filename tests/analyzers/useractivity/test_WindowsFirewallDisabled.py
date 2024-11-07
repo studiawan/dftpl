@@ -8,7 +8,7 @@ def low_timeline():
     # Create 2 test event for windows event log artifacts
     event1 = LowLevelEvent()
     event1.id = 1
-    event1.date_time_min = "023-12-26T23:26:57.492844+00:00"
+    event1.date_time_min = "2023-12-26T23:26:57.492844+00:00"
     event1.date_time_max = None
     event1.type = "Content Modification Time-EVT"
     event1.path = r"NTFS:\Windows\System32\winevt\Logs\Microsoft-Windows-Windows Firewall With Advanced Security%4Firewall.evtx"
