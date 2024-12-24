@@ -6,7 +6,7 @@ from dftpl.events.HighLevelEvent import HighLevelEvent, ReasoningArtefact
 from dftpl.timelines.HighLevelTimeline import HighLevelTimeline
 
 description = "Default Browser"
-analyser_category = "Windows"
+analyser_category = "System"
 
 
 def Run(low_timeline, start_id=0, end_id=None):

@@ -7,7 +7,7 @@ from dftpl.timelines.HighLevelTimeline import HighLevelTimeline
 
 
 description = "Device Installation"
-analyser_category = "Windows"
+analyser_category = "System"
 
 def Run(low_timeline, start_id=0, end_id=None):
     """Runs the windows device installation analyser"""
@@ -98,7 +98,7 @@ def FindDeviceInstallation(low_timeline, start_id, end_id):
         # Create a reasoning artefact
         reasoning = ReasoningArtefact()
         reasoning.id = each_low_event.id
-        reasoning.description = f"End of installation with device instance ID '{instance_id}'"
+        reasoning.description = f"End of installation with device instance ID '{instance_id}' found in {each_low_event.path}"
         reasoning.test_event = test_event2
         reasoning.provenance = each_low_event.provenance
         reasoning.references = 'https://learn.microsoft.com/en-us/windows-hardware/drivers/install/format-of-a-text-log-section'

@@ -10,14 +10,14 @@ analyser_category = "User Activity"
 
 
 def Run(low_timeline, start_id=0, end_id=None):
-    """Runs the Windows USB Device Connected analyser"""
+    """Runs the Windows USB Device Connected (Registry USB) analyser"""
     if end_id == None:
         end_id = len(low_timeline.events)
 
-    return FindUSBConnectedRegUSB(low_timeline, start_id, end_id)
+    return FindUSBConnectedUSB(low_timeline, start_id, end_id)
 
 
-def FindUSBConnectedRegUSB(low_timeline, start_id, end_id):
+def FindUSBConnectedUSB(low_timeline, start_id, end_id):
     """Finds Windows USB Device Connected events based on event structure"""
 
     # Create a test event to match against
@@ -49,7 +49,7 @@ def FindUSBConnectedRegUSB(low_timeline, start_id, end_id):
         high_event.id = each_low_event.id
         high_event.add_time(each_low_event.date_time_min)
         high_event.evidence_source = each_low_event.evidence
-        high_event.type = "USB Device Connected"
+        high_event.type = "USB Device Connected (Winreg USB)"
         high_event.category = analyser_category
         high_event.plugin = each_low_event.plugin
         high_event.files = each_low_event.path

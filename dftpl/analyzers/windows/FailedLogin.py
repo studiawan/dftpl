@@ -6,7 +6,7 @@ from dftpl.events.HighLevelEvent import HighLevelEvent, ReasoningArtefact
 from dftpl.timelines.HighLevelTimeline import HighLevelTimeline
 
 description = "Failed Login"
-analyser_category = "Windows"
+analyser_category = "System"
 
 
 def Run(low_timeline, start_id=0, end_id=None):
@@ -94,7 +94,7 @@ def FindFailedLogin(low_timeline, start_id, end_id):
         # Create a reasoning artefact
         reasoning = ReasoningArtefact()
         reasoning.id = each_low_event.id
-        reasoning.description = f"Failed login attempt on username '{target_user_name}' found with Windows event ID 4625"
+        reasoning.description = f"Failed login attempt on username '{target_user_name}' found with Windows event ID 4625 in Microsoft-Windows-Security-Auditing"
         reasoning.test_event = test_event
         reasoning.provenance = each_low_event.provenance
         reasoning.references = 'https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/auditing/event-4625'
