@@ -63,7 +63,7 @@ def test_DeviceInstallationStart(low_timeline):
     assert len(high_timeline.events) == 2
     assert high_timeline.events[0].type == "Device Installation"
     assert high_timeline.events[0].description == "Start of installation with device instance ID 'SWD\WPDBUSENUM\_??_USBSTOR#Disk&Ven__USB&Prod__SanDisk_3.2Gen1&Rev_1.00#0101192e17421d310eb90845e69173df47bc6b9ad0c88c0cb0cf7e8d8cc6a15#{53f56307-b6bf-11d0-94f2-00a0c91efb8b}'"
-    assert high_timeline.events[0].category == "Windows"
+    assert high_timeline.events[0].category == "System"
     assert high_timeline.events[0].plugin == "LOG-Setup API Log-text/setupapi"
     assert high_timeline.events[0].keys["Title Description"] == "Hardware initiated"
     assert high_timeline.events[0].keys["Device Instance ID"] == "SWD\WPDBUSENUM\_??_USBSTOR#Disk&Ven__USB&Prod__SanDisk_3.2Gen1&Rev_1.00#0101192e17421d310eb90845e69173df47bc6b9ad0c88c0cb0cf7e8d8cc6a15#{53f56307-b6bf-11d0-94f2-00a0c91efb8b}"
@@ -93,7 +93,7 @@ def test_DeviceInstallationEnd(low_timeline):
     assert len(high_timeline.events) == 2
     assert high_timeline.events[1].type == "Device Installation"
     assert high_timeline.events[1].description == "End of installation with device instance ID 'SWD\WPDBUSENUM\_??_USBSTOR#Disk&Ven__USB&Prod__SanDisk_3.2Gen1&Rev_1.00#0101192e17421d310eb90845e69173df47bc6b9ad0c88c0cb0cf7e8d8cc6a15#{53f56307-b6bf-11d0-94f2-00a0c91efb8b}'"
-    assert high_timeline.events[1].category == "Windows"
+    assert high_timeline.events[1].category == "System"
     assert high_timeline.events[1].plugin == "LOG-Setup API Log-text/setupapi"
     assert high_timeline.events[1].keys["Title Description"] == "Hardware initiated"
     assert high_timeline.events[1].keys["Device Instance ID"] == "SWD\WPDBUSENUM\_??_USBSTOR#Disk&Ven__USB&Prod__SanDisk_3.2Gen1&Rev_1.00#0101192e17421d310eb90845e69173df47bc6b9ad0c88c0cb0cf7e8d8cc6a15#{53f56307-b6bf-11d0-94f2-00a0c91efb8b}"

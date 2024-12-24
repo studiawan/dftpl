@@ -41,7 +41,7 @@ def test_FindDefaultBrowser(low_timeline):
     assert len(high_timeline.events) == 1
     assert high_timeline.events[0].type == "Default Browser"
     assert high_timeline.events[0].description == "Default browser's ProgId is 'MSEdgeHTM'"
-    assert high_timeline.events[0].category == "Windows"
+    assert high_timeline.events[0].category == "System"
     assert high_timeline.events[0].plugin == "REG-Registry Key-winreg/winreg_default"
     assert high_timeline.events[0].keys["Hash"] == "2F2Buyu+SaM="
     assert high_timeline.events[0].keys["ProgId"] == "MSEdgeHTM"

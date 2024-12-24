@@ -38,8 +38,8 @@ def test_USBConnectedWinevt(low_timeline):
     high_timeline = FindUSBConnectedWinevt(low_timeline, start_id, end_id)
 
     assert len(high_timeline.events) == 1
-    assert high_timeline.events[0].type == "USB Device Connected"
-    assert high_timeline.events[0].description == "Possible USB device connected with Manufacter 'USB', Model 'SanDisk 3.2Gen1', and revision '1.00' (Windows Partition Log)."
+    assert high_timeline.events[0].type == "USB Device Connected (Windows Partition Log ID 1006)"
+    assert high_timeline.events[0].description == "Possible USB device connected with Manufacter 'USB', Model 'SanDisk 3.2Gen1', and revision '1.00' (Windows Partition Log ID 1006)."
     assert high_timeline.events[0].category == "User Activity"
     assert high_timeline.events[0].plugin == "EVT-WinEVTX-winevtx"
     assert high_timeline.events[0].keys["BytesPerSector"] == "512"

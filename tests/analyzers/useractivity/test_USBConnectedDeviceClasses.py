@@ -1,7 +1,7 @@
 import pytest
 from dftpl.timelines.LowLevelTimeline import LowLevelTimeline
 from dftpl.events.LowLevelEvent import LowLevelEvent
-from dftpl.analyzers.useractivity.USBConnectedRegDeviceClasses import FindUSBConnectedRegDeviceClasses
+from dftpl.analyzers.useractivity.USBConnectedDeviceClasses import FindUSBConnectedDeviceClasses
 
 @pytest.fixture
 def low_timeline():
@@ -34,10 +34,10 @@ def low_timeline():
 def test_USBConnectedDeviceClasses(low_timeline):
     start_id = 0
     end_id = 1
-    high_timeline = FindUSBConnectedRegDeviceClasses(low_timeline, start_id, end_id)
+    high_timeline = FindUSBConnectedDeviceClasses(low_timeline, start_id, end_id)
 
     assert len(high_timeline.events) == 1
-    assert high_timeline.events[0].type == "USB Device Connected"
+    assert high_timeline.events[0].type == "USB Device Connected (Winreg DeviceClasses)"
     assert high_timeline.events[0].description == "USB device connected with Vendor ID '1532' and Product ID '0098' (Winreg DeviceClasses)."
     assert high_timeline.events[0].category == "User Activity"
     assert high_timeline.events[0].plugin == "REG-Registry Key-winreg/winreg_default"
