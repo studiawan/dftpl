@@ -14,7 +14,7 @@ def Run(low_timeline, start_id=0, end_id=None):
     """Runs the Network Profiles analyser"""
     if end_id == None:
         end_id = len(low_timeline.events)
-    return NetworkProfilesWin7(low_timeline, start_id, end_id)
+    return FindNetworkProfiles(low_timeline, start_id, end_id)
 
 
 # NOTE : Changes made for logs from windows 11 (3th quarter of 2024)

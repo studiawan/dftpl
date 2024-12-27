@@ -22,7 +22,7 @@ def DontRun(timeline, casepath, queue, start_id=0, end_id=None):
 def Run(low_timeline, start_id=0, end_id=None):
     if end_id == None:
         end_id = len(low_timeline.events)
-    return TimezoneSettings(low_timeline, start_id, end_id)
+    return FindTimezoneSettings(low_timeline, start_id, end_id)
 
 def FindTimezoneSettings(low_timeline, start_id, end_id):
     test_event = LowLevelEvent()

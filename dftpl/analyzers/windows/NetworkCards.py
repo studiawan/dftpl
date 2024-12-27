@@ -14,7 +14,7 @@ def Run(low_timeline, start_id=0, end_id=None):
     """Runs the Network Interfaces analyser"""
     if end_id == None:
         end_id = len(low_timeline.events)
-    return NetworkCards(low_timeline, start_id, end_id)
+    return FindNetworkCards(low_timeline, start_id, end_id)
 
 
 def FindNetworkCards(low_timeline, start_id, end_id):
