@@ -1,7 +1,7 @@
 import pytest
 from dftpl.timelines.LowLevelTimeline import LowLevelTimeline
 from dftpl.events.LowLevelEvent import LowLevelEvent
-from dftpl.analyzers.useractivity.USBConnectedUSBSTOR import FindUSBConnectedUSBSTOR
+from dftpl.analyzers.useractivity.USBConnectedRegUSBSTOR import FindUSBConnectedUSBSTOR
 
 @pytest.fixture
 def low_timeline():
