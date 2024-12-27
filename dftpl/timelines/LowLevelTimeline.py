@@ -30,7 +30,7 @@ class LowLevelTimeline:
                 event.id = index
                 event.date_time_min = row[0]                    # [0] datetime
                 event.date_time_max = None
-                event.type = f"{row[1]}-{row[2]}"               # [1] timestamp_desc, [3] source_long
+                event.type = f"{row[1]}-{row[2]}"               # [1] timestamp_desc, [2] source
                 event.path = row[6]                             # [6] display_name
                 event.evidence = row[4]                         # [4] message
                 event.plugin = f"{row[2]}-{row[3]}-{row[5]}"    # [2] source, [3] source_long, [5] parser

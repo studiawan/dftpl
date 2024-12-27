@@ -55,13 +55,14 @@ class ReasoningArtefact:
     def to_dict(self) -> dict:
         # Converts the reasoning artefact to a dictionary
         if type(self.test_event) is not dict:
+            # TODO : Implement below's bug fix (comma after dict results in a tuple wrapping the dict)
             test_event = {
                 'type': self.test_event.type,
                 'evidence': self.test_event.evidence
-            },
+            }
         else:
             test_event = self.test_event
-        
+
         reasoning_dict = {
             'id': self.id,
             'description': self.description,
@@ -70,5 +71,5 @@ class ReasoningArtefact:
             'keys': self.keys,
             'references': self.references
         }
-        
+
         return reasoning_dict
