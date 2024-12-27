@@ -9,7 +9,7 @@ def low_timeline():
     # create a test event to match against
     event1 = LowLevelEvent()
     event1.id = 1
-    event1.date_time_min = "2023-12-26 00:34:47.890403+00:00"
+    event1.date_time_min = "2024-08-29T07:45:39.210988+00:00"
     event1.date_time_max = None
     event1.type = "Content Modification Time-REG"
     event1.path = r"NTFS:\Users\User\NTUSER.DAT"
