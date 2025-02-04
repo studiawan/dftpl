@@ -11,7 +11,7 @@ num_supporting_events = 5
 class LowLevelTimeline:
     def __init__(self):
         """Initializes the LowLevelTimeline object"""
-        self.events = []  # List to store all low-level events
+        self.events: List[LowLevelEvent] = []  # List to store all low-level events
     
     def create_timeline(self, reader: CSVReader) -> list:
         """Creates a timeline of low-level events from a CSV file"""

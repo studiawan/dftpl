@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import List
 from dftpl.events.HighLevelEvent import HighLevelEvent
 
 
@@ -7,7 +8,7 @@ class HighLevelTimeline:
     
     def __init__(self):
         """Initialize the HighLevelTimeline object"""
-        self.events = []
+        self.events: List[HighLevelEvent] = []
     
     def add_event(self, event: HighLevelEvent):
         """Add a HighLevelEvent object to the HighLevelTimeline object"""
