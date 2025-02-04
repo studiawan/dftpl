@@ -24,7 +24,7 @@ class JSONWriter:
                 'files': event.files,
                 'keys': event.keys,
                 'supporting': event.supporting,
-                'trigger': event.trigger
+                'trigger': event.trigger.to_dict() if event.trigger else None,
             }
         
         return timeline_dict
