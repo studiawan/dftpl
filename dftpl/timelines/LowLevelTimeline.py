@@ -1,7 +1,9 @@
 import re
 from datetime import datetime
+from typing import List
 from dftpl.events.LowLevelEvent import LowLevelEvent
 from dftpl.reader.CSVReader import CSVReader
+from dftpl.rules.Rule import Rule
 
 
 num_supporting_events = 5
@@ -56,6 +58,16 @@ class LowLevelTimeline:
         
         return matching_events
     
+    def find_matching_events_in_id_range_with_rule(self, start_id: int, end_id: int, rule: Rule) -> List[LowLevelEvent]:
+        """Find all events that match the rule's keywords"""
+        matching_events = []
+
+        for event in self.events[start_id:end_id]:
+            if self.match_with_rule(event, rule):
+                matching_events.append(event)
+
+        return matching_events
+    
     def match(self, event: LowLevelEvent, test_event: LowLevelEvent) -> bool:
         """Tries to match a test event with the current event and returns true if they match"""
         if not re.search(test_event.type, event.type):
@@ -65,6 +77,11 @@ class LowLevelTimeline:
         else:
             return True
     
+    def match_with_rule(self, event: LowLevelEvent, rule: Rule) -> bool:
+        """Tries to match an event with a rule and returns true if they match"""
+        event_text = f"{event.type} {event.evidence} {event.plugin}".lower()
+        return all(keyword.lower() in event_text for keyword in rule.keywords)
+        
     def get_supporting_events(self, event_id: int, num_before: int=num_supporting_events, num_after: int=num_supporting_events) -> dict:
         """Returns a list of events before and after the event"""
         supporting_events = {}
