@@ -1,22 +1,27 @@
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import List, Dict, Any, Optional
+from enum import Enum
 
+
+class KeySourceType(Enum):
+    UTILS = "utils"  # Function-based processing
+    ATTRIBUTE = "attribute"  # Direct attribute access
 
 @dataclass
 class KeyDefinition:
     """Defines a key in the high-level event configuration"""
 
     name: str
-    source_type: str
+    source_type: KeySourceType
     source_name: str
-    source_args: List[str]
+    source_args: Optional[List[str]] = None
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "KeyDefinition":
         return cls(
             name=data.get("name", ""),
-            source_type=data.get("source_type", ""),
+            source_type=KeySourceType(data.get("source_type", "").lower()),
             source_name=data.get("source_name", ""),
             source_args=data.get("source_args", []),
         )
