@@ -7,6 +7,10 @@ setup(
     author='Hudan Studiawan',
     author_email='studiawan@gmail.com',
     url='https://github.com/studiawan/dftpl',
+    include_package_data=True,  
+    package_data={
+        'dftpl': ['rules/web/*.yaml'],  
+    },
     packages=find_packages(include=['dftpl', 'dftpl.*']),
     entry_points={
         'console_scripts': [
