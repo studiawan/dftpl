@@ -1,5 +1,5 @@
 from typing import Any, Optional, List, Dict
-from BaseEvent import BaseEvent
+from dftpl.events.BaseEvent import BaseEvent
 from datetime import datetime
 
 

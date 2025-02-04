@@ -1,7 +1,6 @@
 import argparse
 import os
 import dftpl.analyzers.yaml.ReadFromYamlAnalyzer as ReadFromYamlAnalyzer
-import  dftpl.analyzers.web.GoogleSearch as GoogleSearch
 from dftpl.reader.CSVReader import CSVReader
 from dftpl.reader.YAMLReader import YAMLReader
 from dftpl.timelines.LowLevelTimeline import LowLevelTimeline

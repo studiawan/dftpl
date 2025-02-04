@@ -1,6 +1,6 @@
 import re
 from typing import  Optional, Dict
-from BaseEvent import BaseEvent
+from dftpl.events.BaseEvent import BaseEvent
 
 
 class LowLevelEvent(BaseEvent):
