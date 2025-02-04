@@ -1,47 +1,65 @@
-from typing import Any
+from typing import Any, Optional, List, Dict
+from BaseEvent import BaseEvent
+from datetime import datetime
 
 
-class HighLevelEvent:
+class HighLevelEvent(BaseEvent):
     """High level event class"""
+    
     def __init__(self):
-        self.id = None              # Unique identifier for the event
-        self.date_time_min = None   # Earliest time the event could have occurred
-        self.date_time_max = None   # Latest time the event could have occurred
-        self.evidence_source = None # Source of the evidence
-        self.type = None            # Type of the event, e.g., 'Google Search'
-        self.description = None     # Human-readable description of the event
-        self.category = None        # Category of the event for filtering
-        self.device = None          # Device related to the event
-        self.files = None           # File related to the event
-        self.keys = {}              # Additional key-value pairs with extra information
-        self.trigger = None         # Reasoning artefact that triggered the event
-        self.supporting = {}        # List of reasoning artefacts supporting the event, five low level events before and after the event
-        self.merged_id = []         # List of IDs of events that have been merged into this event
-        self.date_time_iso = None   # ISO 8601 formatted date time
+        super().__init__()
+        self.evidence_source: Optional[str] = None              # Source of the evidence
+        self.description: Optional[str] = None                  # Human-readable description of the event
+        self.category: Optional[str] = None                     # Category of the event for filtering
+        self.device: Optional[str] = None                       # Device related to the event
+        self.files: Optional[List[str]] = None                  # File related to the event
+        self.trigger: Optional[ReasoningArtefact] = None        # Reasoning artefact that triggered the event
+        self.supporting: Dict[str, List[Dict[str, Any]]] = {}   # List of reasoning artefacts supporting the event, five low level events before and after the event
+        self.merged_id: List[int] = []                          # List of IDs of events that have been merged into this event
+        self.date_time_iso: Optional[datetime] = None           # ISO 8601 formatted date time
 
-    def add_time(self, date_time: str):
-        # Sets the time for the event, adjusting min and max if necessary
+    def add_time(self, date_time: str) -> None:
+        """Sets the time for the event, adjusting min and max if necessary"""
         self.date_time_min = date_time
         self.date_time_max = date_time
 
-    def set_keys(self, key: Any, value: Any):
-        # Adds additional information to the event
+    def set_keys(self, key: Any, value: Any) -> None:
+        """Adds additional information to the event"""
         self.keys[key] = value
-    
-    def merge(self, event_id: int):
-        # Adds an event ID to the list of merged events
+
+    def merge(self, event_id: int) -> None:
+        """Adds an event ID to the list of merged events"""
         self.merged_id.append(event_id)
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert the event to a dictionary for JSON serialization"""
+        return {
+            "id": self.id,
+            "date_time_min": self.date_time_min,
+            "date_time_max": self.date_time_max,
+            "evidence_source": self.evidence_source,
+            "type": self.type,
+            "description": self.description,
+            "category": self.category,
+            "device": self.device,
+            "files": self.files,
+            "keys": self.keys,
+            "trigger": self.trigger.to_dict() if self.trigger else None,
+            "supporting": self.supporting,
+            "merged_id": self.merged_id,
+        }
 
 
 class ReasoningArtefact:
     """Reasoning artefact class"""
+    
     def __init__(self):
-        self.id = None              # Unique identifier for the reasoning artefact
-        self.description = None     # Human-readable description of the reasoning artefact
-        self.test_event = None      # The event that triggered the reasoning artefact
-        self.provenance = None      # Provenance details for traceability
-        self.keys = {}              # Additional key-value pairs with extra information
-        self.references = None      # Reference to external sources
+        self.id: Optional[str] = None                       # Unique identifier for the reasoning artefact
+        self.description: Optional[str] = None              # Human-readable description of the reasoning artefact
+        self.test_event: Optional[Dict[str, str]] = None    # The event that triggered the reasoning artefact
+        self.provenance: Optional[Dict[str, Any]] = None    # Provenance details for traceability
+        self.keys: Dict[str, Any] = {}                      # Additional key-value pairs with extra information
+        self.references: Optional[List[str]] = None         # Reference to external sources
 
     def set_keys(self, key: Any, value: Any):
         # Adds additional information to the reasoning artefact
