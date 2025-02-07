@@ -114,3 +114,104 @@ class Utils:
         except Exception as e:
             print(f"Error parsing URL parameters: {str(e)}")
             return None
+
+    @staticmethod
+    def get_content_type_from_request(evidence: str) -> Optional[str]:
+        """Extract Content-Type from an HTTP request/response evidence string.
+        
+        Args:
+            evidence (str): The evidence string containing HTTP headers
+            
+        Returns:
+            Optional[str]: The content type if found, None otherwise
+            
+        Example:
+            >>> Utils.get_content_type_from_request("URL: https://example.com/img.png Content-Type: image/png")
+            'image/png'
+        """
+        # Look for Content-Type header
+        content_type_pattern = r'Content-Type:\s*([^;\s]+)'
+        match = re.search(content_type_pattern, evidence, re.IGNORECASE)
+        
+        if match:
+            return match.group(1).strip()
+        return None
+
+    @staticmethod
+    def get_url_from_request(evidence: str) -> Optional[str]:
+        """Extract URL from an HTTP request/response evidence string.
+        
+        Args:
+            evidence (str): The evidence string containing HTTP request info
+            
+        Returns:
+            Optional[str]: The URL if found, None otherwise
+            
+        Example:
+            >>> Utils.get_url_from_request("URL: https://example.com/img.png Content-Type: image/png")
+            'https://example.com/img.png'
+        """
+        # First try to find explicit URL field
+        url_pattern = r'URL:\s*(https?://[^\s]+)'
+        match = re.search(url_pattern, evidence, re.IGNORECASE)
+        
+        if match:
+            url = match.group(1)
+            # Clean up URL by removing any trailing quotes or brackets
+            url = re.sub(r'["\'\)]$', '', url)
+            return url
+            
+        # Fallback to looking for any URL in the evidence
+        url_pattern = r'(https?://[^\s"\'\)]+)'
+        match = re.search(url_pattern, evidence)
+        
+        if match:
+            return match.group(1)
+            
+        return None
+
+    @staticmethod
+    def get_filename_from_url(evidence: str) -> Optional[str]:
+        """Extract filename from an evidence message string.
+        
+        This function extracts the filename from the 'Filename:' field in the evidence message.
+        If not found, attempts to extract from the URL.
+        
+        Args:
+            evidence (str): The evidence message containing the filename information
+            
+        Returns:
+            Optional[str]: The filename if found, None otherwise
+            
+        Example:
+            >>> Utils.get_filename_from_url("... Filename: image[1].png ...")
+            'image[1].png'
+        """
+        try:
+            # First try to find explicit Filename field
+            filename_pattern = r'Filename:\s*([^\s]+)'
+            match = re.search(filename_pattern, evidence)
+            
+            if match:
+                return match.group(1)
+                
+            # If no explicit filename, try to extract from URL
+            url = Utils.get_url_from_request(evidence)
+            if url:
+                # Parse the URL
+                parsed = urlparse(url)
+                path = parsed.path
+                
+                # Get last part of path
+                filename = path.split('/')[-1]
+                if filename:
+                    # URL decode the filename
+                    filename = unquote(filename)
+                    # Remove any query parameters or fragments
+                    filename = re.sub(r'[?#].*$', '', filename)
+                    return filename
+                    
+        except Exception as e:
+            print(f"Error extracting filename: {str(e)}")
+            
+        return None

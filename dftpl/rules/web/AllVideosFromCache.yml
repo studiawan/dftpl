@@ -1,7 +1,7 @@
-title: Cached Images
+title: Cached Videos
 id: e56ac6dc-cca8-4b52-8f25-10a054e3ffe2
 status: experimental
-description:  Find all images cached in the timeline
+description:  Find all videos cached in the timeline
 references: 
 tags:
   - 
@@ -14,15 +14,15 @@ detection:
   keywords:
     - "WEBHIST"
     - "https"
-    - "Content-Type: image/"
+    - "Content-Type: video/"
   condition: keywords
 fields:
 falsepositives:
 level: informational
 category: Web
 high_level_event:
-  type: Image Cached
-  description: Image cached {keys[Filename]}
+  type: Video Cached
+  description: Video cached at {keys[Path]}
   keys:
     - name: Path
       source_type: attribute
@@ -41,9 +41,9 @@ high_level_event:
       source_type: utils
       source_name: get_filename_from_url
       source_args:
-        - each_low_event.plugin 
+        - each_low_event.evidence 
 reasoning:
-  description: Content type of {keys[Filename]} found in {keys[Path]}
+  description: Content type of video found in {keys[URL]}
 
 
 

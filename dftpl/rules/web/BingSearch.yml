@@ -40,7 +40,7 @@ high_level_event:
         - each_low_event.evidence 
         - '"q"'
 reasoning:
-  description: Bing search URL found in {evidence}
+  description: Bing search URL found in {keys[Path]}
 
 
 

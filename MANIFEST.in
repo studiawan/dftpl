@@ -1,2 +1,2 @@
 # MANIFEST.in
-include dftpl/rules/web/*.yaml
+include dftpl/rules/web/*.yml

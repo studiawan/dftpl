@@ -37,9 +37,11 @@ def main():
     # List of search rules
     # Dictionary mapping event types to rules
     event_analyzers = {
-        'google-search': ["/web/GoogleSearch.yaml"],
-        'bing-search': ["/web/BingSearch.yaml"],
-        'web-visits': ["/web/WebVisit.yaml"],
+        'google-search': ["/web/GoogleSearch.yml"],
+        'bing-search': ["/web/BingSearch.yml"],
+        'web-visits': ["/web/WebVisit.yml"],
+        'images-cached': ["/web/AllImagesFromCache.yml"],
+        'videos-cached': ["/web/AllVideosFromCache.yml"],
     }
 
     # Default rules

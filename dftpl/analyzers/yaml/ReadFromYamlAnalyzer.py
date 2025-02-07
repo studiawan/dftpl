@@ -54,7 +54,7 @@ def CreateHighTimeline(low_level_timeline: LowLevelTimeline, rule: Rule, start_i
         
         # Create and set trigger
         if rule.reasoning:
-            trigger = create_trigger(rule.reasoning, low_level_event)
+            trigger = create_trigger(rule.reasoning, low_level_event, high_event)
             high_event.trigger = trigger
 
         # Get supporting events
@@ -95,13 +95,13 @@ def process_keys(
             print(f"Error processing key {key_def.name}: {str(e)}")
             high_event.set_keys(key_def.name, None)
 
-def create_trigger(reasoning: "ReasoningDefinition", low_level_event: LowLevelEvent
+def create_trigger(reasoning: "ReasoningDefinition", low_level_event: LowLevelEvent, high_level_event: HighLevelEvent
 ) -> ReasoningArtefact:
     """Create a reasoning artifact from the rule's reasoning definition"""
     trigger = ReasoningArtefact()
     trigger.id = low_level_event.id
     trigger.description = format_description(
-        reasoning.description, low_level_event
+        reasoning.description, high_level_event
     )
     trigger.test_event = {
         "type": low_level_event.type,
