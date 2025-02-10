@@ -57,17 +57,55 @@ class LowLevelTimeline:
                 matching_events.append(event)
         
         return matching_events
-    
-    def find_matching_events_in_id_range_with_rule(self, start_id: int, end_id: int, rule: Rule) -> List[LowLevelEvent]:
+
+    def find_matching_events_in_id_range_with_rule(
+        self, start_id: int, end_id: int, rule: Rule
+    ) -> List[LowLevelEvent]:
         """Find all events that match the rule's keywords"""
         matching_events = []
 
-        for event in self.events[start_id:end_id]:
-            if self.match_with_rule(event, rule):
+        # Determine matching behavior based on modifiers
+        use_regex = "re" in rule.detection.modifiers
+        require_all = "all" in rule.detection.modifiers
+
+        for event in self.timeline.events[start_id:end_id]:
+            event_text = f"{event.type} {event.evidence} {event.plugin}"
+
+            matches = []
+
+            # Check each keyword against the event text
+            for keyword in self.rule.detection.keywords:
+                match = self._check_keyword_match(event_text, keyword, use_regex)
+                matches.append(match)
+
+            should_include = False
+            if require_all:
+                should_include = all(matches)
+            else:
+                should_include = any(matches)
+
+            if should_include:
+                print(matches)
                 matching_events.append(event)
 
         return matching_events
-    
+
+    def _apply_regex_matching(self, pattern: str, text: str) -> bool:
+        """ "Apply regex pattern matching"""
+        try:
+            return bool(re.search(pattern, text))
+        except re.error as e:
+            print(f"Invalid regex atter `{pattern}`: {str(e)}")
+            return False
+
+    def _check_keyword_match(
+        self, event_text: str, keyword: str, use_regex: bool
+    ) -> bool:
+        """Check if a keyword matches the event text"""
+        if use_regex:
+            return self._apply_regex_matching(keyword, event_text)
+        return keyword in event_text
+
     def match(self, event: LowLevelEvent, test_event: LowLevelEvent) -> bool:
         """Tries to match a test event with the current event and returns true if they match"""
         if not re.search(test_event.type, event.type):
@@ -76,11 +114,6 @@ class LowLevelTimeline:
             return None
         else:
             return True
-    
-    def match_with_rule(self, event: LowLevelEvent, rule: Rule) -> bool:
-        """Tries to match an event with a rule and returns true if they match"""
-        event_text = f"{event.type} {event.evidence} {event.plugin}".lower()
-        return all(keyword.lower() in event_text for keyword in rule.keywords)
         
     def get_supporting_events(self, event_id: int, num_before: int=num_supporting_events, num_after: int=num_supporting_events) -> dict:
         """Returns a list of events before and after the event"""

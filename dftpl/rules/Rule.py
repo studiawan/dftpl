@@ -1,12 +1,59 @@
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Union
 from enum import Enum
 
 
 class KeySourceType(Enum):
     UTILS = "utils"  # Function-based processing
     ATTRIBUTE = "attribute"  # Direct attribute access
+
+
+@dataclass
+class DetectionDefinition:
+    """Represents the detection configuration in a rule"""
+
+    keywords: Union[List[str], Dict[str, List[str]]]
+    condition: str = "keywords"
+    modifiers: List[str] = field(default_factory=list)
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "DetectionDefinition":
+        if not isinstance(data, dict):
+            raise ValueError("Detection definition must be a dictionary")
+
+        keywords_data = data.get("keywords", [])
+        condition = data.get("condition", "keywords")
+        modifiers = []
+
+        if isinstance(keywords_data, dict):
+            modifier_key = next(iter(keywords_data))
+            if modifier_key.startswith("|"):
+                modifiers = [m for m in modifier_key.split("|") if m]
+                keywords_data = keywords_data[modifier_key]
+
+        return cls(
+            keywords=keywords_data,
+            condition=condition,
+            modifiers=modifiers,
+        )
+
+    def validate(self) -> List[str]:
+        """Validate the detection configuration"""
+        errors = []
+
+        # Validate keywords
+        if not self.keywords:
+            errors.append("At least one keyword is required")
+
+        # Validate modifiers
+        valid_modifiers = {"all", "re"}
+        for modifier in self.modifiers:
+            if modifier not in valid_modifiers:
+                errors.append(f"Invalid modifier: {modifier}")
+
+        return errors
+
 
 @dataclass
 class KeyDefinition:
@@ -66,7 +113,7 @@ class Rule:
     id: str
     description: str
     category: str
-    keywords: List[str]
+    detection: DetectionDefinition
     high_level_event: HighLevelEventDefinition
     reasoning: Optional[ReasoningDefinition] = None
     status: str = field(default="experimental")
@@ -99,6 +146,10 @@ class Rule:
                 except ValueError:
                     pass
 
+        # Parse detection configuration
+        detection_data = yaml_data.get("detection", {})
+        detection = DetectionDefinition.from_dict(detection_data)
+
         # Parse high level event definition
         high_level_event_data = yaml_data.get("high_level_event", {})
         high_level_event = HighLevelEventDefinition.from_dict(high_level_event_data)
@@ -114,7 +165,7 @@ class Rule:
             id=yaml_data.get("id", ""),
             description=yaml_data.get("description", ""),
             category=yaml_data.get("category", "Unknown"),
-            keywords=yaml_data.get("detection", {}).get("keywords", []),
+            detection=detection,
             high_level_event=high_level_event,
             reasoning=reasoning,
             status=yaml_data.get("status", "experimental"),
@@ -127,6 +178,20 @@ class Rule:
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert the rule to a dictionary"""
+        detection_dict = {
+            "keywords": self.detection.keywords,
+            "condition": self.detection.condition,
+        }
+
+        # Add modifiers if present
+        if self.detection.modifiers:
+            modifier_key = "|" + "|".join(self.detection.modifiers)
+            detection_dict = {
+                "keywords": {modifier_key: self.detection.keywords},
+                "condition": self.detection.condition,
+            }
+
+        """Convert the rule to a dictionary"""
         return {
             "title": self.title,
             "id": self.id,
@@ -138,7 +203,7 @@ class Rule:
             "modified": self.modified.strftime("%Y/%m/%d") if self.modified else None,
             "references": self.references,
             "tags": self.tags,
-            "detection": {"keywords": self.keywords},
+            "detection": detection_dict,
             "high_level_event": {
                 "type": self.high_level_event.type,
                 "description": self.high_level_event.description,
