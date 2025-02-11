@@ -11,11 +11,11 @@ modified: 2025/02/07
 logsource:
   parser: sqlite/firefox_history
 detection:
-  keywords:
-    '|all':
-      - "WEBHIST"
-      - "https"
-      - "Content-Type: image/"
+keywords:
+    '|all|re':
+      - 'WEBHIST'
+      - 'https?:\/\/'  # Match both http and https protocols
+      - 'Content-Type:\s*(image\/[a-zA-Z0-9\-\+\.]+)'  # Match image content types with flexible formatting
   condition: keywords
 fields:
 falsepositives:

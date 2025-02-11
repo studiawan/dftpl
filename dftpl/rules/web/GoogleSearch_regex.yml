@@ -15,12 +15,10 @@ logsource:
 detection:
   keywords:
     '|all':
-      - "WEBHIST"
-      - "https"
-      - "www"
-      - "google"
-      - ".co"
-      -  "/search?q="
+      - 'WEBHIST'
+      - 'https?:\/\/'  # Match both http and https
+      - 'www\.google\.(com|co\.[a-z]{2})'  # Match google.com or google.co.xx domains
+      - '\/search\?.*q='  # Match search query parameter
   condition: 
 fields:
 falsepositives:
