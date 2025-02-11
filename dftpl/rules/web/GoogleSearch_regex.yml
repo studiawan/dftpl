@@ -14,7 +14,7 @@ logsource:
   parser: sqlite/firefox_history
 detection:
   keywords:
-    '|all':
+    '|all|re':
       - 'WEBHIST'
       - 'https?:\/\/'  # Match both http and https
       - 'www\.google\.(com|co\.[a-z]{2})'  # Match google.com or google.co.xx domains

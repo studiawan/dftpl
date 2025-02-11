@@ -68,13 +68,13 @@ class LowLevelTimeline:
         use_regex = "re" in rule.detection.modifiers
         require_all = "all" in rule.detection.modifiers
 
-        for event in self.timeline.events[start_id:end_id]:
+        for event in self.events[start_id:end_id]:
             event_text = f"{event.type} {event.evidence} {event.plugin}"
 
             matches = []
 
             # Check each keyword against the event text
-            for keyword in self.rule.detection.keywords:
+            for keyword in rule.detection.keywords:
                 match = self._check_keyword_match(event_text, keyword, use_regex)
                 matches.append(match)
 
@@ -85,7 +85,6 @@ class LowLevelTimeline:
                 should_include = any(matches)
 
             if should_include:
-                print(matches)
                 matching_events.append(event)
 
         return matching_events
