@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, date
 from typing import List, Dict, Any, Optional, Union
 from enum import Enum
 
@@ -126,25 +126,37 @@ class Rule:
     @classmethod
     def from_yaml(cls, yaml_data: Dict) -> "Rule":
         # Parse dates if they exist
-        date = None
+        date_obj = None
         if "date" in yaml_data:
-            try:
-                date = datetime.strptime(yaml_data["date"], "%Y/%m/%d")
-            except ValueError:
+            if isinstance(yaml_data["date"], (datetime, date)):
+                # Already a datetime object
+                date_obj = yaml_data["date"]
+            else:
+                # Try to parse from string
                 try:
-                    date = datetime.strptime(yaml_data["date"], "%Y-%m-%d")
+                    date_obj = datetime.strptime(yaml_data["date"], "%Y/%m/%d")
                 except ValueError:
-                    pass
+                    try:
+                        date_obj = datetime.strptime(yaml_data["date"], "%Y-%m-%d")
+                    except ValueError:
+                        pass
 
-        modified = None
+        # Similar modification for 'modified' field
+        modified_obj = None
         if "modified" in yaml_data:
-            try:
-                modified = datetime.strptime(yaml_data["modified"], "%Y/%m/%d")
-            except ValueError:
+            if isinstance(yaml_data["modified"], (datetime, date)):
+                # Already a datetime object
+                modified_obj = yaml_data["modified"]
+            else:
+                # Try to parse from string
                 try:
-                    modified = datetime.strptime(yaml_data["modified"], "%Y-%m-%d")
+                    modified_obj = datetime.strptime(yaml_data["modified"], "%Y/%m/%d")
                 except ValueError:
-                    pass
+                    try:
+                        modified_obj = datetime.strptime(yaml_data["modified"], "%Y-%m-%d")
+                    except ValueError:
+                        pass
+                        
 
         # Parse detection configuration
         detection_data = yaml_data.get("detection", {})
@@ -170,8 +182,8 @@ class Rule:
             reasoning=reasoning,
             status=yaml_data.get("status", "experimental"),
             author=yaml_data.get("author"),
-            date=date,
-            modified=modified,
+            date=date_obj,
+            modified=modified_obj,
             references=yaml_data.get("references", []),
             tags=yaml_data.get("tags", []),
         )

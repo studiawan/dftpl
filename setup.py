@@ -9,7 +9,7 @@ setup(
     url='https://github.com/studiawan/dftpl',
     include_package_data=True,  
     package_data={
-        'dftpl': ['rules/web/*.yml'],  
+        'dftpl': ['rules/web/*.yml', 'rules/linux/builtin/*.yml'],  
     },
     packages=find_packages(include=['dftpl', 'dftpl.*']),
     entry_points={
