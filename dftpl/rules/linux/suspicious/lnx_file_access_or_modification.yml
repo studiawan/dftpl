@@ -1,0 +1,38 @@
+# Rule 3: Suspicious File Access or Modification
+title: Sensitive File Access Detection
+id: FILE-ACCESS-001
+description: Detects access or modification to sensitive system files
+category: Defense Evasion
+status: stable
+author: Java Kanaya Prada
+date: 2025/03/15
+tags:
+  - attack.defense_evasion
+  - attack.t1222
+detection:
+  keywords:
+    '|all|re':
+      - "(?:/etc/passwd|/etc/shadow|/etc/sudoers|/etc/ssh/sshd_config)"
+      - "(?:modified|accessed|changed|opened)"
+  condition: keywords
+high_level_event:
+  type: Sensitive File Modification
+  description: "Sensitive system file {keys[file_path]} was {keys[operation]} by user {keys[username]}"
+  keys:
+    - name: file_path
+      source_type: attribute
+      source_name: path
+    - name: operation
+      source_type: utils
+      source_name: extract_operation_from_evidence
+      source_args:
+        - "each_low_event.evidence"
+    - name: username
+      source_type: utils
+      source_name: extract_username_from_evidence
+      source_args:
+        - "each_low_event.evidence"
+reasoning:
+  description: "Access to sensitive system file {keys[file_path]} detected with operation: {keys[operation]}"
+  found_in: evidence
+

@@ -64,6 +64,7 @@ def main():
         "images-cached": ["/web/AllImagesFromCache.yml"],
         "videos-cached": ["/web/AllVideosFromCache.yml"],
         
+        # Linux Rules
         "equation-group": ["/linux/builtin/lnx_apt_equationgroup_lnx.yml"],
         "buffer-overflows": ["/linux/builtin/lnx_buffer_overflows.yml"],
         "ldso-preload-injection": ["/linux/builtin/lnx_ldso_preload_injection.yml"],
@@ -75,8 +76,59 @@ def main():
         "shellshock": ["/linux/builtin/lnx_shellshock.yml"],
         "susp-dev-tcp": ["/linux/builtin/lnx_susp_dev_tcp.yml"],
         "symlink-etc-passwd": ["/linux/builtin/lnx_symlink_etc_passwd.yml"],
+        
+        # Suspicious Activity Detection Rules
+        "binary-unusual-loc": [
+            "/linux/suspicious/lnx_binary_execution_in_unusual_locations.yml"
+        ],
+        "data-exfiltration": ["/linux/suspicious/lnx_data_exfiltration_detection.yml"],
+        "sensitive-file-access": [
+            "/linux/suspicious/lnx_file_access_or_modification.yml"
+        ],
+        "kernel-module": ["/linux/suspicious/lnx_kernel_module_loading.yml"],
+        "privilege-escalation": [
+            "/linux/suspicious/lnx_privilege_escalation_detection.yml"
+        ],
+        "ssh-brute-force": ["/linux/suspicious/lnx_ssh_brute_force_attempts.yml"],
+        "suspicious-cron": ["/linux/suspicious/lnx_suspicious_cron_job_creation.yml"],
+        "suspicious-network": [
+            "/linux/suspicious/lnx_suspicious_network_connection.yml"
+        ],
+        "user-creation": ["/linux/suspicious/lnx_suspicious_user_account_creation.yml"],
+        "web-shell": ["/linux/suspicious/lnx_web_shell_detecion.yml"],
+        # You can also group them for convenience
+        "all-suspicious": [
+            "/linux/suspicious/lnx_binary_execution_in_unusual_locations.yml",
+            "/linux/suspicious/lnx_data_exfiltration_detection.yml",
+            "/linux/suspicious/lnx_file_access_or_modification.yml",
+            "/linux/suspicious/lnx_kernel_module_loading.yml",
+            "/linux/suspicious/lnx_privilege_escalation_detection.yml",
+            "/linux/suspicious/lnx_ssh_brute_force_attempts.yml",
+            "/linux/suspicious/lnx_suspicious_cron_job_creation.yml",
+            "/linux/suspicious/lnx_suspicious_network_connection.yml",
+            "/linux/suspicious/lnx_suspicious_user_account_creation.yml",
+            "/linux/suspicious/lnx_web_shell_detecion.yml",
+        ],
+        # You could also create logical groupings
+        "access-attacks": [
+            "/linux/suspicious/lnx_ssh_brute_force_attempts.yml",
+            "/linux/suspicious/lnx_privilege_escalation_detection.yml",
+        ],
+        "persistence-techniques": [
+            "/linux/suspicious/lnx_suspicious_cron_job_creation.yml",
+            "/linux/suspicious/lnx_suspicious_user_account_creation.yml",
+            "/linux/suspicious/lnx_kernel_module_loading.yml",
+            "/linux/suspicious/lnx_web_shell_detecion.yml",
+        ],
+        "data-threats": [
+            "/linux/suspicious/lnx_data_exfiltration_detection.yml",
+            "/linux/suspicious/lnx_file_access_or_modification.yml",
+        ],
+        "execution-threats": [
+            "/linux/suspicious/lnx_binary_execution_in_unusual_locations.yml",
+            "/linux/suspicious/lnx_suspicious_network_connection.yml",
+        ],
     }
-
     # Default rules
     default_rules = ["/web/GoogleSearch.yml"]
 

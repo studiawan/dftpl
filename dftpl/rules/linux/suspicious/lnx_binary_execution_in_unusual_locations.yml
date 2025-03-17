@@ -1,0 +1,38 @@
+# Rule 7: Binary Execution in Unusual Locations
+title: Unusual Location Binary Execution
+id: EXEC-UNUSUAL-001
+description: Detects execution of binaries from non-standard locations
+category: Execution
+status: stable
+author: Java Kanaya Prada
+date: 2025/03/15
+tags:
+  - attack.execution
+  - attack.t1059
+detection:
+  keywords:
+    '|re':
+      - "(?:/tmp|/dev/shm|/var/tmp|/var/www)/.*(?:sh|py|pl|bin|elf)"
+      - "COMMAND=/(?:tmp|dev/shm|var/tmp)/.*"
+  condition: keywords
+high_level_event:
+  type: Suspicious Execution
+  description: "Binary executed from suspicious location: {keys[file_path]} by user {keys[username]}"
+  keys:
+    - name: file_path
+      source_type: attribute
+      source_name: path
+    - name: username
+      source_type: utils
+      source_name: extract_username_from_evidence
+      source_args:
+        - "each_low_event.evidence"
+    - name: command
+      source_type: utils
+      source_name: extract_command_from_evidence
+      source_args:
+        - "each_low_event.evidence"
+reasoning:
+  description: "Suspicious execution detected from an unusual location ({keys[file_path]}) by user {keys[username]}"
+  found_in: evidence
+

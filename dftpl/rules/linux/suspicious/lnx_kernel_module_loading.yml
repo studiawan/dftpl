@@ -1,0 +1,38 @@
+# Rule 10: Kernel Module Loading
+title: Suspicious Kernel Module Loading
+id: KERNEL-MODULE-001
+description: Detects loading of potentially malicious kernel modules
+category: Persistence
+status: stable
+author: Java Kanaya Prada
+date: 2025/03/15
+tags:
+  - attack.persistence
+  - attack.t1547.006
+detection:
+  keywords:
+    '|re':
+      - "insmod"
+      - "modprobe"
+      - "kernel: .*module.*loaded"
+  condition: keywords
+high_level_event:
+  type: Kernel Module Loading
+  description: "Kernel module {keys[module_name]} loaded by user {keys[username]}"
+  keys:
+    - name: module_name
+      source_type: utils
+      source_name: extract_module_name_from_evidence
+      source_args:
+        - "each_low_event.evidence"
+    - name: username
+      source_type: utils
+      source_name: extract_username_from_evidence
+      source_args:
+        - "each_low_event.evidence"
+    - name: module_path
+      source_type: attribute
+      source_name: path
+reasoning:
+  description: "Kernel module {keys[module_name]} was loaded from {keys[module_path]} by user {keys[username]}"
+  found_in: evidence

@@ -1,0 +1,40 @@
+# Rule 4: Suspicious Cron Job Creation
+title: Suspicious Cron Job Detection
+id: PERSISTENCE-CRON-001
+description: Detects creation or modification of cron jobs that could indicate persistence mechanisms
+category: Persistence
+status: stable
+author: Java Kanaya Prada
+date: 2025/03/15
+tags:
+  - attack.persistence
+  - attack.t1053.003
+detection:
+  keywords:
+    '|re':
+      - "(?:/etc/cron|/var/spool/cron)"
+      - "CROND.*CMD"
+      - "crontab -e"
+      - "crontab -r"
+  condition: keywords
+high_level_event:
+  type: Persistence Mechanism
+  description: "Potential persistence via cron detected - {keys[cron_details]}"
+  keys:
+    - name: cron_details
+      source_type: utils
+      source_name: extract_cron_details_from_evidence
+      source_args:
+        - "each_low_event.evidence"
+    - name: username
+      source_type: utils
+      source_name: extract_username_from_evidence
+      source_args:
+        - "each_low_event.evidence"
+    - name: file_path
+      source_type: attribute
+      source_name: path
+reasoning:
+  description: "Suspicious cron job activity detected with path {keys[file_path]} by user {keys[username]}"
+  found_in: evidence
+

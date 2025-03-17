@@ -1,7 +1,7 @@
 from typing import Any, Dict, List
 from dftpl.events.LowLevelEvent import LowLevelEvent
 from dftpl.rules.Rule import KeyDefinition, KeySourceType
-from dftpl.utils.web import Utils
+from dftpl.utils.util import Utils
 
 
 class KeyProcessor:

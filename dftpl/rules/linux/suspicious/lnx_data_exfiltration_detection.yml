@@ -1,0 +1,43 @@
+# Rule 5: Data Exfiltration Detection
+title: Potential Data Exfiltration
+id: EXFIL-001
+description: Detects potential data exfiltration activities
+category: Exfiltration
+status: stable
+author: Java Kanaya Prada
+date: 2025/03/15
+tags:
+  - attack.exfiltration
+  - attack.t1048
+detection:
+  keywords:
+    '|re':
+      - "bin/scp"
+      - "(?:scp|sftp|rsync|rclone) .* [0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+"
+      - "wget .*--post-file"
+      - "curl .*--data-binary"
+      - "nc .* > .*\\.(?:zip|tar|gz|tgz)"
+  condition: keywords
+high_level_event:
+  type: Data Exfiltration
+  description: "Potential data exfiltration detected: {keys[exfil_command]} to destination {keys[destination]}"
+  keys:
+    - name: exfil_command
+      source_type: utils
+      source_name: extract_command_from_evidence
+      source_args:
+        - "each_low_event.evidence"
+    - name: destination
+      source_type: utils
+      source_name: extract_destination_from_evidence
+      source_args:
+        - "each_low_event.evidence"
+    - name: file_size
+      source_type: utils
+      source_name: extract_file_size_from_evidence
+      source_args:
+        - "each_low_event.evidence"
+reasoning:
+  description: "Suspicious data transfer of {keys[file_size]} bytes detected using {keys[exfil_command]} to destination {keys[destination]}"
+  found_in: evidence
+
