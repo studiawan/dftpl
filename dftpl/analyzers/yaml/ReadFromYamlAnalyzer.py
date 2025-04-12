@@ -32,7 +32,6 @@ def CreateHighTimeline(low_level_timeline: LowLevelTimeline, rule: Rule, start_i
         high_event = HighLevelEvent()
         high_event.id = low_level_event.id
         high_event.evidence_source = low_level_event.evidence
-        high_event.type = rule.high_level_event.type
         high_event.category = rule.category
         high_event.plugin = low_level_event.plugin
         high_event.files = low_level_event.path
@@ -44,18 +43,24 @@ def CreateHighTimeline(low_level_timeline: LowLevelTimeline, rule: Rule, start_i
                 low_level_event.date_time_min
             )
 
-        # Process each key definition
-        process_keys(high_event, low_level_event, rule.high_level_event.keys)
+        if (rule.is_sigma_rule): 
+            high_event.description = rule.description
+        else:
+            high_event.type = rule.high_level_event.type
+            
+            # Process each key definition
+            process_keys(high_event, low_level_event, rule.high_level_event.keys)
 
-        # Set description after key definition
-        high_event.description = format_description(
-                rule.high_level_event.description, high_event
-            )
+            # Set description after key definition
+            high_event.description = format_description(
+                    rule.high_level_event.description, high_event
+                )
+            
+            # Create and set trigger
+            if rule.reasoning:
+                trigger = create_trigger(rule.reasoning, low_level_event, high_event)
+                high_event.trigger = trigger
         
-        # Create and set trigger
-        if rule.reasoning:
-            trigger = create_trigger(rule.reasoning, low_level_event, high_event)
-            high_event.trigger = trigger
 
         # Get supporting events
         if hasattr(low_level_event, "id"):

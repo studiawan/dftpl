@@ -37,7 +37,7 @@ class DetectionDefinition:
             condition=condition,
             modifiers=modifiers,
         )
-
+        
     def validate(self) -> List[str]:
         """Validate the detection configuration"""
         errors = []
@@ -47,7 +47,7 @@ class DetectionDefinition:
             errors.append("At least one keyword is required")
 
         # Validate modifiers
-        valid_modifiers = {"all", "re"}
+        valid_modifiers = {'all', 're'}
         for modifier in self.modifiers:
             if modifier not in valid_modifiers:
                 errors.append(f"Invalid modifier: {modifier}")
@@ -114,7 +114,7 @@ class Rule:
     description: str
     category: str
     detection: DetectionDefinition
-    high_level_event: HighLevelEventDefinition
+    high_level_event: Optional[HighLevelEventDefinition] = None
     reasoning: Optional[ReasoningDefinition] = None
     status: str = field(default="experimental")
     author: Optional[str] = None
@@ -122,6 +122,7 @@ class Rule:
     modified: Optional[datetime] = None
     references: List[str] = field(default_factory=list)
     tags: List[str] = field(default_factory=list)
+    is_sigma_rule: bool = field(default=False)
 
     @classmethod
     def from_yaml(cls, yaml_data: Dict) -> "Rule":
@@ -162,17 +163,23 @@ class Rule:
         detection_data = yaml_data.get("detection", {})
         detection = DetectionDefinition.from_dict(detection_data)
 
-        # Parse high level event definition
-        high_level_event_data = yaml_data.get("high_level_event", {})
-        high_level_event = HighLevelEventDefinition.from_dict(high_level_event_data)
+        # Determine if this is a Sigma rule or a custom event reconstruction rule
+        is_sigma_rule = "high_level_event" not in yaml_data
+        
+        # Parse high level event definition if available
+        high_level_event = None
+        if "high_level_event" in yaml_data:
+            high_level_event_data = yaml_data.get("high_level_event", {})
+            high_level_event = HighLevelEventDefinition.from_dict(high_level_event_data)
 
         # Parse reasoning if it exists
-        reasoning_data = yaml_data.get("reasoning")
-        reasoning = (
-            ReasoningDefinition.from_dict(reasoning_data) if reasoning_data else None
-        )
+        reasoning = None
+        if "reasoning" in yaml_data:
+            reasoning_data = yaml_data.get("reasoning")
+            reasoning = ReasoningDefinition.from_dict(reasoning_data) if reasoning_data else None
 
-        return cls(
+        # Create the rule
+        rule = cls(
             title=yaml_data.get("title", ""),
             id=yaml_data.get("id", ""),
             description=yaml_data.get("description", ""),
@@ -186,25 +193,29 @@ class Rule:
             modified=modified_obj,
             references=yaml_data.get("references", []),
             tags=yaml_data.get("tags", []),
+            is_sigma_rule=is_sigma_rule
         )
+        
+        return rule
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert the rule to a dictionary"""
         detection_dict = {
             "keywords": self.detection.keywords,
-            "condition": self.detection.condition,
+            "condition": self.detection.condition
         }
-
+        
         # Add modifiers if present
         if self.detection.modifiers:
-            modifier_key = "|" + "|".join(self.detection.modifiers)
+            modifier_key = '|' + '|'.join(self.detection.modifiers)
             detection_dict = {
-                "keywords": {modifier_key: self.detection.keywords},
-                "condition": self.detection.condition,
+                "keywords": {
+                    modifier_key: self.detection.keywords
+                },
+                "condition": self.detection.condition
             }
-
-        """Convert the rule to a dictionary"""
-        return {
+        
+        result = {
             "title": self.title,
             "id": self.id,
             "description": self.description,
@@ -216,23 +227,29 @@ class Rule:
             "references": self.references,
             "tags": self.tags,
             "detection": detection_dict,
-            "high_level_event": {
+        }
+        
+        # Add high_level_event if available
+        if self.high_level_event:
+            result["high_level_event"] = {
                 "type": self.high_level_event.type,
                 "description": self.high_level_event.description,
                 "keys": [
                     {
                         "name": k.name,
-                        "source_type": k.source_type,
+                        "source_type": k.source_type.value,
                         "source_name": k.source_name,
                         "source_args": k.source_args,
                     }
                     for k in self.high_level_event.keys
                 ],
-            },
-            "reasoning": {
+            }
+            
+        # Add reasoning if available
+        if self.reasoning:
+            result["reasoning"] = {
                 "description": self.reasoning.description,
                 "found_in": self.reasoning.found_in,
             }
-            if self.reasoning
-            else None,
-        }
+            
+        return result
