@@ -73,56 +73,56 @@ def main():
         ],
         
         # System log related events
-        "security-tools": ["/builtin/syslog/lnx_syslog_security_tools_disabling_syslog.yml"],
-        "suspicious-dns": ["/builtin/syslog/lnx_syslog_susp_named.yml"],
+        "security-tools": ["/linux/builtin/syslog/lnx_syslog_security_tools_disabling_syslog.yml"],
+        "suspicious-dns": ["/linux/builtin/syslog/lnx_syslog_susp_named.yml"],
         "system-logs": [
-            "/builtin/syslog/lnx_syslog_security_tools_disabling_syslog.yml", 
-            "/builtin/syslog/lnx_syslog_susp_named.yml"
+            "/linux/builtin/syslog/lnx_syslog_security_tools_disabling_syslog.yml", 
+            "/linux//builtin/syslog/lnx_syslog_susp_named.yml"
         ],
         
         # Cron related events
-        "crontab-modification": ["/builtin/cron/lnx_cron_crontab_file_modification.yml"],
+        "crontab-modification": ["/linux/builtin/cron/lnx_cron_crontab_file_modification.yml"],
         
         # VSFTPD related events
-        "ftp-errors": ["/builtin/vsftpd/lnx_vsftpd_susp_error_messages.yml"],
-        "suspicious-logs": ["/builtin/vsftpd/lnx_shell_susp_log_entries.yml"],
+        "ftp-errors": ["/linux/builtin/vsftpd/lnx_vsftpd_susp_error_messages.yml"],
+        "suspicious-logs": ["/linux/builtin/lnx_shell_susp_log_entries.yml"],
         
         # Custom suspicious activities
-        "file-access": ["/custom_susp/lnx_file_access_or_modification.yml"],
-        "privilege-escalation": ["/custom_susp/lnx_privilege_escalation_detection.yml"],
-        "ssh-brute-force": ["/custom_susp/lnx_ssh_brute_force_attempts.yml"],
-        "suspicious-user": ["/custom_susp/lnx_suspicious_user_account_creation.yml"],
-        "web-shell": ["/custom_susp/lnx_web_shell_detection.yml"],
+        "file-access": ["/linux/custom_susp/lnx_file_access_or_modification.yml"],
+        "privilege-escalation": ["/linux/custom_susp/lnx_privilege_escalation_detection.yml"],
+        "ssh-brute-force": ["/linux/custom_susp/lnx_ssh_brute_force_attempts.yml"],
+        "suspicious-user": ["/linux/custom_susp/lnx_suspicious_user_account_creation.yml"],
+        "web-shell": ["/linux/custom_susp/lnx_web_shell_detection.yml"],
         "suspicious-activity": [
-            "/custom_susp/lnx_file_access_or_modification.yml",
-            "/custom_susp/lnx_privilege_escalation_detection.yml",
-            "/custom_susp/lnx_ssh_brute_force_attempts.yml",
-            "/custom_susp/lnx_suspicious_user_account_creation.yml",
-            "/custom_susp/lnx_web_shell_detection.yml"
+            "/linux/custom_susp/lnx_file_access_or_modification.yml",
+            "/linux/custom_susp/lnx_privilege_escalation_detection.yml",
+            "/linux/custom_susp/lnx_ssh_brute_force_attempts.yml",
+            "/linux/custom_susp/lnx_suspicious_user_account_creation.yml",
+            "/linux/custom_susp/lnx_web_shell_detection.yml"
         ],
         
         # Combined categories
         "security-monitoring": [
-            "/builtin/syslog/lnx_syslog_security_tools_disabling_syslog.yml",
-            "/builtin/syslog/lnx_syslog_susp_named.yml",
-            "/custom_susp/lnx_privilege_escalation_detection.yml",
-            "/custom_susp/lnx_ssh_brute_force_attempts.yml",
-            "/custom_susp/lnx_suspicious_user_account_creation.yml",
-            "/custom_susp/lnx_web_shell_detection.yml"
+            "/linux/builtin/syslog/lnx_syslog_security_tools_disabling_syslog.yml",
+            "/linux/builtin/syslog/lnx_syslog_susp_named.yml",
+            "/linux/custom_susp/lnx_privilege_escalation_detection.yml",
+            "/linux/custom_susp/lnx_ssh_brute_force_attempts.yml",
+            "/linux/custom_susp/lnx_suspicious_user_account_creation.yml",
+            "/linux/custom_susp/lnx_web_shell_detection.yml"
         ],
         
         # All Linux-specific events
         "all-linux-events": [
-            "/builtin/cron/lnx_cron_crontab_file_modification.yml",
-            "/builtin/syslog/lnx_syslog_security_tools_disabling_syslog.yml",
-            "/builtin/syslog/lnx_syslog_susp_named.yml",
-            "/builtin/vsftpd/lnx_vsftpd_susp_error_messages.yml",
-            "/builtin/vsftpd/lnx_shell_susp_log_entries.yml",
-            "/custom_susp/lnx_file_access_or_modification.yml",
-            "/custom_susp/lnx_privilege_escalation_detection.yml",
-            "/custom_susp/lnx_ssh_brute_force_attempts.yml",
-            "/custom_susp/lnx_suspicious_user_account_creation.yml",
-            "/custom_susp/lnx_web_shell_detection.yml"
+            "/linux/builtin/cron/lnx_cron_crontab_file_modification.yml",
+            "/linux/builtin/syslog/lnx_syslog_security_tools_disabling_syslog.yml",
+            "/linux/builtin/syslog/lnx_syslog_susp_named.yml",
+            "/linux/builtin/vsftpd/lnx_vsftpd_susp_error_messages.yml",
+            "/linux/builtin/lnx_shell_susp_log_entries.yml",
+            "/linux/custom_susp/lnx_file_access_or_modification.yml",
+            "/linux/custom_susp/lnx_privilege_escalation_detection.yml",
+            "/linux/custom_susp/lnx_ssh_brute_force_attempts.yml",
+            "/linux/custom_susp/lnx_suspicious_user_account_creation.yml",
+            "/linux/custom_susp/lnx_web_shell_detection.yml"
         ],
         
         # Default for running all available rules
@@ -135,16 +135,16 @@ def main():
             "/web/AllVideosFromCache.yml", "/web/AllVideosFromCache_regex.yml",
             
             # Linux rules
-            "/builtin/cron/lnx_cron_crontab_file_modification.yml",
-            "/builtin/syslog/lnx_syslog_security_tools_disabling_syslog.yml",
-            "/builtin/syslog/lnx_syslog_susp_named.yml",
-            "/builtin/vsftpd/lnx_vsftpd_susp_error_messages.yml",
-            "/builtin/vsftpd/lnx_shell_susp_log_entries.yml",
-            "/custom_susp/lnx_file_access_or_modification.yml",
-            "/custom_susp/lnx_privilege_escalation_detection.yml",
-            "/custom_susp/lnx_ssh_brute_force_attempts.yml",
-            "/custom_susp/lnx_suspicious_user_account_creation.yml",
-            "/custom_susp/lnx_web_shell_detection.yml"
+            "/linux/builtin/cron/lnx_cron_crontab_file_modification.yml",
+            "/linux/builtin/syslog/lnx_syslog_security_tools_disabling_syslog.yml",
+            "/linux/builtin/syslog/lnx_syslog_susp_named.yml",
+            "/linux/builtin/vsftpd/lnx_vsftpd_susp_error_messages.yml",
+            "/linux/builtin/lnx_shell_susp_log_entries.yml",
+            "/linux/custom_susp/lnx_file_access_or_modification.yml",
+            "/linux/custom_susp/lnx_privilege_escalation_detection.yml",
+            "/linux/custom_susp/lnx_ssh_brute_force_attempts.yml",
+            "/linux/custom_susp/lnx_suspicious_user_account_creation.yml",
+            "/linux/custom_susp/lnx_web_shell_detection.yml"
         ]
     }
     # Default rules

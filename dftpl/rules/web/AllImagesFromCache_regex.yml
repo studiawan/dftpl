@@ -11,7 +11,7 @@ modified: 2025/02/07
 logsource:
   parser: sqlite/firefox_history
 detection:
-keywords:
+  keywords:
     '|all|re':
       - 'WEBHIST'
       - 'https?:\/\/'  # Match both http and https protocols

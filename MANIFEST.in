@@ -1,2 +1,6 @@
 # MANIFEST.in
 include dftpl/rules/web/*.yml
+include dftpl/rules/linux/builtin/cron/*.yml
+include dftpl/rules/linux/builtin/syslog/*.yml
+include dftpl/rules/linux/builtin/vsftpd/*.yml
+include dftpl/rules/linux/custom_susp/*.yml
