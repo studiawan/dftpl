@@ -18,11 +18,12 @@ logsource:
     service: syslog
 detection:
     keywords:
-        - 'stopping iptables'
-        - 'stopping ip6tables'
-        - 'stopping firewalld'
-        - 'stopping cbdaemon'
-        - 'stopping falcon-sensor'
+        # UPDATE: change S to Uppercase for S on Stopping
+        - 'Stopping iptables' 
+        - 'Stopping ip6tables' 
+        - 'Stopping firewalld'
+        - 'Stopping cbdaemon'
+        - 'Stopping falcon-sensor'
     condition: keywords
 falsepositives:
     - Legitimate administration activities
