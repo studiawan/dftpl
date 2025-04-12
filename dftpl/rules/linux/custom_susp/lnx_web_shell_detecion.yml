@@ -14,7 +14,7 @@ detection:
     '|re':
       - "GET /.*\\.(php|jsp|asp|aspx)\\?(?:cmd|command|c|system|exec|shell|passthru)="
       - "POST /.*\\.(php|jsp|asp|aspx)"
-      - "\\[error\\].*eval.*POST"
+      - "Command execution attempt:.*"
   condition: keywords
 high_level_event:
   type: Web Shell Activity

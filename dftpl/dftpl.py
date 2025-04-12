@@ -58,76 +58,94 @@ def main():
     # List of search rules
     # Dictionary mapping event types to rules
     event_analyzers = {
-        "google-search": ["/web/GoogleSearch.yml"],
-        "bing-search": ["/web/BingSearch.yml"],
-        "web-visits": ["/web/WebVisit.yml"],
-        "images-cached": ["/web/AllImagesFromCache.yml"],
-        "videos-cached": ["/web/AllVideosFromCache.yml"],
+        # Web browsing related events
+        "google-search": ["/web/GoogleSearch.yml", "/web/GoogleSearch_regex.yml"],
+        "bing-search": ["/web/BingSearch.yml", "/web/BingSearch_regex.yml"],
+        "web-visits": ["/web/WebVisit.yml", "/web/WebVisit_regex.yml"],
+        "images-cached": ["/web/AllImagesFromCache.yml", "/web/AllImagesFromCache_regex.yml"],
+        "videos-cached": ["/web/AllVideosFromCache.yml", "/web/AllVideosFromCache_regex.yml"],
+        "all-web-activity": [
+            "/web/GoogleSearch.yml", "/web/GoogleSearch_regex.yml",
+            "/web/BingSearch.yml", "/web/BingSearch_regex.yml",
+            "/web/WebVisit.yml", "/web/WebVisit_regex.yml",
+            "/web/AllImagesFromCache.yml", "/web/AllImagesFromCache_regex.yml",
+            "/web/AllVideosFromCache.yml", "/web/AllVideosFromCache_regex.yml"
+        ],
         
-        # Linux Rules
-        "equation-group": ["/linux/builtin/lnx_apt_equationgroup_lnx.yml"],
-        "buffer-overflows": ["/linux/builtin/lnx_buffer_overflows.yml"],
-        "ldso-preload-injection": ["/linux/builtin/lnx_ldso_preload_injection.yml"],
-        "nimbus": ["/linux/builtin/lnx_nimbuspwn_privilege_escalation_exploit.yml"],
-        "clear-cmd-history": ["/linux/builtin/lnx_shell_clear_cmd_history.yml"],
-        "susp-commands": ["/linux/builtin/lnx_shell_susp_commands.yml"],
-        "susp-log-entrie": ["/linux/builtin/lnx_shell_susp_log_entries.yml"],
-        "susp-rev-shells": ["/linux/builtin/lnx_shell_susp_rev_shells.yml"],
-        "shellshock": ["/linux/builtin/lnx_shellshock.yml"],
-        "susp-dev-tcp": ["/linux/builtin/lnx_susp_dev_tcp.yml"],
-        "symlink-etc-passwd": ["/linux/builtin/lnx_symlink_etc_passwd.yml"],
+        # System log related events
+        "security-tools": ["/builtin/syslog/lnx_syslog_security_tools_disabling_syslog.yml"],
+        "suspicious-dns": ["/builtin/syslog/lnx_syslog_susp_named.yml"],
+        "system-logs": [
+            "/builtin/syslog/lnx_syslog_security_tools_disabling_syslog.yml", 
+            "/builtin/syslog/lnx_syslog_susp_named.yml"
+        ],
         
-        # Suspicious Activity Detection Rules
-        "binary-unusual-loc": [
-            "/linux/suspicious/lnx_binary_execution_in_unusual_locations.yml"
+        # Cron related events
+        "crontab-modification": ["/builtin/cron/lnx_cron_crontab_file_modification.yml"],
+        
+        # VSFTPD related events
+        "ftp-errors": ["/builtin/vsftpd/lnx_vsftpd_susp_error_messages.yml"],
+        "suspicious-logs": ["/builtin/vsftpd/lnx_shell_susp_log_entries.yml"],
+        
+        # Custom suspicious activities
+        "file-access": ["/custom_susp/lnx_file_access_or_modification.yml"],
+        "privilege-escalation": ["/custom_susp/lnx_privilege_escalation_detection.yml"],
+        "ssh-brute-force": ["/custom_susp/lnx_ssh_brute_force_attempts.yml"],
+        "suspicious-user": ["/custom_susp/lnx_suspicious_user_account_creation.yml"],
+        "web-shell": ["/custom_susp/lnx_web_shell_detection.yml"],
+        "suspicious-activity": [
+            "/custom_susp/lnx_file_access_or_modification.yml",
+            "/custom_susp/lnx_privilege_escalation_detection.yml",
+            "/custom_susp/lnx_ssh_brute_force_attempts.yml",
+            "/custom_susp/lnx_suspicious_user_account_creation.yml",
+            "/custom_susp/lnx_web_shell_detection.yml"
         ],
-        "data-exfiltration": ["/linux/suspicious/lnx_data_exfiltration_detection.yml"],
-        "sensitive-file-access": [
-            "/linux/suspicious/lnx_file_access_or_modification.yml"
+        
+        # Combined categories
+        "security-monitoring": [
+            "/builtin/syslog/lnx_syslog_security_tools_disabling_syslog.yml",
+            "/builtin/syslog/lnx_syslog_susp_named.yml",
+            "/custom_susp/lnx_privilege_escalation_detection.yml",
+            "/custom_susp/lnx_ssh_brute_force_attempts.yml",
+            "/custom_susp/lnx_suspicious_user_account_creation.yml",
+            "/custom_susp/lnx_web_shell_detection.yml"
         ],
-        "kernel-module": ["/linux/suspicious/lnx_kernel_module_loading.yml"],
-        "privilege-escalation": [
-            "/linux/suspicious/lnx_privilege_escalation_detection.yml"
+        
+        # All Linux-specific events
+        "all-linux-events": [
+            "/builtin/cron/lnx_cron_crontab_file_modification.yml",
+            "/builtin/syslog/lnx_syslog_security_tools_disabling_syslog.yml",
+            "/builtin/syslog/lnx_syslog_susp_named.yml",
+            "/builtin/vsftpd/lnx_vsftpd_susp_error_messages.yml",
+            "/builtin/vsftpd/lnx_shell_susp_log_entries.yml",
+            "/custom_susp/lnx_file_access_or_modification.yml",
+            "/custom_susp/lnx_privilege_escalation_detection.yml",
+            "/custom_susp/lnx_ssh_brute_force_attempts.yml",
+            "/custom_susp/lnx_suspicious_user_account_creation.yml",
+            "/custom_susp/lnx_web_shell_detection.yml"
         ],
-        "ssh-brute-force": ["/linux/suspicious/lnx_ssh_brute_force_attempts.yml"],
-        "suspicious-cron": ["/linux/suspicious/lnx_suspicious_cron_job_creation.yml"],
-        "suspicious-network": [
-            "/linux/suspicious/lnx_suspicious_network_connection.yml"
-        ],
-        "user-creation": ["/linux/suspicious/lnx_suspicious_user_account_creation.yml"],
-        "web-shell": ["/linux/suspicious/lnx_web_shell_detecion.yml"],
-        # You can also group them for convenience
-        "all-suspicious": [
-            "/linux/suspicious/lnx_binary_execution_in_unusual_locations.yml",
-            "/linux/suspicious/lnx_data_exfiltration_detection.yml",
-            "/linux/suspicious/lnx_file_access_or_modification.yml",
-            "/linux/suspicious/lnx_kernel_module_loading.yml",
-            "/linux/suspicious/lnx_privilege_escalation_detection.yml",
-            "/linux/suspicious/lnx_ssh_brute_force_attempts.yml",
-            "/linux/suspicious/lnx_suspicious_cron_job_creation.yml",
-            "/linux/suspicious/lnx_suspicious_network_connection.yml",
-            "/linux/suspicious/lnx_suspicious_user_account_creation.yml",
-            "/linux/suspicious/lnx_web_shell_detecion.yml",
-        ],
-        # You could also create logical groupings
-        "access-attacks": [
-            "/linux/suspicious/lnx_ssh_brute_force_attempts.yml",
-            "/linux/suspicious/lnx_privilege_escalation_detection.yml",
-        ],
-        "persistence-techniques": [
-            "/linux/suspicious/lnx_suspicious_cron_job_creation.yml",
-            "/linux/suspicious/lnx_suspicious_user_account_creation.yml",
-            "/linux/suspicious/lnx_kernel_module_loading.yml",
-            "/linux/suspicious/lnx_web_shell_detecion.yml",
-        ],
-        "data-threats": [
-            "/linux/suspicious/lnx_data_exfiltration_detection.yml",
-            "/linux/suspicious/lnx_file_access_or_modification.yml",
-        ],
-        "execution-threats": [
-            "/linux/suspicious/lnx_binary_execution_in_unusual_locations.yml",
-            "/linux/suspicious/lnx_suspicious_network_connection.yml",
-        ],
+        
+        # Default for running all available rules
+        "all": [
+            # Web rules
+            "/web/GoogleSearch.yml", "/web/GoogleSearch_regex.yml",
+            "/web/BingSearch.yml", "/web/BingSearch_regex.yml",
+            "/web/WebVisit.yml", "/web/WebVisit_regex.yml",
+            "/web/AllImagesFromCache.yml", "/web/AllImagesFromCache_regex.yml",
+            "/web/AllVideosFromCache.yml", "/web/AllVideosFromCache_regex.yml",
+            
+            # Linux rules
+            "/builtin/cron/lnx_cron_crontab_file_modification.yml",
+            "/builtin/syslog/lnx_syslog_security_tools_disabling_syslog.yml",
+            "/builtin/syslog/lnx_syslog_susp_named.yml",
+            "/builtin/vsftpd/lnx_vsftpd_susp_error_messages.yml",
+            "/builtin/vsftpd/lnx_shell_susp_log_entries.yml",
+            "/custom_susp/lnx_file_access_or_modification.yml",
+            "/custom_susp/lnx_privilege_escalation_detection.yml",
+            "/custom_susp/lnx_ssh_brute_force_attempts.yml",
+            "/custom_susp/lnx_suspicious_user_account_creation.yml",
+            "/custom_susp/lnx_web_shell_detection.yml"
+        ]
     }
     # Default rules
     default_rules = ["/web/GoogleSearch.yml"]
