@@ -1,6 +1,6 @@
 # Rule 3: Suspicious File Access or Modification
 title: Sensitive File Access Detection
-id: FILE-ACCESS-001
+id: cccc7fa2-975e-4bc9-b6cb-075ed695dc1f
 description: Detects access or modification to sensitive system files
 category: Defense Evasion
 status: stable

@@ -1,6 +1,6 @@
 # Rule 8: Web Shell Detection
 title: Web Shell Detection
-id: WEBSHELL-001
+id: 020a512f-9873-4fcf-a6f7-a3963df4ca2c
 description: Detects potential web shell activity in web server logs
 category: Persistence
 status: stable

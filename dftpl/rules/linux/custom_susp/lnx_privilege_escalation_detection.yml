@@ -1,6 +1,6 @@
 # Rule 2: Privilege Escalation Detection
 title: Suspicious Privilege Escalation
-id: PRIV-ESCALATION-001
+id: 71d6a03c-b8fb-4587-a501-a3547b07157e
 description: Detects successful privilege escalation via sudo/su commands
 category: Privilege Escalation
 status: stable

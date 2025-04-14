@@ -1,6 +1,6 @@
 # Rule 1: Detect SSH Brute Force Attempts
 title: SSH Brute Force Attack Detection
-id: SSH-BRUTE-FORCE-001
+id: 499c35d9-5cfe-47c4-a63e-493d3cb88cb6
 description: Detects multiple failed SSH authentication attempts indicating a possible brute force attack
 category: Credential Access
 status: stable

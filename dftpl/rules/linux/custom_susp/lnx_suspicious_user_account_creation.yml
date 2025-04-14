@@ -1,6 +1,6 @@
 # Rule 9: Suspicious User Account Creation
 title: Suspicious User Account Creation
-id: USER-CREATION-001
+id: 1181ca9e-38c5-4016-a491-97180292e74e
 description: Detects creation of new user accounts that might indicate unauthorized access
 category: Persistence
 status: stable
