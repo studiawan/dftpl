@@ -86,8 +86,21 @@ class MergeHighLevelTimeline:
             merged_timeline.extend(high_timeline.events)
 
         # Convert date_time_min to datetime objects for sorting
+        # Handle invalid dates (like year 0000) by using a default date
+        default_date = datetime.fromisoformat("1970-01-01T00:00:00.000000+00:00")
+        
         for event in merged_timeline:
-            event.date_time_iso = datetime.fromisoformat(event.date_time_min)
+            try:
+                # Try to parse the date
+                event.date_time_iso = datetime.fromisoformat(event.date_time_min)
+            except ValueError as _:
+                # If the date is invalid (like year 0000), use the default date
+                # print(f"Warning: Invalid date format in event {event.id}: {event.date_time_min}. Using default date.")
+                event.date_time_iso = default_date
+                # Optionally update the event's date strings to the default
+                event.date_time_min = "1970-01-01T00:00:00.000000+00:00"
+                if event.date_time_max:
+                    event.date_time_max = "1970-01-01T00:00:00.000000+00:00"
         
         # Sort the combined list by the date_time_obj key
         merged_timeline.sort(key=lambda x: x.date_time_iso)
