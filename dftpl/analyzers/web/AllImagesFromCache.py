@@ -7,7 +7,7 @@ from dftpl.events.LowLevelEvent import LowLevelEvent
 
 
 description = "Cached Images"
-analyzer_category = "Web"
+analyser_category = "Web"
 
 def Run(timeline, start_id=0, end_id=None):
     """Run the analyzer"""
@@ -41,7 +41,7 @@ def CachedImages(low_timeline, start_id, end_id):
 
         high_event.type = "Image Cached"
         high_event.evidence_source = each_event.evidence
-        high_event.category = analyzer_category
+        high_event.category = analyser_category
         high_event.description = f"Image cached: {filename}"
         high_event.keys["File Path"] = each_event.path
         high_event.keys["Content-Type"] = content_type

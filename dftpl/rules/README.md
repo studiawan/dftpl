@@ -4,7 +4,7 @@ The example of YAML format for dftpl rule is shown below:
 
 ```
 - description: ""
-- analyzer_category: ""
+- analyser_category: ""
 - test_event:
     - type: ""
     - evidence: ""
