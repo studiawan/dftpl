@@ -119,3 +119,118 @@ class Utils:
                 return match.group(1).strip()
         
         return ""
+    
+    @staticmethod
+    def extract_useradd_activity_type(low_level_event: LowLevelEvent) -> str:
+        """Extract the type of useradd activity (new user, new group, failed)"""
+        evidence = getattr(low_level_event, 'evidence', '')
+        if not evidence:
+            return ""
+        
+        if 'new user:' in evidence:
+            return "User Created"
+        elif 'new group:' in evidence:
+            return "Group Created"
+        elif 'failed adding user' in evidence:
+            return "User Creation Failed"
+        
+        return "Unknown Activity"
+    
+    @staticmethod
+    def extract_useradd_username(low_level_event: LowLevelEvent) -> str:
+        """Extract username from useradd log entry"""
+        evidence = getattr(low_level_event, 'evidence', '')
+        if not evidence:
+            return ""
+        
+        # Pattern for new user: name=username
+        user_match = re.search(r'name=([^\s]+)', evidence)
+        if user_match:
+            return user_match.group(1)
+        
+        # Pattern for failed adding user 'username'
+        failed_match = re.search(r"failed adding user '([^']+)'", evidence)
+        if failed_match:
+            return failed_match.group(1)
+        
+        return ""
+    
+    @staticmethod
+    def extract_useradd_creator(low_level_event: LowLevelEvent) -> str:
+        """Extract the user who created the new user (from sudo logs)"""
+        evidence = getattr(low_level_event, 'evidence', '')
+        if not evidence:
+            return ""
+        
+        # Look for sudo log pattern: username : TTY=pts/0 ; PWD=/path ; USER=root ; COMMAND=/usr/sbin/useradd
+        sudo_match = re.search(r'(\w+)\s*:\s*TTY=.*COMMAND=.*useradd', evidence)
+        if sudo_match:
+            return sudo_match.group(1)
+        
+        return ""
+    
+    @staticmethod
+    def extract_useradd_uid(low_level_event: LowLevelEvent) -> str:
+        """Extract UID from useradd log entry"""
+        evidence = getattr(low_level_event, 'evidence', '')
+        if not evidence:
+            return ""
+        
+        uid_match = re.search(r'UID=(\d+)', evidence)
+        if uid_match:
+            return uid_match.group(1)
+        
+        return ""
+    
+    @staticmethod
+    def extract_useradd_gid(low_level_event: LowLevelEvent) -> str:
+        """Extract GID from useradd log entry"""
+        evidence = getattr(low_level_event, 'evidence', '')
+        if not evidence:
+            return ""
+        
+        gid_match = re.search(r'GID=(\d+)', evidence)
+        if gid_match:
+            return gid_match.group(1)
+        
+        return ""
+    
+    @staticmethod
+    def extract_useradd_home(low_level_event: LowLevelEvent) -> str:
+        """Extract home directory from useradd log entry"""
+        evidence = getattr(low_level_event, 'evidence', '')
+        if not evidence:
+            return ""
+        
+        home_match = re.search(r'home=([^\s]+)', evidence)
+        if home_match:
+            return home_match.group(1)
+        
+        return ""
+    
+    @staticmethod
+    def extract_useradd_shell(low_level_event: LowLevelEvent) -> str:
+        """Extract shell from useradd log entry"""
+        evidence = getattr(low_level_event, 'evidence', '')
+        if not evidence:
+            return ""
+        
+        shell_match = re.search(r'shell=([^\s]+)', evidence)
+        if shell_match:
+            return shell_match.group(1)
+        
+        return ""
+    
+    @staticmethod
+    def extract_useradd_exit_code(low_level_event: LowLevelEvent) -> str:
+        """Extract exit code from failed useradd attempts"""
+        evidence = getattr(low_level_event, 'evidence', '')
+        if not evidence:
+            return ""
+        
+        exit_code_match = re.search(r'exit code:\s*(\d+)', evidence)
+        if exit_code_match:
+            return exit_code_match.group(1)
+        
+        return ""
+    

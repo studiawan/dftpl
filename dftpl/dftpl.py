@@ -71,6 +71,10 @@ def main():
             "/web/youtube_watch.yml",
         ],
         
+        "user-add-activity": [
+            "/linux/custom_susp/lnx_user_add.yml",
+        ],
+        
         # System log related events
         "security-tools": [
             "/linux/builtin/syslog/lnx_syslog_security_tools_disabling_syslog.yml"

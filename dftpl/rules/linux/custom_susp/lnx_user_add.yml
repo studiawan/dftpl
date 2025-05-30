@@ -1,0 +1,51 @@
+title: Linux User Add Activity
+id: a7f3d8e2-9b4c-4d5e-8f1a-2c6b9e3d7a8f
+status: experimental
+description: Detects user addition activities including successful user creation, group creation, and failed attempts
+references:
+  - https://man7.org/linux/man-pages/man8/useradd.8.html
+tags:
+  - linux
+  - user_management
+  - privilege_escalation
+  - account_creation
+author: Java Kanaya Prada
+date: 2025/05/30
+modified: 2025/05/30
+logsource:
+  product: linux
+  service:
+    - systemd_journal
+    - auth.log
+    - syslog
+detection:
+  keywords:
+    '|re':
+      - 'useradd.*pid:\s*\d+\]'
+      - '(new user:|new group:|failed adding user)'
+      - 'TTY=.*COMMAND=.*useradd'
+  condition: keywords
+level: medium
+category: Account Management
+high_level_event:
+  type: User Add Activity
+  description: "User addition activity: {keys[Activity_Type]}'"
+  keys:
+    - name: Activity_Type
+      source: extract_useradd_activity_type
+    - name: Username
+      source: extract_useradd_username
+    - name: Creator_User
+      source: extract_useradd_creator
+    - name: User_ID
+      source: extract_useradd_uid
+    - name: Group_ID
+      source: extract_useradd_gid
+    - name: Home_Directory
+      source: extract_useradd_home
+    - name: Shell
+      source: extract_useradd_shell
+    - name: Exit_Code
+      source: extract_useradd_exit_code
+reasoning: 
+  description: The useradd keyword was found in {evidence}
