@@ -1,0 +1,39 @@
+title: Bing search
+id: 8e947e1a-313f-4c8f-bf3a-b0fd181ce879
+status: experimental
+description: Bing searches based on URL structure
+tags:
+  - 
+author: Jony Patterson, Hudan Studiawan, Java Kanaya Prada
+date: 2024/10/14
+modified: 2025/02/04
+logsource:
+  product: 
+    - firefox
+    - chromium
+  service:
+    - sqlite/firefox_history
+    - sqlite/chrome_27_history
+detection:
+  keywords:
+    '|all':
+      - "WEBHIST"
+      - "https"
+      - "www"
+      - "bing.com/search?q="
+  condition: keywords
+level: informational
+category: Web
+high_level_event:
+  type: Bing Search
+  description: Bing Search for {keys[Search_Term]}
+  keys:
+    - name: Browser 
+      source: get_browser
+    - name: Search_Term
+      source: extract_search_term
+reasoning:
+  description: The source WEBHIST was found in {plugin}, and Bing Search URL found in {evidence}
+
+
+

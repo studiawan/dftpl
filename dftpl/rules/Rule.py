@@ -10,7 +10,15 @@ class RuleStatus(Enum):
     EXPERIMENTAL = "experimental"
     DEPRECATED = "deprecated"
     UNSUPPORTED = "unsupported"
-
+    
+class RuleLevel(Enum):
+    """Valid level values for rules"""
+    CRITICAL = "critical"
+    HIGH = "high"
+    MEDIUM = "medium"
+    LOW = "low"
+    INFORMATIONAL = "informational"
+    
 
 @dataclass
 class DetectionDefinition:
@@ -113,6 +121,7 @@ class Rule:
     high_level_event: Optional[HighLevelEventDefinition] = None
     reasoning: Optional[ReasoningDefinition] = None
     status: RuleStatus = field(default=RuleStatus.EXPERIMENTAL)
+    level: RuleLevel = field(default=RuleLevel.INFORMATIONAL)
     author: Optional[str] = None
     date: Optional[datetime] = None
     modified: Optional[datetime] = None
@@ -184,6 +193,7 @@ class Rule:
             high_level_event=high_level_event,
             reasoning=reasoning,
             status=yaml_data.get("status", "experimental"),
+            level=yaml_data.get("level"),
             author=yaml_data.get("author"),
             date=date_obj,
             modified=modified_obj,

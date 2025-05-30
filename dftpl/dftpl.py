@@ -59,11 +59,11 @@ def main():
     # Dictionary mapping event types to rules
     event_analyzers = {
         # Web browsing related events
-        "google-search": ["/web/GoogleSearch.yml", "/web/GoogleSearch_regex.yml"],
-        "bing-search": ["/web/BingSearch.yml", "/web/BingSearch_regex.yml"],
-        "web-visits": ["/web/WebVisit.yml", "/web/WebVisit_regex.yml"],
-        "images-cached": ["/web/AllImagesFromCache.yml", "/web/AllImagesFromCache_regex.yml"],
-        "videos-cached": ["/web/AllVideosFromCache.yml", "/web/AllVideosFromCache_regex.yml"],
+        "google-search": ["/web/google_search.yml"],
+        "bing-search": ["/web/bing_search.yml"],
+        "web-visits": ["/web/web_visit.yml"],
+        
+        
         "all-web-activity": [
             "/web/GoogleSearch.yml", "/web/GoogleSearch_regex.yml",
             "/web/BingSearch.yml", "/web/BingSearch_regex.yml",
@@ -148,7 +148,7 @@ def main():
         ]
     }
     # Default rules
-    default_rules = ["/web/GoogleSearch.yml"]
+    default_rules = ["/web/google_search.yml"]
 
     # Get rules based on event_type, or use default rules
     rules = event_analyzers.get(event_type, default_rules)

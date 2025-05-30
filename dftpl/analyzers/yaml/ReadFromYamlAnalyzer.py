@@ -25,7 +25,6 @@ def CreateHighTimeline(low_level_timeline: LowLevelTimeline, rule: Rule, start_i
     
     # Create a high level timeline to store the results
     high_level_timeline = HighLevelTimeline()
-    
     # Extract details from matching events
     for low_level_event in matching_events:
         # Create a high level event
@@ -47,7 +46,6 @@ def CreateHighTimeline(low_level_timeline: LowLevelTimeline, rule: Rule, start_i
             high_event.description = rule.description
         else:
             high_event.type = rule.high_level_event.type
-            
             # Process each key definition
             process_keys(high_event, low_level_event, rule.high_level_event.keys)
 
@@ -55,10 +53,10 @@ def CreateHighTimeline(low_level_timeline: LowLevelTimeline, rule: Rule, start_i
             high_event.description = format_description(
                     rule.high_level_event.description, high_event
                 )
-            
+                        
             # Create and set trigger
             if rule.reasoning:
-                trigger = create_trigger(rule.reasoning, low_level_event, high_event)
+                trigger = create_trigger(rule.reasoning, low_level_event)
                 high_event.trigger = trigger
         
 
@@ -89,7 +87,6 @@ def process_keys(
             value = key_processor.process_key(
                 key_def,
                 low_level_event,
-                high_event.keys,  # Pass existing keys for computed/template values
             )
 
             # Set the key
@@ -100,13 +97,12 @@ def process_keys(
             print(f"Error processing key {key_def.name}: {str(e)}")
             high_event.set_keys(key_def.name, None)
 
-def create_trigger(reasoning: "ReasoningDefinition", low_level_event: LowLevelEvent, high_level_event: HighLevelEvent
-) -> ReasoningArtefact:
+def create_trigger(reasoning: "ReasoningDefinition", low_level_event: LowLevelEvent) -> ReasoningArtefact:
     """Create a reasoning artifact from the rule's reasoning definition"""
     trigger = ReasoningArtefact()
     trigger.id = low_level_event.id
     trigger.description = format_description(
-        reasoning.description, high_level_event
+        reasoning.description, low_level_event
     )
     trigger.test_event = {
         "type": low_level_event.type,

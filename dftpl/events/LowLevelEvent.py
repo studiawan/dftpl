@@ -6,10 +6,10 @@ from dftpl.events.BaseEvent import BaseEvent
 class LowLevelEvent(BaseEvent):
     def __init__(self):
         super().__init__()
-        self.path: Optional[str] = None           # The object that the event relates to, e.g., a file path or URL
-        self.provenance: Optional[Dict] = None    # Provenance details for traceability
-        self.evidence: Optional[str] = None       # The evidence item that the event came from
-        self.plugin: Optional[str] = None         # The time extractor used to recover the event
+        self.path: Optional[str] = None           
+        self.provenance: Optional[Dict] = None    
+        self.evidence: Optional[str] = None       
+        self.plugin: Optional[str] = None         
     
     def match(self, test_event):
         """Tries to match a test event with the current event and returns true if they match"""
