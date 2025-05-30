@@ -1,6 +1,15 @@
 from dataclasses import dataclass, field
 from datetime import datetime, date
 from typing import List, Dict, Any, Optional, Union
+from enum import Enum
+
+class RuleStatus(Enum):
+    """Valid status values for rules"""
+    STABLE = "stable"
+    TEST = "test"
+    EXPERIMENTAL = "experimental"
+    DEPRECATED = "deprecated"
+    UNSUPPORTED = "unsupported"
 
 
 @dataclass
@@ -103,7 +112,7 @@ class Rule:
     detection: DetectionDefinition
     high_level_event: Optional[HighLevelEventDefinition] = None
     reasoning: Optional[ReasoningDefinition] = None
-    status: str = field(default="experimental")
+    status: RuleStatus = field(default=RuleStatus.EXPERIMENTAL)
     author: Optional[str] = None
     date: Optional[datetime] = None
     modified: Optional[datetime] = None
