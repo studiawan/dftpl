@@ -1,0 +1,36 @@
+title: Youtube watch
+id: 18bc41a9-c18c-4c26-8e2e-786e40ac96a8
+status: experimental
+description: Video streaming on YouTube based on URL structure
+references: 
+tags:
+  - 
+author: Java Kanaya Prada
+date: 2025/05/27
+modified: 2025/05/27
+logsource:
+  product: 
+    - firefox
+    - chromium
+  service:
+    - sqlite/firefox_history
+    - sqlite/chrome_27_history
+detection:
+  keywords:
+    '|all':
+      - 'WEBHIST'
+      - 'https'
+      - 'www.youtube.com/watch'
+  condition: keywords
+level: informational
+category: Web
+high_level_event:
+  type: Youtube Watch
+  description: Youtube watch for "{keys[Video_Title]}" using {keys[Browser]}
+  keys:
+    - name: Browser 
+      source: get_browser
+    - name: Video_Title
+      source: extract_youtube_video_title
+reasoning: 
+  description: YouTube watch URL found in {evidence}

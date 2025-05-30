@@ -2,20 +2,24 @@ title: Web visit to domain
 id: 8e947e1a-313f-4c8f-bf3a-b0fd181ce879
 status: experimental
 description: Web Visit
-references: 
 tags:
   - 
 author: Java Kanaya Prada
 date: 2024/10/14
 modified: 2025/02/04
 logsource:
-  parser: sqlite/firefox_history
+  product: 
+    - firefox
+    - chromium
+  service:
+    - sqlite/firefox_history
+    - sqlite/chrome_27_history
 detection:
   keywords:
-    '|all':
-      - "WEBHIST"
-      - "http"
-      - "www"
+    '|all|re':
+      - 'WEBHIST'
+      - 'https?:\/\/' 
+      - 'www.'
   condition: keywords
 fields:
 falsepositives:
@@ -26,20 +30,11 @@ high_level_event:
   description: Web Visit to {keys[Domain]}
   keys:
     - name: Browser 
-      source_type: utils
-      source_name: get_browser
-      source_args:
-        - each_low_event.plugin 
+      source: get_browser
     - name: URL
-      source_type: utils
-      source_name: extract_url
-      source_args:
-        - each_low_event.evidence 
+      source: extract_url
     - name: Domain
-      source_type: utils
-      source_name: extract_domain_from_url
-      source_args:
-        - each_low_event.evidence 
+      source: extract_domain_from_url
 reasoning:
   description: URL found in {evidence}
 

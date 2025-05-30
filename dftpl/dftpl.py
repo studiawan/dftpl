@@ -62,45 +62,48 @@ def main():
         "google-search": ["/web/google_search.yml"],
         "bing-search": ["/web/bing_search.yml"],
         "web-visits": ["/web/web_visit.yml"],
-        
+        "youtube-watch": ["/web/youtube_watch.yml"],
         
         "all-web-activity": [
-            "/web/GoogleSearch.yml", "/web/GoogleSearch_regex.yml",
-            "/web/BingSearch.yml", "/web/BingSearch_regex.yml",
-            "/web/WebVisit.yml", "/web/WebVisit_regex.yml",
-            "/web/AllImagesFromCache.yml", "/web/AllImagesFromCache_regex.yml",
-            "/web/AllVideosFromCache.yml", "/web/AllVideosFromCache_regex.yml"
+            "/web/google_search.yml",
+            "/web/bing_search.yml",
+            "/web/web_visit.yml",
+            "/web/youtube_watch.yml",
         ],
         
         # System log related events
-        "security-tools": ["/linux/builtin/syslog/lnx_syslog_security_tools_disabling_syslog.yml"],
+        "security-tools": [
+            "/linux/builtin/syslog/lnx_syslog_security_tools_disabling_syslog.yml"
+        ],
         "suspicious-dns": ["/linux/builtin/syslog/lnx_syslog_susp_named.yml"],
         "system-logs": [
-            "/linux/builtin/syslog/lnx_syslog_security_tools_disabling_syslog.yml", 
-            "/linux//builtin/syslog/lnx_syslog_susp_named.yml"
+            "/linux/builtin/syslog/lnx_syslog_security_tools_disabling_syslog.yml",
+            "/linux//builtin/syslog/lnx_syslog_susp_named.yml",
         ],
-        
         # Cron related events
-        "crontab-modification": ["/linux/builtin/cron/lnx_cron_crontab_file_modification.yml"],
-        
+        "crontab-modification": [
+            "/linux/builtin/cron/lnx_cron_crontab_file_modification.yml"
+        ],
         # VSFTPD related events
         "ftp-errors": ["/linux/builtin/vsftpd/lnx_vsftpd_susp_error_messages.yml"],
         "suspicious-logs": ["/linux/builtin/lnx_shell_susp_log_entries.yml"],
-        
         # Custom suspicious activities
         "file-access": ["/linux/custom_susp/lnx_file_access_or_modification.yml"],
-        "privilege-escalation": ["/linux/custom_susp/lnx_privilege_escalation_detection.yml"],
+        "privilege-escalation": [
+            "/linux/custom_susp/lnx_privilege_escalation_detection.yml"
+        ],
         "ssh-brute-force": ["/linux/custom_susp/lnx_ssh_brute_force_attempts.yml"],
-        "suspicious-user": ["/linux/custom_susp/lnx_suspicious_user_account_creation.yml"],
+        "suspicious-user": [
+            "/linux/custom_susp/lnx_suspicious_user_account_creation.yml"
+        ],
         "web-shell": ["/linux/custom_susp/lnx_web_shell_detection.yml"],
         "suspicious-activity": [
             "/linux/custom_susp/lnx_file_access_or_modification.yml",
             "/linux/custom_susp/lnx_privilege_escalation_detection.yml",
             "/linux/custom_susp/lnx_ssh_brute_force_attempts.yml",
             "/linux/custom_susp/lnx_suspicious_user_account_creation.yml",
-            "/linux/custom_susp/lnx_web_shell_detection.yml"
+            "/linux/custom_susp/lnx_web_shell_detection.yml",
         ],
-        
         # Combined categories
         "security-monitoring": [
             "/linux/builtin/syslog/lnx_syslog_security_tools_disabling_syslog.yml",
@@ -108,9 +111,8 @@ def main():
             "/linux/custom_susp/lnx_privilege_escalation_detection.yml",
             "/linux/custom_susp/lnx_ssh_brute_force_attempts.yml",
             "/linux/custom_susp/lnx_suspicious_user_account_creation.yml",
-            "/linux/custom_susp/lnx_web_shell_detection.yml"
+            "/linux/custom_susp/lnx_web_shell_detection.yml",
         ],
-        
         # All Linux-specific events
         "all-linux-events": [
             "/linux/builtin/cron/lnx_cron_crontab_file_modification.yml",
@@ -122,18 +124,21 @@ def main():
             "/linux/custom_susp/lnx_privilege_escalation_detection.yml",
             "/linux/custom_susp/lnx_ssh_brute_force_attempts.yml",
             "/linux/custom_susp/lnx_suspicious_user_account_creation.yml",
-            "/linux/custom_susp/lnx_web_shell_detection.yml"
+            "/linux/custom_susp/lnx_web_shell_detection.yml",
         ],
-        
         # Default for running all available rules
         "all": [
             # Web rules
-            "/web/GoogleSearch.yml", "/web/GoogleSearch_regex.yml",
-            "/web/BingSearch.yml", "/web/BingSearch_regex.yml",
-            "/web/WebVisit.yml", "/web/WebVisit_regex.yml",
-            "/web/AllImagesFromCache.yml", "/web/AllImagesFromCache_regex.yml",
-            "/web/AllVideosFromCache.yml", "/web/AllVideosFromCache_regex.yml",
-            
+            "/web/GoogleSearch.yml",
+            "/web/GoogleSearch_regex.yml",
+            "/web/BingSearch.yml",
+            "/web/BingSearch_regex.yml",
+            "/web/WebVisit.yml",
+            "/web/WebVisit_regex.yml",
+            "/web/AllImagesFromCache.yml",
+            "/web/AllImagesFromCache_regex.yml",
+            "/web/AllVideosFromCache.yml",
+            "/web/AllVideosFromCache_regex.yml",
             # Linux rules
             "/linux/builtin/cron/lnx_cron_crontab_file_modification.yml",
             "/linux/builtin/syslog/lnx_syslog_security_tools_disabling_syslog.yml",
@@ -144,8 +149,8 @@ def main():
             "/linux/custom_susp/lnx_privilege_escalation_detection.yml",
             "/linux/custom_susp/lnx_ssh_brute_force_attempts.yml",
             "/linux/custom_susp/lnx_suspicious_user_account_creation.yml",
-            "/linux/custom_susp/lnx_web_shell_detection.yml"
-        ]
+            "/linux/custom_susp/lnx_web_shell_detection.yml",
+        ],
     }
     # Default rules
     default_rules = ["/web/google_search.yml"]
