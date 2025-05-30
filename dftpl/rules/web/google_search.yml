@@ -34,7 +34,7 @@ high_level_event:
     - name: Browser 
       source: get_browser
     - name: Search_Term
-      source: extract_search_term
+      source: extract_google_search_term
 reasoning:
   description: The source WEBHIST was found in {plugin}, and Google Search URL found in {evidence}
 

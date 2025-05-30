@@ -104,19 +104,39 @@ class Utils:
         return ""
     
     @staticmethod
-    def extract_search_term(low_level_event: LowLevelEvent) -> str:
-        """Extract search term from evidence - useful for search history analysis"""
-        evidence = low_level_event.evidence
-            
-        # Look for common search patterns
-        search_patterns = [
-            r'q=([^&\s]+)',  # URL parameter q=
-        ]
+    def extract_google_search_term(low_level_event: LowLevelEvent) -> str:
+        """Extract search term from Google search URL"""
+        evidence = getattr(low_level_event, 'evidence', '')
+        if not evidence:
+            return ""
         
-        for pattern in search_patterns:
-            match = re.search(pattern, evidence, re.IGNORECASE)
-            if match:
-                return match.group(1).strip()
+        # Pattern for Google search: q=SEARCH_TERM
+        search_match = re.search(r'[?&]q=([^&\s]+)', evidence)
+        if search_match:
+            search_term = search_match.group(1)
+            # URL decode the search term
+            search_term = search_term.replace('%20', ' ').replace('%22', '"').replace('%27', "'")
+            search_term = search_term.replace('+', ' ')  # Google uses + for spaces
+            return search_term
+        
+        return ""
+    
+    @staticmethod
+    def extract_bing_search_term(low_level_event: LowLevelEvent) -> str:
+        """Extract search term from Bing search URL"""
+        evidence = getattr(low_level_event, 'evidence', '')
+        if not evidence:
+            return ""
+        
+        # Pattern for Bing search: q=SEARCH_TERM
+        search_match = re.search(r'[?&]q=([^&\s]+)', evidence)
+        if search_match:
+            search_term = search_match.group(1)
+            # URL decode the search term
+            search_term = search_term.replace('%20', ' ').replace('%22', '"').replace('%27', "'")
+            search_term = search_term.replace('+', ' ')  # Bing also uses + for spaces
+            search_term = search_term.replace('%2B', '+')  # Handle encoded plus signs
+            return search_term
         
         return ""
     
