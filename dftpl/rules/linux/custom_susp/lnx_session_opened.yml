@@ -1,0 +1,44 @@
+title: Linux Session Opened
+id: d7a3f8b5-2e9c-4f1d-8b6a-5c7e9f2a4d8b
+status: experimental
+description: Detects session opening events for users including sudo sessions, SSH logins, and system logins
+references:
+  - https://man7.org/linux/man-pages/man8/systemd-logind.8.html
+tags:
+  - linux
+  - session_management
+  - login
+  - sudo
+  - ssh
+author: Java Kanaya Prada
+date: 2025/05/30
+modified: 2025/05/30
+logsource:
+  product: linux
+  service:
+    - systemd_journal
+    - auth.log
+    - syslog
+detection:
+  keywords:
+    '|re':
+      - 'session opened for user.*by'
+  condition: keywords
+level: informational
+category: Session Management
+high_level_event:
+  type: Session Opened
+  description: "Session opened for user '{keys[Target_User]}' by '{keys[Executor_User]}' via {keys[Service_Name]}"
+  keys:
+    - name: Target_User
+      source: extract_session_target_user
+    - name: Executor_User
+      source: extract_session_executor_user
+    - name: Service_Name
+      source: extract_session_service_name
+    - name: Executor_UID
+      source: extract_session_executor_uid
+    - name: Session_Type
+      source: extract_session_type
+reasoning: 
+  description: "Session opened event found in {evidence}"

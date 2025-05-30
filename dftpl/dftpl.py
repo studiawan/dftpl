@@ -1,11 +1,13 @@
 import argparse
 import os
+from typing import List
 import dftpl.analyzers.yaml.ReadFromYamlAnalyzer as ReadFromYamlAnalyzer
 from dftpl.reader.CSVReader import CSVReader
 from dftpl.reader.YAMLReader import YAMLReader
 from dftpl.timelines.LowLevelTimeline import LowLevelTimeline
 from dftpl.timelines.HighLevelTimeline import MergeHighLevelTimeline
 from dftpl.output.JSONWriter import JSONWriter
+from dftpl.rules.Rule import Rule
 
 
 # Main function
@@ -63,41 +65,43 @@ def main():
         "bing-search": ["/web/bing_search.yml"],
         "web-visits": ["/web/web_visit.yml"],
         "youtube-watch": ["/web/youtube_watch.yml"],
-        
         "all-web-activity": [
             "/web/google_search.yml",
             "/web/bing_search.yml",
             "/web/web_visit.yml",
             "/web/youtube_watch.yml",
         ],
-        
-        # Linux Account Managemet   
+        # Linux Account Management
         "user-add": [
             "/linux/custom_susp/lnx_user_add.yml",
         ],
         "user-mod": [
             "/linux/custom_susp/lnx_user_mod.yml",
         ],
-        
         "account-management-activity": [
             "/linux/custom_susp/lnx_user_add.yml",
             "/linux/custom_susp/lnx_user_mod.yml",
         ],
-        
+        # Authentication related events
         "auth-failure": [
             "/linux/custom_susp/lnx_auth_failure.yml",
         ],
-        
-        
+        "session-opened": [
+            "/linux/custom_susp/lnx_session_opened.yml",
+        ],
+        "authentication-activity": [
+            "/linux/custom_susp/lnx_auth_failure.yml",
+            "/linux/custom_susp/lnx_session_opened.yml",
+        ],
+        # Web security events
+        "web-shell": [
+            "/linux/custom_susp/lnx_web_shell_detection.yml",
+        ],
         # System log related events
         "security-tools": [
             "/linux/builtin/syslog/lnx_syslog_security_tools_disabling_syslog.yml"
         ],
         "suspicious-dns": ["/linux/builtin/syslog/lnx_syslog_susp_named.yml"],
-        "system-logs": [
-            "/linux/builtin/syslog/lnx_syslog_security_tools_disabling_syslog.yml",
-            "/linux//builtin/syslog/lnx_syslog_susp_named.yml",
-        ],
         # Cron related events
         "crontab-modification": [
             "/linux/builtin/cron/lnx_cron_crontab_file_modification.yml"
@@ -105,90 +109,129 @@ def main():
         # VSFTPD related events
         "ftp-errors": ["/linux/builtin/vsftpd/lnx_vsftpd_susp_error_messages.yml"],
         "suspicious-logs": ["/linux/builtin/lnx_shell_susp_log_entries.yml"],
-        # Custom suspicious activities
-        "file-access": ["/linux/custom_susp/lnx_file_access_or_modification.yml"],
-        "privilege-escalation": [
-            "/linux/custom_susp/lnx_privilege_escalation_detection.yml"
-        ],
-        "ssh-brute-force": ["/linux/custom_susp/lnx_ssh_brute_force_attempts.yml"],
-        "suspicious-user": [
-            "/linux/custom_susp/lnx_suspicious_user_account_creation.yml"
-        ],
-        "web-shell": ["/linux/custom_susp/lnx_web_shell_detection.yml"],
-        "suspicious-activity": [
-            "/linux/custom_susp/lnx_file_access_or_modification.yml",
-            "/linux/custom_susp/lnx_privilege_escalation_detection.yml",
-            "/linux/custom_susp/lnx_ssh_brute_force_attempts.yml",
-            "/linux/custom_susp/lnx_suspicious_user_account_creation.yml",
+        
+        # Comprehensive rule sets
+        "all-linux-security": [
+            "/linux/custom_susp/lnx_user_add.yml",
+            "/linux/custom_susp/lnx_user_mod.yml",
+            "/linux/custom_susp/lnx_auth_failure.yml",
+            "/linux/custom_susp/lnx_session_opened.yml",
             "/linux/custom_susp/lnx_web_shell_detection.yml",
-        ],
-        # Combined categories
-        "security-monitoring": [
             "/linux/builtin/syslog/lnx_syslog_security_tools_disabling_syslog.yml",
             "/linux/builtin/syslog/lnx_syslog_susp_named.yml",
-            "/linux/custom_susp/lnx_privilege_escalation_detection.yml",
-            "/linux/custom_susp/lnx_ssh_brute_force_attempts.yml",
-            "/linux/custom_susp/lnx_suspicious_user_account_creation.yml",
-            "/linux/custom_susp/lnx_web_shell_detection.yml",
-        ],
-        # All Linux-specific events
-        "all-linux-events": [
             "/linux/builtin/cron/lnx_cron_crontab_file_modification.yml",
-            "/linux/builtin/syslog/lnx_syslog_security_tools_disabling_syslog.yml",
-            "/linux/builtin/syslog/lnx_syslog_susp_named.yml",
             "/linux/builtin/vsftpd/lnx_vsftpd_susp_error_messages.yml",
             "/linux/builtin/lnx_shell_susp_log_entries.yml",
-            "/linux/custom_susp/lnx_file_access_or_modification.yml",
-            "/linux/custom_susp/lnx_privilege_escalation_detection.yml",
-            "/linux/custom_susp/lnx_ssh_brute_force_attempts.yml",
-            "/linux/custom_susp/lnx_suspicious_user_account_creation.yml",
-            "/linux/custom_susp/lnx_web_shell_detection.yml",
         ],
+        
         # Default for running all available rules
         "all": [
-            # Web rules
-            "/web/GoogleSearch.yml",
-            "/web/GoogleSearch_regex.yml",
-            "/web/BingSearch.yml",
-            "/web/BingSearch_regex.yml",
-            "/web/WebVisit.yml",
-            "/web/WebVisit_regex.yml",
-            "/web/AllImagesFromCache.yml",
-            "/web/AllImagesFromCache_regex.yml",
-            "/web/AllVideosFromCache.yml",
-            "/web/AllVideosFromCache_regex.yml",
-            # Linux rules
-            "/linux/builtin/cron/lnx_cron_crontab_file_modification.yml",
+            # Web browsing rules
+            "/web/google_search.yml",
+            "/web/bing_search.yml",
+            "/web/web_visit.yml",
+            "/web/youtube_watch.yml",
+            
+            # Linux account management rules
+            "/linux/custom_susp/lnx_user_add.yml",
+            "/linux/custom_susp/lnx_user_mod.yml",
+            
+            # Authentication rules
+            "/linux/custom_susp/lnx_auth_failure.yml",
+            "/linux/custom_susp/lnx_session_opened.yml",
+            
+            # Web shell rule
+            "/linux/custom_susp/lnx_web_shell_detection.yml",
+            
+            # System security rules
             "/linux/builtin/syslog/lnx_syslog_security_tools_disabling_syslog.yml",
             "/linux/builtin/syslog/lnx_syslog_susp_named.yml",
+            
+            # Cron and scheduled task rules
+            "/linux/builtin/cron/lnx_cron_crontab_file_modification.yml",
+            
+            # FTP and service rules
             "/linux/builtin/vsftpd/lnx_vsftpd_susp_error_messages.yml",
+            
+            # General suspicious activity rules
             "/linux/builtin/lnx_shell_susp_log_entries.yml",
-            "/linux/custom_susp/lnx_file_access_or_modification.yml",
-            "/linux/custom_susp/lnx_privilege_escalation_detection.yml",
-            "/linux/custom_susp/lnx_ssh_brute_force_attempts.yml",
-            "/linux/custom_susp/lnx_suspicious_user_account_creation.yml",
-            "/linux/custom_susp/lnx_web_shell_detection.yml",
         ],
     }
-    # Default rules
-    default_rules = ["/web/google_search.yml"]
+    
+    # Default rules - comprehensive set for general analysis
+    default_rules = [
+        # Core web activity rules
+        "/web/google_search.yml",
+        "/web/bing_search.yml",
+        "/web/web_visit.yml",
+        "/web/youtube_watch.yml",
+        
+        # Core security rules
+        "/linux/custom_susp/lnx_user_add.yml",
+        "/linux/custom_susp/lnx_user_mod.yml",
+        "/linux/custom_susp/lnx_auth_failure.yml",
+        "/linux/custom_susp/lnx_session_opened.yml",
+        
+        # Core system monitoring rules
+        "/linux/builtin/syslog/lnx_syslog_security_tools_disabling_syslog.yml",
+        "/linux/builtin/syslog/lnx_syslog_susp_named.yml",
+        "/linux/builtin/cron/lnx_cron_crontab_file_modification.yml",
+        "/linux/builtin/vsftpd/lnx_vsftpd_susp_error_messages.yml",
+        "/linux/builtin/lnx_shell_susp_log_entries.yml",
+        "/linux/custom_susp/lnx_web_shell_detection.yml",
+    ]
 
     # Get rules based on event_type, or use default rules
     rules = event_analyzers.get(event_type, default_rules)
 
+    # Print information about selected rules
+    if event_type:
+        print(f"Running analysis with rule set: '{event_type}' ({len(rules)} rules)")
+    else:
+        print(f"Running analysis with default rule set ({len(rules)} rules)")
+
     # Read the YAML rules
-    yaml_contents = []
+    yaml_contents: List[Rule] = []
     for rule in rules:
         yaml_file_path = os.path.join(os.path.dirname(__file__), "rules" + rule)
-        reader = YAMLReader(yaml_file_path)
-        yaml_content = reader.read()
-        yaml_contents.append(yaml_content)
+        
+        # Check if rule file exists
+        if not os.path.exists(yaml_file_path):
+            print(f"Warning: Rule file not found: {yaml_file_path}")
+            continue
+            
+        try:
+            reader = YAMLReader(yaml_file_path)
+            yaml_content = reader.read()
+            yaml_contents.append(yaml_content)
+            print(f"Loaded rule: {rule}")
+        except Exception as e:
+            print(f"Error loading rule {rule}: {str(e)}")
+            continue
+
+    if not yaml_contents:
+        print("Error: No valid rules could be loaded. Exiting.")
+        return
 
     # Run each rules with the analyzer
-    for yaml_content in yaml_contents:
-        high_timeline = ReadFromYamlAnalyzer.Run(low_timeline, yaml_content)
-        if high_timeline:
-            high_timelines.append(high_timeline)
+    print(f"Running {len(yaml_contents)} rules against the timeline...")
+    for i, yaml_content in enumerate(yaml_contents, 1):            
+        print(f"Processing rule: {yaml_content.title} ...")
+        
+        try:
+            high_timeline = ReadFromYamlAnalyzer.Run(low_timeline, yaml_content)
+            if high_timeline and len(high_timeline.events) > 0:
+                high_timelines.append(high_timeline)
+                print(f"  → Found {len(high_timeline.events)} events")
+            else:
+                print("  → No events found")
+        except Exception as e:
+            print(f"  → Error processing rule: {str(e)}")
+            continue
+
+    if not high_timelines:
+        print("No events were detected by any rules.")
+        return
 
     # Merge the high-level timelines
     print("Merging high-level timelines ...")
@@ -197,5 +240,9 @@ def main():
 
     # Write the results to a JSON file
     print(f"Writing results to JSON file: {output_path} ...")
+    print(f"Total events in merged timeline: {len(merged_high_timelines.events)}")
     json_writer = JSONWriter(merged_high_timelines, output_path)
     json_writer.write()
+    
+    print("Analysis completed successfully!")
+

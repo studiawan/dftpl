@@ -123,9 +123,7 @@ class Utils:
     @staticmethod
     def extract_useradd_activity_type(low_level_event: LowLevelEvent) -> str:
         """Extract the type of useradd activity (new user, new group, failed)"""
-        evidence = getattr(low_level_event, 'evidence', '')
-        if not evidence:
-            return ""
+        evidence = low_level_event.evidence
         
         if 'new user:' in evidence:
             return "User Created"
@@ -139,9 +137,7 @@ class Utils:
     @staticmethod
     def extract_useradd_username(low_level_event: LowLevelEvent) -> str:
         """Extract username from useradd log entry"""
-        evidence = getattr(low_level_event, 'evidence', '')
-        if not evidence:
-            return ""
+        evidence = low_level_event.evidence
         
         # Pattern for new user: name=username
         user_match = re.search(r'name=([^\s]+)', evidence)
@@ -158,9 +154,7 @@ class Utils:
     @staticmethod
     def extract_useradd_creator(low_level_event: LowLevelEvent) -> str:
         """Extract the user who created the new user (from sudo logs)"""
-        evidence = getattr(low_level_event, 'evidence', '')
-        if not evidence:
-            return ""
+        evidence = low_level_event.evidence
         
         # Look for sudo log pattern: username : TTY=pts/0 ; PWD=/path ; USER=root ; COMMAND=/usr/sbin/useradd
         sudo_match = re.search(r'(\w+)\s*:\s*TTY=.*COMMAND=.*useradd', evidence)
@@ -172,9 +166,7 @@ class Utils:
     @staticmethod
     def extract_useradd_uid(low_level_event: LowLevelEvent) -> str:
         """Extract UID from useradd log entry"""
-        evidence = getattr(low_level_event, 'evidence', '')
-        if not evidence:
-            return ""
+        evidence = low_level_event.evidence
         
         uid_match = re.search(r'UID=(\d+)', evidence)
         if uid_match:
@@ -185,9 +177,7 @@ class Utils:
     @staticmethod
     def extract_useradd_gid(low_level_event: LowLevelEvent) -> str:
         """Extract GID from useradd log entry"""
-        evidence = getattr(low_level_event, 'evidence', '')
-        if not evidence:
-            return ""
+        evidence = low_level_event.evidence
         
         gid_match = re.search(r'GID=(\d+)', evidence)
         if gid_match:
@@ -198,9 +188,7 @@ class Utils:
     @staticmethod
     def extract_useradd_home(low_level_event: LowLevelEvent) -> str:
         """Extract home directory from useradd log entry"""
-        evidence = getattr(low_level_event, 'evidence', '')
-        if not evidence:
-            return ""
+        evidence = low_level_event.evidence
         
         home_match = re.search(r'home=([^\s]+)', evidence)
         if home_match:
@@ -211,9 +199,7 @@ class Utils:
     @staticmethod
     def extract_useradd_shell(low_level_event: LowLevelEvent) -> str:
         """Extract shell from useradd log entry"""
-        evidence = getattr(low_level_event, 'evidence', '')
-        if not evidence:
-            return ""
+        evidence = low_level_event.evidence
         
         shell_match = re.search(r'shell=([^\s]+)', evidence)
         if shell_match:
@@ -224,9 +210,7 @@ class Utils:
     @staticmethod
     def extract_useradd_exit_code(low_level_event: LowLevelEvent) -> str:
         """Extract exit code from failed useradd attempts"""
-        evidence = getattr(low_level_event, 'evidence', '')
-        if not evidence:
-            return ""
+        evidence = low_level_event.evidence
         
         exit_code_match = re.search(r'exit code:\s*(\d+)', evidence)
         if exit_code_match:
@@ -237,9 +221,7 @@ class Utils:
     @staticmethod
     def extract_usermod_activity_type(low_level_event: LowLevelEvent) -> str:
         """Extract the type of usermod activity"""
-        evidence = getattr(low_level_event, 'evidence', '')
-        if not evidence:
-            return ""
+        evidence = low_level_event.evidence
         
         if 'add' in evidence and 'to group' in evidence:
             if 'shadow group' in evidence:
@@ -275,9 +257,7 @@ class Utils:
     @staticmethod
     def extract_usermod_creator(low_level_event: LowLevelEvent) -> str:
         """Extract the user who executed the usermod command"""
-        evidence = getattr(low_level_event, 'evidence', '')
-        if not evidence:
-            return ""
+        evidence = low_level_event.evidence
         
         # Look for sudo log pattern: username : TTY=pts/0 ; PWD=/path ; USER=root ; COMMAND=/usr/sbin/usermod
         sudo_match = re.search(r'(\w+)\s*:\s*TTY=.*COMMAND=.*usermod', evidence)
@@ -289,9 +269,7 @@ class Utils:
     @staticmethod
     def extract_usermod_group(low_level_event: LowLevelEvent) -> str:
         """Extract the group name from usermod activity"""
-        evidence = getattr(low_level_event, 'evidence', '')
-        if not evidence:
-            return ""
+        evidence = low_level_event.evidence
         
         # Pattern for: add 'username' to group 'groupname'
         group_match = re.search(r"to (?:shadow )?group '([^']+)'", evidence)
@@ -308,9 +286,7 @@ class Utils:
     @staticmethod
     def extract_usermod_group_type(low_level_event: LowLevelEvent) -> str:
         """Extract whether it's a regular or shadow group"""
-        evidence = getattr(low_level_event, 'evidence', '')
-        if not evidence:
-            return ""
+        evidence = low_level_event.evidence
         
         if 'shadow group' in evidence:
             return "shadow"
@@ -322,9 +298,7 @@ class Utils:
     @staticmethod
     def extract_usermod_command_args(low_level_event: LowLevelEvent) -> str:
         """Extract the full command arguments from usermod command"""
-        evidence = getattr(low_level_event, 'evidence', '')
-        if not evidence:
-            return ""
+        evidence = low_level_event.evidence
         
         # Extract arguments from COMMAND=/usr/sbin/usermod [args]
         command_match = re.search(r'COMMAND=.*usermod\s+(.+)', evidence)
@@ -336,9 +310,7 @@ class Utils:
     @staticmethod
     def extract_auth_failure_type(low_level_event: LowLevelEvent) -> str:
         """Extract the type of authentication failure"""
-        evidence = getattr(low_level_event, 'evidence', '')
-        if not evidence:
-            return ""
+        evidence = low_level_event.evidence
         
         if 'Failed password for invalid user' in evidence:
             return "Failed Password (Invalid User)"
@@ -356,9 +328,7 @@ class Utils:
     @staticmethod
     def extract_auth_target_user(low_level_event: LowLevelEvent) -> str:
         """Extract the target username from authentication attempt"""
-        evidence = getattr(low_level_event, 'evidence', '')
-        if not evidence:
-            return ""
+        evidence = low_level_event.evidence
         
         # Pattern for: Failed password for [invalid user] username
         failed_password_match = re.search(r'Failed password for (?:invalid user )?([^\s]+)', evidence)
@@ -380,9 +350,7 @@ class Utils:
     @staticmethod
     def extract_auth_source_ip(low_level_event: LowLevelEvent) -> str:
         """Extract source IP address from authentication attempt"""
-        evidence = getattr(low_level_event, 'evidence', '')
-        if not evidence:
-            return ""
+        evidence = low_level_event.evidence
         
         # Pattern for: from IP_ADDRESS port
         ip_port_match = re.search(r'from ([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)', evidence)
@@ -399,9 +367,7 @@ class Utils:
     @staticmethod
     def extract_auth_source_port(low_level_event: LowLevelEvent) -> str:
         """Extract source port from authentication attempt"""
-        evidence = getattr(low_level_event, 'evidence', '')
-        if not evidence:
-            return ""
+        evidence = low_level_event.evidence
         
         # Pattern for: from IP port PORT_NUMBER
         port_match = re.search(r'port (\d+)', evidence)
@@ -413,9 +379,7 @@ class Utils:
     @staticmethod
     def extract_auth_service(low_level_event: LowLevelEvent) -> str:
         """Extract the service/daemon that handled the authentication"""
-        evidence = getattr(low_level_event, 'evidence', '')
-        if not evidence:
-            return ""
+        evidence = low_level_event.evidence
         
         # Extract service from log format: [service_name pid: ####]
         service_match = re.search(r'\[([^\s\]]+)', evidence)
@@ -427,9 +391,7 @@ class Utils:
     @staticmethod
     def extract_auth_user_validity(low_level_event: LowLevelEvent) -> str:
         """Extract whether the user is valid or invalid"""
-        evidence = getattr(low_level_event, 'evidence', '')
-        if not evidence:
-            return ""
+        evidence = low_level_event.evidence
         
         if 'invalid user' in evidence:
             return "invalid"
@@ -441,9 +403,7 @@ class Utils:
     @staticmethod
     def extract_auth_tty(low_level_event: LowLevelEvent) -> str:
         """Extract TTY information from authentication attempt"""
-        evidence = getattr(low_level_event, 'evidence', '')
-        if not evidence:
-            return ""
+        evidence = low_level_event.evidence
         
         # Pattern for: tty=TTY_VALUE
         tty_match = re.search(r'tty=([^\s]+)', evidence)
@@ -455,9 +415,7 @@ class Utils:
     @staticmethod
     def extract_auth_remote_host(low_level_event: LowLevelEvent) -> str:
         """Extract remote host information"""
-        evidence = getattr(low_level_event, 'evidence', '')
-        if not evidence:
-            return ""
+        evidence = low_level_event.evidence
         
         # Pattern for: rhost=HOSTNAME (usually same as IP for direct connections)
         rhost_match = re.search(r'rhost=([^\s]+)', evidence)
@@ -465,3 +423,202 @@ class Utils:
             return rhost_match.group(1)
         
         return ""
+    
+    @staticmethod
+    def extract_session_target_user(low_level_event: LowLevelEvent) -> str:
+        """Extract the target user for whom the session is opened"""
+        evidence = low_level_event.evidence
+        
+        
+        # Pattern for: session opened for user USERNAME by
+        target_match = re.search(r'session opened for user ([^\s]+)', evidence)
+        if target_match:
+            return target_match.group(1)
+        
+        return ""
+    
+    @staticmethod
+    def extract_session_executor_user(low_level_event: LowLevelEvent) -> str:
+        """Extract the user who initiated the session"""
+        evidence = low_level_event.evidence
+        
+        
+        # Pattern for: by USERNAME(uid=####)
+        executor_match = re.search(r'by ([^\s\(]+)(?:\(uid=\d+\))?', evidence)
+        if executor_match:
+            executor = executor_match.group(1)
+            # Handle cases where 'by' is followed by (uid=###) without username
+            if executor.startswith('(uid='):
+                return "system"
+            return executor
+        
+        # If no specific user mentioned, it's likely a system-initiated session
+        if 'by (uid=' in evidence:
+            return "system"
+        
+        return ""
+    
+    @staticmethod
+    def extract_session_service_name(low_level_event: LowLevelEvent) -> str:
+        """Extract the service that opened the session"""
+        evidence = low_level_event.evidence
+        
+        # Extract service from log format: [service_name pid: ####]
+        service_match = re.search(r'\[([^\s\]]+)', evidence)
+        if service_match:
+            return service_match.group(1)
+        
+        return ""
+    
+    @staticmethod
+    def extract_session_executor_uid(low_level_event: LowLevelEvent) -> str:
+        """Extract the UID of the user who initiated the session"""
+        evidence = low_level_event.evidence
+        
+        
+        # Pattern for: by username(uid=####) or by (uid=####)
+        uid_match = re.search(r'uid=(\d+)', evidence)
+        if uid_match:
+            return uid_match.group(1)
+        
+        return ""
+    
+    @staticmethod
+    def extract_session_type(low_level_event: LowLevelEvent) -> str:
+        """Extract the type of session based on the service"""
+        
+        service = Utils.extract_session_service_name(low_level_event)
+        
+        if service == 'sudo':
+            return "Privilege Escalation"
+        elif service == 'sshd':
+            return "SSH Login"
+        elif 'systemd-logind' in service or 'gdm' in service:
+            return "System Login"
+        elif service == 'su':
+            return "User Switch"
+        elif service == 'cron' or 'CRON' in service:
+            return "Scheduled Task"
+        else:
+            return "Other Session"
+        
+    @staticmethod
+    def extract_webshell_command(low_level_event: LowLevelEvent) -> str:
+        """Extract the command executed in web shell request"""
+        evidence = getattr(low_level_event, 'evidence', '')
+        if not evidence:
+            return ""
+        
+        # Pattern for: ?cmd=COMMAND or &cmd=COMMAND
+        cmd_match = re.search(r'[?&]cmd=([^&\s]+)', evidence)
+        if cmd_match:
+            command = cmd_match.group(1)
+            # URL decode basic characters
+            command = command.replace('%20', ' ').replace('%2F', '/').replace('%3D', '=')
+            return command
+        
+        # Pattern for: ?command=COMMAND
+        command_match = re.search(r'[?&]command=([^&\s]+)', evidence)
+        if command_match:
+            command = command_match.group(1)
+            command = command.replace('%20', ' ').replace('%2F', '/').replace('%3D', '=')
+            return command
+        
+        return ""
+    
+    @staticmethod
+    def extract_webshell_php_file(low_level_event: LowLevelEvent) -> str:
+        """Extract the PHP file name from the request"""
+        evidence = getattr(low_level_event, 'evidence', '')
+        if not evidence:
+            return ""
+        
+        # Pattern for: GET /filename.php or POST /filename.php
+        php_match = re.search(r'(?:GET|POST)\s+(/[^\s?]+\.php)', evidence)
+        if php_match:
+            return php_match.group(1)
+        
+        return ""
+    
+    @staticmethod
+    def extract_webshell_source_ip(low_level_event: LowLevelEvent) -> str:
+        """Extract source IP address from HTTP request"""
+        evidence = getattr(low_level_event, 'evidence', '')
+        if not evidence:
+            return ""
+        
+        # Pattern for: from: IP_ADDRESS
+        ip_match = re.search(r'from:\s+([^\s]+)', evidence)
+        if ip_match:
+            return ip_match.group(1)
+        
+        return ""
+    
+    @staticmethod
+    def extract_webshell_http_method(low_level_event: LowLevelEvent) -> str:
+        """Extract HTTP method from the request"""
+        evidence = getattr(low_level_event, 'evidence', '')
+        if not evidence:
+            return ""
+        
+        # Pattern for: http_request: METHOD
+        method_match = re.search(r'http_request:\s+(GET|POST|PUT|DELETE|HEAD|OPTIONS)', evidence)
+        if method_match:
+            return method_match.group(1)
+        
+        return ""
+    
+    @staticmethod
+    def extract_webshell_response_code(low_level_event: LowLevelEvent) -> str:
+        """Extract HTTP response code"""
+        evidence = getattr(low_level_event, 'evidence', '')
+        if not evidence:
+            return ""
+        
+        # Pattern for: code: ###
+        code_match = re.search(r'code:\s+(\d+)', evidence)
+        if code_match:
+            return code_match.group(1)
+        
+        return ""
+    
+    @staticmethod
+    def extract_webshell_user_agent(low_level_event: LowLevelEvent) -> str:
+        """Extract User-Agent from the request"""
+        evidence = getattr(low_level_event, 'evidence', '')
+        if not evidence:
+            return ""
+        
+        # Pattern for: user_agent: AGENT_STRING
+        ua_match = re.search(r'user_agent:\s+(.+)', evidence)
+        if ua_match:
+            return ua_match.group(1)
+        
+        return ""
+    
+    @staticmethod
+    def extract_webshell_attack_type(low_level_event: LowLevelEvent) -> str:
+        """Classify the type of web shell attack"""
+        evidence = getattr(low_level_event, 'evidence', '')
+        if not evidence:
+            return ""
+        
+        command = Utils.extract_webshell_command(low_level_event).lower()
+        
+        if any(func in command for func in ['eval', 'base64_decode', 'system', 'exec', 'shell_exec']):
+            return "Code Injection"
+        elif any(cmd in command for cmd in ['whoami', 'uname', 'systeminfo', 'ifconfig', 'netstat']):
+            return "System Reconnaissance"
+        elif any(cmd in command for cmd in ['ls', 'dir', 'pwd', 'cat']):
+            return "File System Reconnaissance"
+        elif any(cmd in command for cmd in ['ps', 'tasklist']):
+            return "Process Reconnaissance"
+        elif any(cmd in command for cmd in ['wget', 'curl', 'nc', 'netcat']):
+            return "Network Activity"
+        elif any(cmd in command for cmd in ['chmod', 'chown', 'passwd', 'useradd', 'sudo']):
+            return "Privilege Escalation"
+        elif any(cmd in command for cmd in ['ping']):
+            return "Network Reconnaissance"
+        else:
+            return "Command Execution"
+    
