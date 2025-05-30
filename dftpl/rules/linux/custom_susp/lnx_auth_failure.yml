@@ -1,0 +1,51 @@
+title: Linux Authentication Failure
+id: c9f5a7b1-3e8d-4a2f-9c6b-8d7e5f3a1b9c
+status: experimental
+description: Detects authentication failures including failed password attempts, invalid user attempts, and PAM authentication failures
+references:
+  - https://man7.org/linux/man-pages/man8/sshd.8.html
+  - https://linux.die.net/man/8/pam_unix
+tags:
+  - linux
+  - authentication
+  - brute_force
+  - failed_login
+  - ssh
+  - pam
+author: Java Kanaya Prada
+date: 2025/05/30
+modified: 2025/05/30
+logsource:
+  product: linux
+  service:
+    - systemd_journal
+    - auth.log
+detection:
+  keywords:
+    '|re':
+      - '(Failed password for|authentication failure|PAM.*authentication failure)'
+  condition: keywords
+level: medium
+category: Authentication
+high_level_event:
+  type: Authentication Failure
+  description: "{keys[Failure_Type]} for user '{keys[Target_User]}' from {keys[Source_IP]}:{keys[Source_Port]} via {keys[Service]}"
+  keys:
+    - name: Failure_Type
+      source: extract_auth_failure_type
+    - name: Target_User
+      source: extract_auth_target_user
+    - name: Source_IP
+      source: extract_auth_source_ip
+    - name: Source_Port
+      source: extract_auth_source_port
+    - name: Service
+      source: extract_auth_service
+    - name: User_Validity
+      source: extract_auth_user_validity
+    - name: TTY
+      source: extract_auth_tty
+    - name: Remote_Host
+      source: extract_auth_remote_host
+reasoning: 
+  description: "Authentication failure detected in {evidence}"

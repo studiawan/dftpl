@@ -71,9 +71,23 @@ def main():
             "/web/youtube_watch.yml",
         ],
         
-        "user-add-activity": [
+        # Linux Account Managemet   
+        "user-add": [
             "/linux/custom_susp/lnx_user_add.yml",
         ],
+        "user-mod": [
+            "/linux/custom_susp/lnx_user_mod.yml",
+        ],
+        
+        "account-management-activity": [
+            "/linux/custom_susp/lnx_user_add.yml",
+            "/linux/custom_susp/lnx_user_mod.yml",
+        ],
+        
+        "auth-failure": [
+            "/linux/custom_susp/lnx_auth_failure.yml",
+        ],
+        
         
         # System log related events
         "security-tools": [
