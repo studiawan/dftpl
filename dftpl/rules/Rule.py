@@ -1,12 +1,6 @@
 from dataclasses import dataclass, field
 from datetime import datetime, date
 from typing import List, Dict, Any, Optional, Union
-from enum import Enum
-
-
-class KeySourceType(Enum):
-    UTILS = "utils"  # Function-based processing
-    ATTRIBUTE = "attribute"  # Direct attribute access
 
 
 @dataclass
@@ -58,19 +52,14 @@ class DetectionDefinition:
 @dataclass
 class KeyDefinition:
     """Defines a key in the high-level event configuration"""
-
     name: str
-    source_type: KeySourceType
-    source_name: str
-    source_args: Optional[List[str]] = None
+    source: str  # Name of the utility function to call
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "KeyDefinition":
         return cls(
             name=data.get("name", ""),
-            source_type=KeySourceType(data.get("source_type", "").lower()),
-            source_name=data.get("source_name", ""),
-            source_args=data.get("source_args", []),
+            source=data.get("source", "")
         )
 
 
@@ -94,14 +83,12 @@ class HighLevelEventDefinition:
 @dataclass
 class ReasoningDefinition:
     """Defines the reasoning section in the rule"""
-
     description: str
-    found_in: str
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "ReasoningDefinition":
         return cls(
-            description=data.get("description", ""), found_in=data.get("found_in", "")
+            description=data.get("description", ""), 
         )
 
 
@@ -237,9 +224,7 @@ class Rule:
                 "keys": [
                     {
                         "name": k.name,
-                        "source_type": k.source_type.value,
-                        "source_name": k.source_name,
-                        "source_args": k.source_args,
+                        "source": k.source
                     }
                     for k in self.high_level_event.keys
                 ],
