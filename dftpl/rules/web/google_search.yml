@@ -6,7 +6,9 @@ references:
   - https://bitbucket.org/chrishargreaves/pydft-analysers/src/master/Analysers/Web/GoogleSearch.py
   - https://serpapi.com/blog/google-search-parameters/
 tags:
-  - 
+  - web_browsing
+  - search_activity
+  - google
 author: Jony Patterson, Hudan Studiawan, Java Kanaya Prada
 date: 2024/06/29
 modified: 2025/02/04
@@ -25,7 +27,7 @@ detection:
       - 'www\.google\.(com|co\.[a-z]{2})' 
       - '\/search\?.*q=' 
   condition: keywords
-level: low
+level: informational
 category: Web
 high_level_event:
   type: Google Search

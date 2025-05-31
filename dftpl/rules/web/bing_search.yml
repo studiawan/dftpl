@@ -3,7 +3,10 @@ id: 8e947e1a-313f-4c8f-bf3a-b0fd181ce879
 status: experimental
 description: Bing searches based on URL structure
 tags:
-  - 
+  - web_browsing
+  - search_activity
+  - bing
+  - microsoft
 author: Jony Patterson, Hudan Studiawan, Java Kanaya Prada
 date: 2024/10/14
 modified: 2025/02/04
