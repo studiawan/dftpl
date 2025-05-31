@@ -22,8 +22,8 @@ logsource:
     - auth.log
 detection:
   keywords:
-    '|re':
-      - '(Failed password for|authentication failure|PAM.*authentication failure)'
+    - 'Failed password for'
+    - 'authentication failure'
   condition: keywords
 level: medium
 category: Authentication
