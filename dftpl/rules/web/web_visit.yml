@@ -21,8 +21,6 @@ detection:
       - 'https?:\/\/' 
       - 'www.'
   condition: keywords
-fields:
-falsepositives:
 level: informational
 category: Web Overview
 high_level_event:
