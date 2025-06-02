@@ -1,3 +1,5 @@
+# analyzers/yaml/KeyProcessor.py
+
 from typing import Any
 from dftpl.events.LowLevelEvent import LowLevelEvent
 from dftpl.rules.Rule import KeyDefinition

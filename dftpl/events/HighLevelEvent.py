@@ -1,3 +1,5 @@
+# /events/HighLevelEvent.py
+
 from typing import Any, Optional, List, Dict
 from dftpl.events.BaseEvent import BaseEvent
 from datetime import datetime
@@ -8,15 +10,15 @@ class HighLevelEvent(BaseEvent):
     
     def __init__(self):
         super().__init__()
-        self.evidence_source: Optional[str] = None              # Source of the evidence
-        self.description: Optional[str] = None                  # Human-readable description of the event
-        self.category: Optional[str] = None                     # Category of the event for filtering
-        self.device: Optional[str] = None                       # Device related to the event
-        self.files: Optional[List[str]] = None                  # File related to the event
-        self.trigger: Optional[ReasoningArtefact] = None        # Reasoning artefact that triggered the event
-        self.supporting: Dict[str, List[Dict[str, Any]]] = {}   # List of reasoning artefacts supporting the event, five low level events before and after the event
-        self.merged_id: List[int] = []                          # List of IDs of events that have been merged into this event
-        self.date_time_iso: Optional[datetime] = None           # ISO 8601 formatted date time
+        self.evidence_source: Optional[str] = None              
+        self.description: Optional[str] = None                  
+        self.category: Optional[str] = None                     
+        self.device: Optional[str] = None                       
+        self.files: Optional[List[str]] = None                  
+        self.trigger: Optional[ReasoningArtefact] = None        
+        self.supporting: Dict[str, List[Dict[str, Any]]] = {}   # five low level events before and after the event
+        self.merged_id: List[int] = []                          
+        self.date_time_iso: Optional[datetime] = None           
 
     def add_time(self, date_time: str) -> None:
         """Sets the time for the event, adjusting min and max if necessary"""
