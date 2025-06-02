@@ -7,7 +7,7 @@ from dftpl.events.LowLevelEvent import LowLevelEvent
 from dftpl.events.HighLevelEvent import HighLevelEvent, ReasoningArtefact
 from dftpl.timelines.HighLevelTimeline import HighLevelTimeline
 from dftpl.timelines.LowLevelTimeline import LowLevelTimeline
-from dftpl.rules.Rule import KeyDefinition, ReasoningDefinition, Rule
+from dftpl.rules.Rule import KeyDefinition, Rule
 from datetime import datetime
 
 
@@ -56,7 +56,7 @@ def CreateHighTimeline(low_level_timeline: LowLevelTimeline, rule: Rule, start_i
                         
             # Create and set trigger
             if rule.reasoning:
-                trigger = create_trigger(rule.reasoning, low_level_event)
+                trigger = create_trigger(rule, low_level_event, high_event)
                 high_event.trigger = trigger
         
 
@@ -97,17 +97,20 @@ def process_keys(
             print(f"Error processing key {key_def.name}: {str(e)}")
             high_event.set_keys(key_def.name, None)
 
-def create_trigger(reasoning: "ReasoningDefinition", low_level_event: LowLevelEvent) -> ReasoningArtefact:
+def create_trigger(rule: Rule, low_level_event: LowLevelEvent, high_level_event: HighLevelEvent) -> ReasoningArtefact:
     """Create a reasoning artifact from the rule's reasoning definition"""
     trigger = ReasoningArtefact()
     trigger.id = low_level_event.id
     trigger.description = format_description(
-        reasoning.description, low_level_event
+        rule.reasoning.description, low_level_event
     )
+    trigger.provenance = low_level_event.provenance
+    trigger.references = rule.references
     trigger.test_event = {
         "type": low_level_event.type,
         "evidence": low_level_event.evidence,
     }
+    trigger.keys = high_level_event.keys
     return trigger
 
 def format_description(description_template: str, event: BaseEvent) -> str:
