@@ -5,7 +5,6 @@ description: Detects potential web shell activities and command injection attemp
 references:
   - https://owasp.org/www-community/attacks/Command_Injection
   - https://attack.mitre.org/techniques/T1505/003/
-  - https://www.sans.org/white-papers/33649/
 tags:
   - web_shell
   - command_injection
