@@ -22,11 +22,11 @@ def FindDeviceInstallation(low_timeline, start_id, end_id):
     # Create a test event to match against
     test_event1 = LowLevelEvent()
     test_event1.type = "Added Time-LOG"
-    test_event1.evidence = r'Device Install \(.+\) - .+ -'
+    test_event1.evidence = r'^Device Install \(.+\) - .+ -'
 
     test_event2 = LowLevelEvent()
     test_event2.type = "End Time-LOG"
-    test_event2.evidence = r'Device Install \(.+\) - .+ -'
+    test_event2.evidence = r'^Device Install \(.+\) - .+ -'
 
     # Create a high level timeline to store the results
     high_timeline = HighLevelTimeline()

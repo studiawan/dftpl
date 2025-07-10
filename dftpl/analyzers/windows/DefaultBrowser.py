@@ -55,7 +55,7 @@ def FindDefaultBrowser(low_timeline, start_id, end_id):
         # Create a reasoning artefact
         reasoning = ReasoningArtefact()
         reasoning.id = each_low_event.id
-        reasoning.description = f"Default browser's ProgId found in registry 'HKEY_CURRENT_USER\Software\Microsoft\Windows\Shell\Associations\\UrlAssociations\https\\UserChoice' with value '{key_prog_id}'"
+        reasoning.description = rf"Default browser's ProgId found in registry 'HKEY_CURRENT_USER\Software\Microsoft\Windows\Shell\Associations\UrlAssociations\https\UserChoice' with value '{key_prog_id}'"
         reasoning.test_event = test_event
         reasoning.provenance = each_low_event.provenance
         reasoning.references = 'https://forensafe.com/blogs/Windows-Default-Browser.html'

@@ -37,12 +37,14 @@ def FindUSBConnectedDeviceClasses(low_timeline, start_id, end_id):
     # Extract details from matching events
     for each_low_event in trigger_matches_reg_deviceclass:
         # Extract key values from Evidence
-        match = re.search(r"^\[HKEY_LOCAL_MACHINE\\System\\(ControlSet00\d)\\Control\\DeviceClasses\\{a5dcbf10-6530-11d2-901f-00c04fb951ed}\\[^\\]+?VID_(\d+)&PID_(\d+)#([^\\]+)#", each_low_event.evidence)
-        control_set = match.group(1)
-        vid = match.group(2)
-        pid = match.group(3)
-        serial = match.group(4)
-
+        try:
+            match = re.search(r"^\[HKEY_LOCAL_MACHINE\\System\\(ControlSet00\d)\\Control\\DeviceClasses\\{a5dcbf10-6530-11d2-901f-00c04fb951ed}\\[^\\]+?VID_(\w+)&PID_(\w+)#([^\\]+)#", each_low_event.evidence)
+            control_set = match.group(1)
+            vid = match.group(2)
+            pid = match.group(3)
+            serial = match.group(4)
+        except:
+            print(each_low_event.evidence)
         # Create a high level event
         high_event = HighLevelEvent()
         high_event.id = each_low_event.id
@@ -66,7 +68,7 @@ def FindUSBConnectedDeviceClasses(low_timeline, start_id, end_id):
         reasoning.test_event = test_event
         reasoning.provenance = each_low_event.provenance
         reasoning.references = 'https://doi.org/10.1016/j.diin.2019.02.004'
-
+        # REF For device class id: https://learn.microsoft.com/en-us/windows-hardware/drivers/install/guid-devinterface-usb-device
         # Add the reasoning artefact to the high level event
         high_event.trigger = reasoning.to_dict()
 

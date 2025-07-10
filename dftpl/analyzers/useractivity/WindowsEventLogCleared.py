@@ -41,15 +41,15 @@ def FindWindowsEventLogCleared(low_timeline, start_id, end_id):
     # Extract details from matching events
     for each_low_event in trigger_matches_104:
         # Extract key values from Evidence
-        match = re.search(r"\['(.+?)'  '(.+?)'  '(.+?)'  '(.+?)'  '(.+?)'  '(.+?)'\] Computer Name: (.+) Record Number: (.+?) ", each_low_event.evidence)
-        subject_user_name = match.group(1)
-        subject_domain_name = match.group(2)
-        channel = match.group(3)
-        backup_path = match.group(4)
-        client_process_id = match.group(5)
-        client_process_start_key = match.group(6)
-        computer_name = match.group(7)
-        record_number = match.group(8)
+        match = re.search(r"\[(?:'(.+?)'|(None))  (?:'(.+?)'|(None))  (?:'(.+?)'|(None))  (?:'(.+?)'|(None))  (?:'(.+?)'|(None))  (?:'(.+?)'|(None))\] Computer Name: (.+) Record Number: (.+?) ", each_low_event.evidence)
+        subject_user_name = match.group(1) if match.group(1) else match.group(2)
+        subject_domain_name = match.group(3) if match.group(3) else match.group(4)
+        channel = match.group(5) if match.group(5) else match.group(6)
+        backup_path = match.group(7) if match.group(7) else match.group(8)
+        client_process_id = match.group(9) if match.group(9) else match.group(10)
+        client_process_start_key = match.group(11) if match.group(11) else match.group(12)
+        computer_name = match.group(13)
+        record_number = match.group(14)
 
         # Create a high level event
         high_event = HighLevelEvent()

@@ -12,7 +12,7 @@ analyser_category = "Web"
 
 def Run(timeline, start_id=0, end_id=None):
     if end_id == None:
-        end_id = len(timeline)
+        end_id = len(timeline.events)
     
     CachedVideo(timeline, start_id, end_id)
 

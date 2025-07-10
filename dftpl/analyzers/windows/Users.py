@@ -11,6 +11,7 @@ Changes :
 """
 
 import re
+from json import dumps
 from dftpl.events.LowLevelEvent import LowLevelEvent
 from dftpl.events.HighLevelEvent import HighLevelEvent, ReasoningArtefact
 from dftpl.timelines.HighLevelTimeline import HighLevelTimeline
@@ -99,7 +100,7 @@ def CreatedUser(low_timeline, start_id, end_id):
                     # evidence.id = folder_creation_results.id
                     # evidence.description = "Folder %s Created" % folder_creation_results.path
                     # evidence.test_event = test_event2
-                    high_event.set_keys("Folder Creation Event", folder_creation_results.to_dict())
+                    high_event.set_keys("Folder Creation Low Level Event ID", folder_creation_results.id)
                 # Note : Contradictory artifacts is not used.
                 high_timeline.add_event(high_event)
 

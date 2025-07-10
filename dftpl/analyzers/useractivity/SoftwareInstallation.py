@@ -11,7 +11,7 @@ analyser_category = "System"
 
 def Run(timeline, start_id=0, end_id=None, type="generic"):
     if end_id == None:
-        end_id = len(timeline)
+        end_id = len(timeline.events)
 
     if type == "firefox":
         return FindFirefoxInstallation(timeline, start_id, end_id)

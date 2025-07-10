@@ -74,7 +74,7 @@ def FindFileMRURegistry(low_timeline, start_id, end_id):
         if entries_string != "None":
             entries_tuple = re.findall(r"(\S*| \d*?): \[.*?\] (.*?)(?=\S*?: |Item|$)", entries_string)
             for index, entries_pair in enumerate(entries_tuple):
-                if re.findall("(\d+)", entries_pair[0]):
+                if re.findall(r"(\d+)", entries_pair[0]):
                     entries_len += 1
                     match_items = re.findall(r"\[.*?\]\[T(.*?)\]\[.*?\]\*(.*)", entries_pair[1])
                     high_event.set_keys(f"Item{entries_pair[0]} Name", match_items[0][1].strip())
